@@ -1,24 +1,14 @@
-## Contributing guide
+# Contributing
 
-This document serves as a checklist before contributing to this repository.
-It includes links to read up on if topics are unclear to you.
+This project welcomes contributions and suggestions. Most contributions require you to
+agree to a Contributor License Agreement (CLA) declaring that you have the right to,
+and actually do, grant us the rights to use your contribution. For details, visit
+https://cla.microsoft.com.
 
-This guide mainly focuses on steps to be followed to submit an issue.
+When you submit a pull request, a CLA-bot will automatically determine whether you need
+to provide a CLA and decorate the PR appropriately (e.g., label, comment). Simply follow the
+instructions provided by the bot. You will only need to do this once across all repositories using our CLA.
 
-### 1. Before opening an issue
-
-To report a bug or a request please file an issue in the right repository
-(example for [stm32_mw_usbx](https://github.com/STMicroelectronics/stm32_mw_usbx/issues/new/choose)).
-
-Please check the following boxes before posting an issue:
-- [ ] `Make sure you are using the latest commit (major releases are tagged, but corrections are available as new commits).`
-- [ ] `Make sure your issue is a question/feedback/suggestions RELATED TO the software provided in this repository.` Otherwise, it should be submitted to the ST Community under the MCU topic [page](https://community.st.com/s/topic/0TO0X000000BSqSWAW/stm32-mcus).
-- [ ] `Make sure your issue is not already reported/fixed on GitHub or discussed on a previous issue.` Do not forget to browse into the **closed** issues.
-
-### 2. Posting the issue
-
-When you have checked the previous boxes, create a new report from the **Issues** tab of the repository. A template is available to help you report the issue you are facing or the enhancement you would like to propose.
-
-### 3. Pull Requests
-
-Pull-requests are **not** accepted on this repository. Please use **issues** to report any bug or request.
+This project has adopted the [Microsoft Open Source Code of Conduct](https://opensource.microsoft.com/codeofconduct/).
+For more information see the [Code of Conduct FAQ](https://opensource.microsoft.com/codeofconduct/faq/)
+or contact [opencode@microsoft.com](mailto:opencode@microsoft.com) with any additional questions or comments.
