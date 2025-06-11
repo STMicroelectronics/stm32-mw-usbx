@@ -1,13 +1,12 @@
-/**************************************************************************/
-/*                                                                        */
-/*       Copyright (c) Microsoft Corporation. All rights reserved.        */
-/*                                                                        */
-/*       This software is licensed under the Microsoft Software License   */
-/*       Terms for Microsoft Azure RTOS. Full text of the license can be  */
-/*       found in the LICENSE file at https://aka.ms/AzureRTOS_EULA       */
-/*       and in the root directory of this software.                      */
-/*                                                                        */
-/**************************************************************************/
+/***************************************************************************
+ * Copyright (c) 2024 Microsoft Corporation 
+ * 
+ * This program and the accompanying materials are made available under the
+ * terms of the MIT License which is available at
+ * https://opensource.org/licenses/MIT.
+ * 
+ * SPDX-License-Identifier: MIT
+ **************************************************************************/
 
 
 /**************************************************************************/
@@ -266,7 +265,7 @@ ULONG                               physical_address_lsw;
         _ux_utility_memory_free(asix -> ux_host_class_asix_receive_buffer);
 
     /* Free asix -> ux_host_class_asix_thread.  */
-    if (asix -> ux_host_class_asix_thread.tx_thread_id)
+    if (_ux_utility_thread_created(asix -> ux_host_class_asix_thread))
         _ux_utility_thread_delete(&asix -> ux_host_class_asix_thread);
 
     /* Free asix -> ux_host_class_asix_thread_stack.  */
@@ -274,11 +273,11 @@ ULONG                               physical_address_lsw;
         _ux_utility_memory_free(asix -> ux_host_class_asix_thread_stack);
 
     /* Free asix -> ux_host_class_asix_interrupt_notification_semaphore.  */
-    if (asix -> ux_host_class_asix_interrupt_notification_semaphore.tx_semaphore_id != 0)
+    if (_ux_utility_semaphore_created(asix -> ux_host_class_asix_interrupt_notification_semaphore) != 0)
         _ux_host_semaphore_delete(&asix -> ux_host_class_asix_interrupt_notification_semaphore);
 
     /* Free asix -> ux_host_class_asix_semaphore.  */
-    if (asix -> ux_host_class_asix_semaphore.tx_semaphore_id != 0)
+    if (_ux_utility_semaphore_created(asix -> ux_host_class_asix_semaphore) != 0)
         _ux_host_semaphore_delete(&asix -> ux_host_class_asix_semaphore);
 
     /* Destroy class instance.  */

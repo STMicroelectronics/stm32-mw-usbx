@@ -1,13 +1,12 @@
-/**************************************************************************/
-/*                                                                        */
-/*       Copyright (c) Microsoft Corporation. All rights reserved.        */
-/*                                                                        */
-/*       This software is licensed under the Microsoft Software License   */
-/*       Terms for Microsoft Azure RTOS. Full text of the license can be  */
-/*       found in the LICENSE file at https://aka.ms/AzureRTOS_EULA       */
-/*       and in the root directory of this software.                      */
-/*                                                                        */
-/**************************************************************************/
+/***************************************************************************
+ * Copyright (c) 2024 Microsoft Corporation 
+ * 
+ * This program and the accompanying materials are made available under the
+ * terms of the MIT License which is available at
+ * https://opensource.org/licenses/MIT.
+ * 
+ * SPDX-License-Identifier: MIT
+ **************************************************************************/
 
 
 /**************************************************************************/
@@ -81,7 +80,7 @@ VOID    _ux_host_class_storage_driver_entry(UX_MEDIA *media);
 /*    the proper USB storage class functions.                             */
 /*                                                                        */
 /*    When the entry is for storage with FX support (not in standalone    */
-/*    mode, and with FileX), the FX media is openned in storage mount     */
+/*    mode, and with FileX), the FX media is opened in storage mount      */
 /*    flow, and can be directly used in application after mounted.        */
 /*                                                                        */
 /*    When the entry is for no FX mode (FX in external module, and USBX   */

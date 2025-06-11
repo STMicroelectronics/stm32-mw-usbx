@@ -1,13 +1,12 @@
-/**************************************************************************/
-/*                                                                        */
-/*       Copyright (c) Microsoft Corporation. All rights reserved.        */
-/*                                                                        */
-/*       This software is licensed under the Microsoft Software License   */
-/*       Terms for Microsoft Azure RTOS. Full text of the license can be  */
-/*       found in the LICENSE file at https://aka.ms/AzureRTOS_EULA       */
-/*       and in the root directory of this software.                      */
-/*                                                                        */
-/**************************************************************************/
+/***************************************************************************
+ * Copyright (c) 2024 Microsoft Corporation 
+ * 
+ * This program and the accompanying materials are made available under the
+ * terms of the MIT License which is available at
+ * https://opensource.org/licenses/MIT.
+ * 
+ * SPDX-License-Identifier: MIT
+ **************************************************************************/
 
 
 /**************************************************************************/
@@ -238,7 +237,7 @@
 
 
 /* Defined, this value represents the maximum number of media for the host storage class. 
-   Default is 8 but for memory contrained resource systems this can ne reduced to 1. */
+   Default is 8 but for memory constrained resource systems this can ne reduced to 1. */
 
 #ifndef UX_HOST_CLASS_STORAGE_MAX_MEDIA
 #define UX_HOST_CLASS_STORAGE_MAX_MEDIA                     2  /* for test.  */
@@ -252,7 +251,7 @@
 
 /* #define UX_HOST_CLASS_STORAGE_INCLUDE_LEGACY_PROTOCOL_SUPPORT */
 
-/* Defined, this value forces the memory allocation scheme to enforce alignement
+/* Defined, this value forces the memory allocation scheme to enforce alignment
    of memory with the UX_SAFE_ALIGN field.
 */
 

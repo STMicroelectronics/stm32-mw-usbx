@@ -1,13 +1,13 @@
-/**************************************************************************/
-/*                                                                        */
-/*       Copyright (c) Microsoft Corporation. All rights reserved.        */
-/*                                                                        */
-/*       This software is licensed under the Microsoft Software License   */
-/*       Terms for Microsoft Azure RTOS. Full text of the license can be  */
-/*       found in the LICENSE file at https://aka.ms/AzureRTOS_EULA       */
-/*       and in the root directory of this software.                      */
-/*                                                                        */
-/**************************************************************************/
+/***************************************************************************
+ * Copyright (c) 2024 Microsoft Corporation
+ * Copyright (c) 2024 STMicroelectronics
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the MIT License which is available at
+ * https://opensource.org/licenses/MIT.
+ *
+ * SPDX-License-Identifier: MIT
+ **************************************************************************/
 
 
 /**************************************************************************/
@@ -21,12 +21,12 @@
 /**************************************************************************/
 
 
-/**************************************************************************/ 
-/*                                                                        */ 
-/*  COMPONENT DEFINITION                                   RELEASE        */ 
-/*                                                                        */ 
-/*    ux_utility.h                                        PORTABLE C      */ 
-/*                                                           6.3.0        */
+/**************************************************************************/
+/*                                                                        */
+/*  COMPONENT DEFINITION                                   RELEASE        */
+/*                                                                        */
+/*    ux_utility.h                                        PORTABLE C      */
+/*                                                           6.4.1        */
 /*  AUTHOR                                                                */
 /*                                                                        */
 /*    Chaoqiong Xiao, Microsoft Corporation                               */
@@ -62,12 +62,18 @@
 /*                                            added new function to check */
 /*                                            parsed size of descriptor,  */
 /*                                            resulting in version 6.3.0  */
+/*  21-05-2024     STMicroelectronics       Modified the code             */
+/*                                            to be RTOS agnostic support */
+/*                                            resulting in version 6.4.1  */
 /*                                                                        */
 /**************************************************************************/
 
 #ifndef UX_UTILITY_H
 #define UX_UTILITY_H
 
+#if !defined(UX_STANDALONE)
+#include "ux_os_utility.h"
+#endif
 
 /* Define Utility component function prototypes.  */
 
@@ -110,93 +116,51 @@ VOID             _ux_utility_debug_callback_register(VOID (*debug_callback)(UCHA
 VOID             _ux_utility_delay_ms(ULONG ms_wait);
 
 #if !defined(UX_STANDALONE)
-UINT             _ux_utility_mutex_create(UX_MUTEX *mutex, CHAR *mutex_name);
-UINT             _ux_utility_mutex_delete(UX_MUTEX *mutex);
-VOID             _ux_utility_mutex_off(UX_MUTEX *mutex);
-VOID             _ux_utility_mutex_on(UX_MUTEX *mutex);
-UINT             _ux_utility_semaphore_create(UX_SEMAPHORE *semaphore, CHAR *semaphore_name, UINT initial_count);
-UINT             _ux_utility_semaphore_delete(UX_SEMAPHORE *semaphore);
-UINT             _ux_utility_semaphore_get(UX_SEMAPHORE *semaphore, ULONG semaphore_signal);
-UINT             _ux_utility_semaphore_put(UX_SEMAPHORE *semaphore);
-UINT             _ux_utility_thread_create(UX_THREAD *thread_ptr, CHAR *name,
-                             VOID (*entry_function)(ULONG), ULONG entry_input,
-                             VOID *stack_start, ULONG stack_size,
-                             UINT priority, UINT preempt_threshold,
-                             ULONG time_slice, UINT auto_start);
-UINT             _ux_utility_thread_delete(UX_THREAD *thread_ptr);
-VOID             _ux_utility_thread_relinquish(VOID);
-UINT             _ux_utility_thread_schedule_other(UINT caller_priority);
-UINT             _ux_utility_thread_resume(UX_THREAD *thread_ptr);
-UINT             _ux_utility_thread_sleep(ULONG ticks);
-UINT             _ux_utility_thread_suspend(UX_THREAD *thread_ptr);
-UX_THREAD       *_ux_utility_thread_identify(VOID);
-UINT             _ux_utility_timer_create(UX_TIMER *timer, CHAR *timer_name, VOID (*expiration_function) (ULONG),
-                             ULONG expiration_input, ULONG initial_ticks, ULONG reschedule_ticks,
-                             UINT activation_flag);
-UINT             _ux_utility_timer_delete(UX_TIMER *timer);
-UINT             _ux_utility_event_flags_create(UX_EVENT_FLAGS_GROUP*group_ptr, CHAR *name);
-UINT             _ux_utility_event_flags_delete(UX_EVENT_FLAGS_GROUP*group_ptr);
-UINT             _ux_utility_event_flags_get(UX_EVENT_FLAGS_GROUP*group_ptr, ULONG requested_flags,
-                                                 UINT get_option, ULONG *actual_flags_ptr, ULONG wait_option);
-UINT             _ux_utility_event_flags_set(UX_EVENT_FLAGS_GROUP*group_ptr, ULONG flags_to_set,
-                                                 UINT set_option);
-#endif
-
-#ifndef             _ux_utility_interrupt_disable
-#ifdef TX_API_H
-#define             _ux_utility_interrupt_disable()             _tx_thread_interrupt_disable()
-#else
-extern ALIGN_TYPE   _ux_utility_interrupt_disable(VOID);
-#endif
-#else
-extern ALIGN_TYPE   _ux_utility_interrupt_disable(VOID);
-#endif
-
-#ifndef             _ux_utility_interrupt_restore
-#ifdef TX_API_H
-#define             _ux_utility_interrupt_restore(flags)        _tx_thread_interrupt_restore(flags)
-#else
-extern VOID         _ux_utility_interrupt_restore(ALIGN_TYPE);
-#endif
-#else
-extern VOID         _ux_utility_interrupt_restore(ALIGN_TYPE);
-#endif
-
-#ifndef             _ux_utility_time_get
-#ifdef TX_API_H
-#define             _ux_utility_time_get()                      tx_time_get()
-#else
-extern  ULONG       _ux_utility_time_get(VOID);
-#endif
-#else
-extern  ULONG       _ux_utility_time_get(VOID);
-#endif
-
-#ifndef             _ux_utility_time_elapsed
-#define             _ux_utility_time_elapsed(a,b)          (((b)>=(a)) ? ((b)-(a)) : (0xFFFFFFFFul-(b)+(a)+1))
-#else
-extern  ALIGN_TYPE  _ux_utility_time_elapsed(ALIGN_TYPE, ALIGN_TYPE);
+#define _ux_utility_event_flags_create                              _ux_os_utility_event_flags_create
+#define _ux_utility_event_flags_delete                              _ux_os_utility_event_flags_delete
+#define _ux_utility_event_flags_get                                 _ux_os_utility_event_flags_get
+#define _ux_utility_event_flags_set                                 _ux_os_utility_event_flags_set
+#define _ux_utility_mutex_create                                    _ux_os_utility_mutex_create
+#define _ux_utility_mutex_delete                                    _ux_os_utility_mutex_delete
+#define _ux_utility_mutex_off                                       _ux_os_utility_mutex_off
+#define _ux_utility_mutex_on                                        _ux_os_utility_mutex_on
+#define _ux_utility_semaphore_create                                _ux_os_utility_semaphore_create
+#define _ux_utility_semaphore_delete                                _ux_os_utility_semaphore_delete
+#define _ux_utility_semaphore_get                                   _ux_os_utility_semaphore_get
+#define _ux_utility_semaphore_put                                   _ux_os_utility_semaphore_put
+#define _ux_utility_thread_create                                   _ux_os_utility_thread_create
+#define _ux_utility_thread_delete                                   _ux_os_utility_thread_delete
+#define _ux_utility_thread_identify                                 _ux_os_utility_thread_identify
+#define _ux_utility_thread_relinquish                               _ux_os_utility_thread_relinquish
+#define _ux_utility_thread_resume                                   _ux_os_utility_thread_resume
+#define _ux_utility_thread_schedule_other                           _ux_os_utility_thread_schedule_other
+#define _ux_utility_thread_sleep                                    _ux_os_utility_thread_sleep
+#define _ux_utility_thread_suspend                                  _ux_os_utility_thread_suspend
+#define _ux_utility_timer_create                                    _ux_os_utility_timer_create
+#define _ux_utility_timer_delete                                    _ux_os_utility_timer_delete
+#define _ux_utility_timer_start                                     _ux_os_utility_timer_start
+#define _ux_utility_sleep_ms                                        _ux_os_utility_sleep_ms
 #endif
 
 #if !defined(UX_STANDALONE)
 #define _ux_system_semaphore_create                             _ux_utility_semaphore_create
 #define _ux_system_semaphore_create_norc                        _ux_utility_semaphore_create
-#define _ux_system_semaphore_created(sem)                       ((sem)->tx_semaphore_id != UX_EMPTY)
+#define _ux_system_semaphore_created                            _ux_utility_semaphore_created
 #define _ux_system_semaphore_get                                _ux_utility_semaphore_get
 #define _ux_system_semaphore_get_norc                           _ux_utility_semaphore_get
-#define _ux_system_semaphore_waiting(sem)                       ((sem)->tx_semaphore_count != 0)
+#define _ux_system_semaphore_waiting                            _ux_utility_semaphore_waiting
 #define _ux_system_semaphore_delete                             _ux_utility_semaphore_delete
 #define _ux_system_semaphore_put                                _ux_utility_semaphore_put
 #define _ux_system_thread_create                                _ux_utility_thread_create
 #define _ux_system_thread_create_norc                           _ux_utility_thread_create
-#define _ux_system_thread_created(t)                            ((t)->tx_thread_id != UX_EMPTY)
+#define _ux_system_thread_created                               _ux_utility_thread_created
 #define _ux_system_thread_delete                                _ux_utility_thread_delete
 #define _ux_system_mutex_create                                 _ux_utility_mutex_create
 #define _ux_system_mutex_delete                                 _ux_utility_mutex_delete
 #define _ux_system_mutex_off                                    _ux_utility_mutex_off
 #define _ux_system_mutex_on                                     _ux_utility_mutex_on
 #define _ux_system_event_flags_create                           _ux_utility_event_flags_create
-#define _ux_system_event_flags_created(e)                       ((e)->tx_event_flags_group_id != UX_EMPTY)
+#define _ux_system_event_flags_created                          _ux_utility_event_flags_created
 #define _ux_system_event_flags_delete                           _ux_utility_event_flags_delete
 #define _ux_system_event_flags_get                              _ux_utility_event_flags_get
 #define _ux_system_event_flags_set                              _ux_utility_event_flags_set
@@ -229,13 +193,13 @@ extern  ALIGN_TYPE  _ux_utility_time_elapsed(ALIGN_TYPE, ALIGN_TYPE);
 #if !defined(UX_DEVICE_STANDALONE)
 #define _ux_device_thread_create                                _ux_utility_thread_create
 #define _ux_device_thread_delete                                _ux_utility_thread_delete
-#define _ux_device_thread_entry(t)                              ((t)->tx_thread_entry)
+#define _ux_device_thread_entry                                 _ux_utility_thread_entry
 #define _ux_device_thread_suspend                               _ux_utility_thread_suspend
 #define _ux_device_thread_resume                                _ux_utility_thread_resume
 #define _ux_device_thread_relinquish                            _ux_utility_thread_relinquish
 #define _ux_device_semaphore_create                             _ux_utility_semaphore_create
-#define _ux_device_semaphore_created(sem)                       ((sem)->tx_semaphore_id != 0)
-#define _ux_device_semaphore_waiting(sem)                       ((sem)->tx_semaphore_count != 0)
+#define _ux_device_semaphore_created                            _ux_utility_semaphore_created
+#define _ux_device_semaphore_waiting                            _ux_utility_semaphore_waiting
 #define _ux_device_semaphore_delete                             _ux_utility_semaphore_delete
 #define _ux_device_semaphore_get                                _ux_utility_semaphore_get
 #define _ux_device_semaphore_put                                _ux_utility_semaphore_put
@@ -273,15 +237,15 @@ extern  ALIGN_TYPE  _ux_utility_time_elapsed(ALIGN_TYPE, ALIGN_TYPE);
 
 #if !defined(UX_HOST_STANDALONE)
 #define _ux_host_thread_create                                  _ux_utility_thread_create
-#define _ux_host_thread_created(thr)                            ((thr)->tx_thread_id != 0)
+#define _ux_host_thread_created                                 _ux_utility_thread_created
 #define _ux_host_thread_delete                                  _ux_utility_thread_delete
-#define _ux_host_thread_entry(thr)                              ((thr)->tx_thread_entry)
+#define _ux_host_thread_entry                                   _ux_utility_thread_entry
 #define _ux_host_thread_resume                                  _ux_utility_thread_resume
 #define _ux_host_thread_sleep                                   _ux_utility_thread_sleep
 #define _ux_host_thread_schedule_other                          _ux_utility_thread_schedule_other
 #define _ux_host_semaphore_create                               _ux_utility_semaphore_create
-#define _ux_host_semaphore_created(sem)                         ((sem)->tx_semaphore_id != 0)
-#define _ux_host_semaphore_waiting(sem)                         ((sem)->tx_semaphore_count != 0)
+#define _ux_host_semaphore_created                              _ux_utility_semaphore_created
+#define _ux_host_semaphore_waiting                              _ux_utility_semaphore_waiting
 #define _ux_host_semaphore_delete                               _ux_utility_semaphore_delete
 #define _ux_host_semaphore_get                                  _ux_utility_semaphore_get
 #define _ux_host_semaphore_get_norc                             _ux_utility_semaphore_get
@@ -296,6 +260,7 @@ extern  ALIGN_TYPE  _ux_utility_time_elapsed(ALIGN_TYPE, ALIGN_TYPE);
 #define _ux_host_event_flags_get                                _ux_utility_event_flags_get
 #define _ux_host_event_flags_set                                _ux_utility_event_flags_set
 #define _ux_host_timer_create                                   _ux_utility_timer_create
+#define _ux_host_timer_start                                    _ux_utility_timer_start
 #define _ux_host_timer_delete                                   _ux_utility_timer_delete
 #else
 #define _ux_host_thread_create(t,name,entry,entry_param,stack,stack_size,priority,preempt_threshold,time_slice,auto_start) (UX_SUCCESS)
@@ -446,6 +411,7 @@ VOID*            _ux_utility_memory_allocate_add_safe(ULONG align,ULONG cache,UL
 #define ux_utility_thread_suspend                      _ux_utility_thread_suspend
 #define ux_utility_thread_identify                     _ux_utility_thread_identify
 #define ux_utility_timer_create                        _ux_utility_timer_create
+#define ux_utility_timer_start                         _ux_utility_timer_start
 #define ux_utility_event_flags_create                  _ux_utility_event_flags_create
 #define ux_utility_event_flags_delete                  _ux_utility_event_flags_delete
 #define ux_utility_event_flags_get                     _ux_utility_event_flags_get

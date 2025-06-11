@@ -1,13 +1,12 @@
-/**************************************************************************/
-/*                                                                        */
-/*       Copyright (c) Microsoft Corporation. All rights reserved.        */
-/*                                                                        */
-/*       This software is licensed under the Microsoft Software License   */
-/*       Terms for Microsoft Azure RTOS. Full text of the license can be  */
-/*       found in the LICENSE file at https://aka.ms/AzureRTOS_EULA       */
-/*       and in the root directory of this software.                      */
-/*                                                                        */
-/**************************************************************************/
+/***************************************************************************
+ * Copyright (c) 2024 Microsoft Corporation 
+ * 
+ * This program and the accompanying materials are made available under the
+ * terms of the MIT License which is available at
+ * https://opensource.org/licenses/MIT.
+ * 
+ * SPDX-License-Identifier: MIT
+ **************************************************************************/
 
 
 /**************************************************************************/
@@ -428,9 +427,9 @@ UINT                    status = UX_SUCCESS;
 #endif
     if (hcd_ehci -> ux_hcd_ehci_periodic_mutex.tx_mutex_id != 0)
         _ux_host_mutex_delete(&hcd_ehci -> ux_hcd_ehci_periodic_mutex);
-    if (hcd_ehci -> ux_hcd_ehci_protect_semaphore.tx_semaphore_id != 0)
+    if (_ux_utility_semaphore_created(hcd_ehci -> ux_hcd_ehci_protect_semaphore) != 0)
         _ux_host_semaphore_delete(&hcd_ehci -> ux_hcd_ehci_protect_semaphore);
-    if (hcd_ehci -> ux_hcd_ehci_doorbell_semaphore.tx_semaphore_id != 0)
+    if (_ux_utility_semaphore_created(hcd_ehci -> ux_hcd_ehci_doorbell_semaphore) != 0)
         _ux_host_semaphore_delete(&hcd_ehci -> ux_hcd_ehci_doorbell_semaphore);
     _ux_utility_memory_free(hcd_ehci);
 

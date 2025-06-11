@@ -1,13 +1,12 @@
-/**************************************************************************/
-/*                                                                        */
-/*       Copyright (c) Microsoft Corporation. All rights reserved.        */
-/*                                                                        */
-/*       This software is licensed under the Microsoft Software License   */
-/*       Terms for Microsoft Azure RTOS. Full text of the license can be  */
-/*       found in the LICENSE file at https://aka.ms/AzureRTOS_EULA       */
-/*       and in the root directory of this software.                      */
-/*                                                                        */
-/**************************************************************************/
+/***************************************************************************
+ * Copyright (c) 2024 Microsoft Corporation
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the MIT License which is available at
+ * https://opensource.org/licenses/MIT.
+ *
+ * SPDX-License-Identifier: MIT
+ **************************************************************************/
 
 
 /**************************************************************************/
@@ -134,7 +133,7 @@ UCHAR                           *memory;
         {
 
             /* Check if the instance is live and the device is removable.  */
-            if ((storage -> ux_host_class_storage_state == UX_HOST_CLASS_INSTANCE_LIVE))
+            if (storage -> ux_host_class_storage_state == UX_HOST_CLASS_INSTANCE_LIVE)
             {
 
                 /* We need to ensure nobody is accessing this storage instance. We use

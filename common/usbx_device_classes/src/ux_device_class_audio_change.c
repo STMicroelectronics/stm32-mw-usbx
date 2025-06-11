@@ -1,13 +1,12 @@
-/**************************************************************************/
-/*                                                                        */
-/*       Copyright (c) Microsoft Corporation. All rights reserved.        */
-/*                                                                        */
-/*       This software is licensed under the Microsoft Software License   */
-/*       Terms for Microsoft Azure RTOS. Full text of the license can be  */
-/*       found in the LICENSE file at https://aka.ms/AzureRTOS_EULA       */
-/*       and in the root directory of this software.                      */
-/*                                                                        */
-/**************************************************************************/
+/***************************************************************************
+ * Copyright (c) 2024 Microsoft Corporation 
+ * 
+ * This program and the accompanying materials are made available under the
+ * terms of the MIT License which is available at
+ * https://opensource.org/licenses/MIT.
+ * 
+ * SPDX-License-Identifier: MIT
+ **************************************************************************/
 
 /**************************************************************************/
 /**                                                                       */
@@ -142,18 +141,8 @@ ULONG                                    endpoint_dir;
         /* Locate the endpoints.  ISO IN(write)/OUT(read) for Streaming Interface.  */
         endpoint = interface_ptr -> ux_slave_interface_first_endpoint;
 
-        /* Parse all endpoints.  */
-#if defined(UX_DEVICE_STANDALONE)
+        endpoint_dir = stream -> ux_device_class_audio_stream_direction;
 
-        endpoint_dir = (stream -> ux_device_class_audio_stream_task_function ==
-                        _ux_device_class_audio_read_task_function) ?
-                        UX_ENDPOINT_OUT: UX_ENDPOINT_IN;
-#else
-
-        endpoint_dir = (stream -> ux_device_class_audio_stream_thread.tx_thread_entry ==
-                        _ux_device_class_audio_read_thread_entry) ?
-                        UX_ENDPOINT_OUT : UX_ENDPOINT_IN;
-#endif
         stream -> ux_device_class_audio_stream_endpoint = UX_NULL;
 
 #if defined(UX_DEVICE_CLASS_AUDIO_FEEDBACK_SUPPORT)

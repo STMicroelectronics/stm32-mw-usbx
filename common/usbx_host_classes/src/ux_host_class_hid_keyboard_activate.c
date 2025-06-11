@@ -1,13 +1,12 @@
-/**************************************************************************/
-/*                                                                        */
-/*       Copyright (c) Microsoft Corporation. All rights reserved.        */
-/*                                                                        */
-/*       This software is licensed under the Microsoft Software License   */
-/*       Terms for Microsoft Azure RTOS. Full text of the license can be  */
-/*       found in the LICENSE file at https://aka.ms/AzureRTOS_EULA       */
-/*       and in the root directory of this software.                      */
-/*                                                                        */
-/**************************************************************************/
+/***************************************************************************
+ * Copyright (c) 2024 Microsoft Corporation 
+ * 
+ * This program and the accompanying materials are made available under the
+ * terms of the MIT License which is available at
+ * https://opensource.org/licenses/MIT.
+ * 
+ * SPDX-License-Identifier: MIT
+ **************************************************************************/
 
 
 /**************************************************************************/
@@ -456,7 +455,7 @@ UX_HOST_CLASS_HID_FIELD                 *field;
         _ux_utility_memory_free(keyboard_instance -> ux_host_class_hid_keyboard_thread_stack);
 
     /* Delete semaphore.  */
-    if (keyboard_instance -> ux_host_class_hid_keyboard_semaphore.tx_semaphore_id != UX_EMPTY)
+    if (_ux_utility_semaphore_created(keyboard_instance -> ux_host_class_hid_keyboard_semaphore) != UX_EMPTY)
         _ux_host_semaphore_delete(&keyboard_instance -> ux_host_class_hid_keyboard_semaphore);
 
 #endif

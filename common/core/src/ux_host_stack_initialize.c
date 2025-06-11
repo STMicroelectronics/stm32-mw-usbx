@@ -1,19 +1,18 @@
-/**************************************************************************/
-/*                                                                        */
-/*       Copyright (c) Microsoft Corporation. All rights reserved.        */
-/*                                                                        */
-/*       This software is licensed under the Microsoft Software License   */
-/*       Terms for Microsoft Azure RTOS. Full text of the license can be  */
-/*       found in the LICENSE file at https://aka.ms/AzureRTOS_EULA       */
-/*       and in the root directory of this software.                      */
-/*                                                                        */
-/**************************************************************************/
+/***************************************************************************
+ * Copyright (c) 2024 Microsoft Corporation
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the MIT License which is available at
+ * https://opensource.org/licenses/MIT.
+ *
+ * SPDX-License-Identifier: MIT
+ **************************************************************************/
 
 
 /**************************************************************************/
 /**************************************************************************/
-/**                                                                       */ 
-/** USBX Component                                                        */ 
+/**                                                                       */
+/** USBX Component                                                        */
 /**                                                                       */
 /**   Host Stack                                                          */
 /**                                                                       */
@@ -42,7 +41,7 @@ UX_SYSTEM_HOST     *_ux_system_host;
 
 /* Define table of periodic tree entries, properly indexed.  */
 
-UINT _ux_system_host_hcd_periodic_tree_entries[32] = { 
+UINT _ux_system_host_hcd_periodic_tree_entries[32] = {
                                                                             0x00, 0x10, 0x08, 0x18, 0x04, 0x14, 0x0c, 0x1c,
                                                                             0x02, 0x12, 0x0a, 0x1a, 0x06, 0x16, 0x0e, 0x1e,
                                                                             0x01, 0x11, 0x09, 0x19, 0x05, 0x15, 0x0d, 0x1d,
@@ -82,47 +81,47 @@ UCHAR _ux_system_host_hcd_musb_name[] =                                     "ux_
 UCHAR _ux_system_host_hcd_atm7_name[] =                                     "ux_hcd_atm7";
 UCHAR _ux_system_host_hcd_simulator_name[] =                                "ux_hcd_simulator";
 
-/**************************************************************************/ 
-/*                                                                        */ 
-/*  FUNCTION                                               RELEASE        */ 
-/*                                                                        */ 
-/*    _ux_host_stack_initialize                           PORTABLE C      */ 
+/**************************************************************************/
+/*                                                                        */
+/*  FUNCTION                                               RELEASE        */
+/*                                                                        */
+/*    _ux_host_stack_initialize                           PORTABLE C      */
 /*                                                           6.1.10       */
 /*  AUTHOR                                                                */
 /*                                                                        */
 /*    Chaoqiong Xiao, Microsoft Corporation                               */
 /*                                                                        */
 /*  DESCRIPTION                                                           */
-/*                                                                        */ 
-/*    This function initializes all the host code for USBX to work on a   */ 
-/*    specific platform.                                                  */ 
-/*                                                                        */ 
-/*  INPUT                                                                 */ 
-/*                                                                        */ 
-/*    (ux_system_host_change_function)        Function pointer to the     */ 
-/*                                            callback function for a     */ 
-/*                                            device change               */ 
-/*                                                                        */ 
-/*  OUTPUT                                                                */ 
-/*                                                                        */ 
-/*    Completion Status                                                   */ 
-/*                                                                        */ 
-/*                                                                        */ 
-/*  CALLS                                                                 */ 
-/*                                                                        */ 
-/*    _ux_utility_memory_allocate           Allocate host memory          */ 
-/*    _ux_utility_semaphore_create          Create host semaphore         */ 
-/*    _ux_utility_mutex_create             Create host mutex              */ 
-/*    _ux_utility_thread_create             Create host thread            */ 
-/*                                                                        */ 
-/*  CALLED BY                                                             */ 
-/*                                                                        */ 
-/*    Application                                                         */ 
-/*                                                                        */ 
-/*  RELEASE HISTORY                                                       */ 
-/*                                                                        */ 
-/*    DATE              NAME                      DESCRIPTION             */ 
-/*                                                                        */ 
+/*                                                                        */
+/*    This function initializes all the host code for USBX to work on a   */
+/*    specific platform.                                                  */
+/*                                                                        */
+/*  INPUT                                                                 */
+/*                                                                        */
+/*    (ux_system_host_change_function)        Function pointer to the     */
+/*                                            callback function for a     */
+/*                                            device change               */
+/*                                                                        */
+/*  OUTPUT                                                                */
+/*                                                                        */
+/*    Completion Status                                                   */
+/*                                                                        */
+/*                                                                        */
+/*  CALLS                                                                 */
+/*                                                                        */
+/*    _ux_utility_memory_allocate           Allocate host memory          */
+/*    _ux_utility_semaphore_create          Create host semaphore         */
+/*    _ux_utility_mutex_create             Create host mutex              */
+/*    _ux_utility_thread_create             Create host thread            */
+/*                                                                        */
+/*  CALLED BY                                                             */
+/*                                                                        */
+/*    Application                                                         */
+/*                                                                        */
+/*  RELEASE HISTORY                                                       */
+/*                                                                        */
+/*    DATE              NAME                      DESCRIPTION             */
+/*                                                                        */
 /*  05-19-2020     Chaoqiong Xiao           Initial Version 6.0           */
 /*  09-30-2020     Chaoqiong Xiao           Modified comment(s),          */
 /*                                            optimized based on compile  */
@@ -157,7 +156,7 @@ UX_DEVICE   *device;
     UX_SYSTEM_HOST_MAX_CLASS_SET(UX_MAX_CLASS_DRIVER);
     UX_SYSTEM_HOST_MAX_HCD_SET(UX_MAX_HCD);
     UX_SYSTEM_HOST_MAX_DEVICES_SET(UX_MAX_DEVICES);
-    
+
     /* Set the change device function address.  */
     _ux_system_host -> ux_system_host_change_function =  ux_system_host_change_function;
 
@@ -275,7 +274,7 @@ UX_DEVICE   *device;
                             0, _ux_system_host -> ux_system_host_enum_thread_stack,
                             UX_HOST_ENUM_THREAD_STACK_SIZE, UX_THREAD_PRIORITY_ENUM,
                             UX_THREAD_PRIORITY_ENUM, UX_NO_TIME_SLICE, UX_AUTO_START);
-                            
+
         /* Check the completion status.  */
         if(status != UX_SUCCESS)
             status = UX_THREAD_ERROR;
@@ -306,7 +305,7 @@ UX_DEVICE   *device;
         if (_ux_system_host -> ux_system_host_hnp_polling_thread_stack == UX_NULL)
             status = UX_MEMORY_INSUFFICIENT;
     }
-        
+
     /* Create the HNP polling thread of USBX.  */
     if (status == UX_SUCCESS)
     {
@@ -334,31 +333,31 @@ UX_DEVICE   *device;
         _ux_utility_memory_free(_ux_system_host -> ux_system_host_hnp_polling_thread_stack);
 
     /* Delete _ux_system_host -> ux_system_host_hcd_thread.  */
-    if (_ux_system_host -> ux_system_host_hcd_thread.tx_thread_id != 0)
+    if (_ux_utility_thread_created(_ux_system_host -> ux_system_host_hcd_thread))
         _ux_utility_thread_delete(&_ux_system_host -> ux_system_host_hcd_thread);
 #else
 
     /* Return completion status to caller if success.  */
     if (status == UX_SUCCESS)
-        return(status);
+      return(status);
 
     /* Free up resources on error cases.  */
 
     /* Last resource, _ux_system_host -> ux_system_host_hcd_thread is not created or created error,
-     * no need to delete it.  */
+    * no need to delete it.  */
 #endif
 
 #if !defined(UX_HOST_STANDALONE)
     /* Delete _ux_system_host -> ux_system_host_enum_thread.  */
-    if (_ux_system_host -> ux_system_host_enum_thread.tx_thread_id != 0)
+    if (_ux_utility_thread_created(_ux_system_host -> ux_system_host_enum_thread))
         _ux_utility_thread_delete(&_ux_system_host -> ux_system_host_enum_thread);
-    
+
     /* Delete _ux_system_host -> ux_system_host_hcd_semaphore.  */
-    if (_ux_system_host -> ux_system_host_hcd_semaphore.tx_semaphore_id != 0)
+    if (_ux_utility_semaphore_created(_ux_system_host -> ux_system_host_hcd_semaphore))
         _ux_utility_semaphore_delete(&_ux_system_host -> ux_system_host_hcd_semaphore);
 
     /* Delete _ux_system_host -> ux_system_host_enum_semaphore.  */
-    if (_ux_system_host -> ux_system_host_enum_semaphore.tx_semaphore_id != 0)
+    if (_ux_utility_semaphore_created(_ux_system_host -> ux_system_host_enum_semaphore))
         _ux_utility_semaphore_delete(&_ux_system_host -> ux_system_host_enum_semaphore);
 
     /* Free _ux_system_host -> ux_system_host_hcd_thread_stack.  */
@@ -373,7 +372,7 @@ UX_DEVICE   *device;
     /* Free _ux_system_host -> ux_system_host_device_array.  */
     if (_ux_system_host -> ux_system_host_device_array)
         _ux_utility_memory_free(_ux_system_host -> ux_system_host_device_array);
-    
+
     /* Free _ux_system_host -> ux_system_host_class_array.  */
     if (_ux_system_host -> ux_system_host_class_array)
         _ux_utility_memory_free(_ux_system_host -> ux_system_host_class_array);

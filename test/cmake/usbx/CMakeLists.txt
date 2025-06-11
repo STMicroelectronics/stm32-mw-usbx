@@ -17,7 +17,7 @@ configure_file(${CMAKE_CURRENT_SOURCE_DIR}/../libs/nx_user.h
                ${CMAKE_CURRENT_SOURCE_DIR}/libs/nx_user.h COPYONLY)
 
 # Set build configurations
-# TODO: add when available : standalone_otg_build
+# Pending: add when available : standalone_otg_build
 set(BUILD_CONFIGURATIONS 
   default_build_coverage 
   error_check_build_full_coverage 
@@ -249,7 +249,7 @@ else()
   add_subdirectory(${CMAKE_CURRENT_LIST_DIR}/regression regression)
 endif()
 
-# TODO: Unmask after adding sample for STANDALONE
+# Pending: Unmask after adding sample for STANDALONE
 if(NOT (CMAKE_BUILD_TYPE MATCHES "standalone.*"))
   add_subdirectory(../usbx/samples samples)
 endif()
@@ -304,8 +304,7 @@ target_compile_options(
           -Wshadow
           -Wlogical-op
           -Waggregate-return
-          -Wfloat-equal
-          -DFX_ENABLE_EXFAT)
+          -Wfloat-equal)
 
 # Remove includes and files not needed from usbx build
 set(UX_STANDALONE_HOST_EXCLUDES
@@ -361,7 +360,7 @@ if(CMAKE_BUILD_TYPE MATCHES "standalone.*")
   get_target_property(INCLUDES_LIST usbx INCLUDE_DIRECTORIES)
 
   if("${CMAKE_BUILD_TYPE}" STREQUAL "standalone_build_coverage")
-    # TODO: enable when STANDALONE implement is done
+    # Pending: enable when STANDALONE implement is done
     # Remove files not support STANDALONE yet
     foreach(EXCLUDE_VAL ${UX_STANDALONE_HOST_EXCLUDES}
                         ${UX_STANDALONE_DEVICE_EXCLUDES}

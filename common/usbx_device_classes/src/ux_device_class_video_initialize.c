@@ -1,13 +1,12 @@
-/**************************************************************************/
-/*                                                                        */
-/*       Copyright (c) Microsoft Corporation. All rights reserved.        */
-/*                                                                        */
-/*       This software is licensed under the Microsoft Software License   */
-/*       Terms for Microsoft Azure RTOS. Full text of the license can be  */
-/*       found in the LICENSE file at https://aka.ms/AzureRTOS_EULA       */
-/*       and in the root directory of this software.                      */
-/*                                                                        */
-/**************************************************************************/
+/***************************************************************************
+ * Copyright (c) 2024 Microsoft Corporation
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the MIT License which is available at
+ * https://opensource.org/licenses/MIT.
+ *
+ * SPDX-License-Identifier: MIT
+ **************************************************************************/
 
 /**************************************************************************/
 /**                                                                       */
@@ -251,7 +250,7 @@ ULONG                                   i;
     {
 
 #if !defined(UX_DEVICE_STANDALONE)
-        if (stream -> ux_device_class_video_stream_thread.tx_thread_id)
+      if (_ux_utility_thread_created(stream -> ux_device_class_video_stream_thread))
             _ux_utility_thread_delete(&stream -> ux_device_class_video_stream_thread);
         if (stream -> ux_device_class_video_stream_thread_stack)
             _ux_utility_memory_free(stream -> ux_device_class_video_stream_thread_stack);

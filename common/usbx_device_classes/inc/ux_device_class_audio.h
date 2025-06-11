@@ -1,13 +1,12 @@
-/**************************************************************************/
-/*                                                                        */
-/*       Copyright (c) Microsoft Corporation. All rights reserved.        */
-/*                                                                        */
-/*       This software is licensed under the Microsoft Software License   */
-/*       Terms for Microsoft Azure RTOS. Full text of the license can be  */
-/*       found in the LICENSE file at https://aka.ms/AzureRTOS_EULA       */
-/*       and in the root directory of this software.                      */
-/*                                                                        */
-/**************************************************************************/
+/***************************************************************************
+ * Copyright (c) 2024 Microsoft Corporation 
+ * 
+ * This program and the accompanying materials are made available under the
+ * terms of the MIT License which is available at
+ * https://opensource.org/licenses/MIT.
+ * 
+ * SPDX-License-Identifier: MIT
+ **************************************************************************/
 
 
 /**************************************************************************/
@@ -389,6 +388,7 @@ typedef struct UX_DEVICE_CLASS_AUDIO_STREAM_PARAMETER_STRUCT
 
     ULONG                                         ux_device_class_audio_stream_parameter_max_frame_buffer_size;
     ULONG                                         ux_device_class_audio_stream_parameter_max_frame_buffer_nb;
+    ULONG                                         ux_device_class_audio_stream_parameter_endpoint_direction;
 } UX_DEVICE_CLASS_AUDIO_STREAM_PARAMETER;
 
 typedef struct UX_DEVICE_CLASS_AUDIO_PARAMETER_STRUCT
@@ -459,6 +459,7 @@ typedef struct UX_DEVICE_CLASS_AUDIO_STREAM_STRUCT
 
     UX_DEVICE_CLASS_AUDIO_FRAME             *ux_device_class_audio_stream_transfer_pos;
     UX_DEVICE_CLASS_AUDIO_FRAME             *ux_device_class_audio_stream_access_pos;
+    ULONG                                    ux_device_class_audio_stream_direction;
 } UX_DEVICE_CLASS_AUDIO_STREAM;
 
 typedef struct UX_DEVICE_CLASS_AUDIO_STRUCT

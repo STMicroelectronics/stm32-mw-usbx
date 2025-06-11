@@ -1,13 +1,12 @@
-/**************************************************************************/
-/*                                                                        */
-/*       Copyright (c) Microsoft Corporation. All rights reserved.        */
-/*                                                                        */
-/*       This software is licensed under the Microsoft Software License   */
-/*       Terms for Microsoft Azure RTOS. Full text of the license can be  */
-/*       found in the LICENSE file at https://aka.ms/AzureRTOS_EULA       */
-/*       and in the root directory of this software.                      */
-/*                                                                        */
-/**************************************************************************/
+/***************************************************************************
+ * Copyright (c) 2024 Microsoft Corporation 
+ * 
+ * This program and the accompanying materials are made available under the
+ * terms of the MIT License which is available at
+ * https://opensource.org/licenses/MIT.
+ * 
+ * SPDX-License-Identifier: MIT
+ **************************************************************************/
 
 
 /**************************************************************************/
@@ -568,8 +567,8 @@ typedef struct UX_HOST_CLASS_AUDIO_SAMPLING_CHARACTERISTICS_STRUCT
     ULONG           ux_host_class_audio_sampling_characteristics_clock_mul;
     ULONG           ux_host_class_audio_sampling_characteristics_clock_div;
 
-    /* UAC 1.0, format type I descriptor for futher operations.  */
-    /* UAC 2.0, clock source descriptor (CSD) for futher operations.  */
+    /* UAC 1.0, format type I descriptor for further operations.  */
+    /* UAC 2.0, clock source descriptor (CSD) for further operations.  */
     UCHAR           *ux_host_class_audio_sampling_characteristics_descriptor;
 } UX_HOST_CLASS_AUDIO_SAMPLING_CHARACTERISTICS;
 

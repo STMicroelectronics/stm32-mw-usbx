@@ -1,13 +1,12 @@
-/**************************************************************************/
-/*                                                                        */
-/*       Copyright (c) Microsoft Corporation. All rights reserved.        */
-/*                                                                        */
-/*       This software is licensed under the Microsoft Software License   */
-/*       Terms for Microsoft Azure RTOS. Full text of the license can be  */
-/*       found in the LICENSE file at https://aka.ms/AzureRTOS_EULA       */
-/*       and in the root directory of this software.                      */
-/*                                                                        */
-/**************************************************************************/
+/***************************************************************************
+ * Copyright (c) 2024 Microsoft Corporation
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the MIT License which is available at
+ * https://opensource.org/licenses/MIT.
+ *
+ * SPDX-License-Identifier: MIT
+ **************************************************************************/
 
 
 /**************************************************************************/
@@ -279,6 +278,9 @@ ULONG               pool_size;
 #endif
 
 #if !defined(UX_STANDALONE)
+
+    /* Set system thread lowest priority to the highest one */
+    _ux_system ->ux_system_thread_lowest_priority = _ux_utility_thread_highest_priority();
 
     /* Create the Mutex object used by USBX to control critical sections.  */
     status =  _ux_system_mutex_create(&_ux_system -> ux_system_mutex, "ux_system_mutex");

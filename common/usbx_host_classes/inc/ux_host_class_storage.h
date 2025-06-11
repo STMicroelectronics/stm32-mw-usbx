@@ -1,13 +1,12 @@
-/**************************************************************************/
-/*                                                                        */
-/*       Copyright (c) Microsoft Corporation. All rights reserved.        */
-/*                                                                        */
-/*       This software is licensed under the Microsoft Software License   */
-/*       Terms for Microsoft Azure RTOS. Full text of the license can be  */
-/*       found in the LICENSE file at https://aka.ms/AzureRTOS_EULA       */
-/*       and in the root directory of this software.                      */
-/*                                                                        */
-/**************************************************************************/
+/***************************************************************************
+ * Copyright (c) 2024 Microsoft Corporation 
+ * 
+ * This program and the accompanying materials are made available under the
+ * terms of the MIT License which is available at
+ * https://opensource.org/licenses/MIT.
+ * 
+ * SPDX-License-Identifier: MIT
+ **************************************************************************/
 
 
 /**************************************************************************/
@@ -164,9 +163,9 @@ extern   "C" {
 /* Define Storage Class constants.  */
 
 #define UX_HOST_CLASS_STORAGE_DEVICE_INIT_DELAY             (200)
-#define UX_HOST_CLASS_STORAGE_THREAD_SLEEP_TIME             (2000)
 #define UX_HOST_CLASS_STORAGE_INSTANCE_SHUTDOWN_TIMER       (10)
-#define UX_HOST_CLASS_STORAGE_THREAD_PRIORITY_CLASS         20
+#define UX_HOST_CLASS_STORAGE_THREAD_SLEEP_TIME             (2000)
+#define UX_HOST_CLASS_STORAGE_THREAD_PRIORITY_CLASS         UX_HOST_OS_CLASS_STORAGE_THREAD_PRIORITY_CLASS
 #define UX_HOST_CLASS_STORAGE_TRANSFER_TIMEOUT              10000
 #define UX_HOST_CLASS_STORAGE_CBI_STATUS_TIMEOUT            3000
 #define UX_HOST_CLASS_STORAGE_CLASS                         8
@@ -399,7 +398,7 @@ extern   "C" {
 #define UX_HOST_CLASS_STORAGE_SENSE_CODE_NOT_READY_TO_READY             0x28
 #define UX_HOST_CLASS_STORAGE_SENSE_CODE_NOT_PRESENT                    0x3A
 
-/* Convertion between sense status and sense key, ASC, ASCQ.  */
+/* Conversion between sense status and sense key, ASC, ASCQ.  */
 
 #define UX_HOST_CLASS_STORAGE_SENSE_STATUS(key,ascode,ascqualifier)     (((key) << 16) | ((ascode) << 8) | (ascqualifier))
 #define UX_HOST_CLASS_STORAGE_SENSE_QUALIFIER(status)                   ((status) & 0xFF)

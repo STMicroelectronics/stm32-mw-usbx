@@ -1,13 +1,12 @@
-/**************************************************************************/
-/*                                                                        */
-/*       Copyright (c) Microsoft Corporation. All rights reserved.        */
-/*                                                                        */
-/*       This software is licensed under the Microsoft Software License   */
-/*       Terms for Microsoft Azure RTOS. Full text of the license can be  */
-/*       found in the LICENSE file at https://aka.ms/AzureRTOS_EULA       */
-/*       and in the root directory of this software.                      */
-/*                                                                        */
-/**************************************************************************/
+/***************************************************************************
+ * Copyright (c) 2024 Microsoft Corporation 
+ * 
+ * This program and the accompanying materials are made available under the
+ * terms of the MIT License which is available at
+ * https://opensource.org/licenses/MIT.
+ * 
+ * SPDX-License-Identifier: MIT
+ **************************************************************************/
 
 
 /**************************************************************************/
@@ -77,6 +76,11 @@ UX_HCD_STM32_ED       *ed;
 
     /* From the endpoint container fetch the STM32 ED descriptor.  */
     ed =  (UX_HCD_STM32_ED *) endpoint -> ux_endpoint_ed;
+
+    if (ed == UX_NULL)
+    {
+      return UX_SUCCESS;
+    }
 
     /* Finish current transfer.  */
     _ux_hcd_stm32_request_trans_finish(hcd_stm32, ed);

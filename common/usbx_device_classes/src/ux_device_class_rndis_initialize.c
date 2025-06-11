@@ -1,13 +1,12 @@
-/**************************************************************************/
-/*                                                                        */
-/*       Copyright (c) Microsoft Corporation. All rights reserved.        */
-/*                                                                        */
-/*       This software is licensed under the Microsoft Software License   */
-/*       Terms for Microsoft Azure RTOS. Full text of the license can be  */
-/*       found in the LICENSE file at https://aka.ms/AzureRTOS_EULA       */
-/*       and in the root directory of this software.                      */
-/*                                                                        */
-/**************************************************************************/
+/***************************************************************************
+ * Copyright (c) 2024 Microsoft Corporation 
+ * 
+ * This program and the accompanying materials are made available under the
+ * terms of the MIT License which is available at
+ * https://opensource.org/licenses/MIT.
+ * 
+ * SPDX-License-Identifier: MIT
+ **************************************************************************/
 
 /**************************************************************************/
 /**                                                                       */ 
@@ -343,15 +342,15 @@ UINT                                        status = UX_SUCCESS;
     /* Failed! Free up resources. */
 
     /* Delete semaphore for protecting the driver entry.  */
-    if (rndis -> ux_slave_class_rndis_semaphore.tx_semaphore_id != 0)
+    if (_ux_utility_semaphore_created(rndis -> ux_slave_class_rndis_semaphore) != 0)
         _ux_device_semaphore_delete(&rndis -> ux_slave_class_rndis_semaphore);
 
     /* Delete rndis -> ux_slave_class_rndis_event_flags_group.  */
-    if (rndis -> ux_slave_class_rndis_event_flags_group.tx_event_flags_group_id != 0)
+    if (_ux_utility_event_flags_created(rndis -> ux_slave_class_rndis_event_flags_group) != 0)
         _ux_utility_event_flags_delete(&rndis -> ux_slave_class_rndis_event_flags_group);
 
     /* Delete rndis -> ux_slave_class_rndis_bulkin_thread.  */
-    if (rndis -> ux_slave_class_rndis_bulkin_thread.tx_thread_id != 0)
+    if (_ux_utility_thread_created(rndis -> ux_slave_class_rndis_bulkin_thread)!= 0)
         _ux_device_thread_delete(&rndis -> ux_slave_class_rndis_bulkin_thread);
 
     /* Free rndis -> ux_slave_class_rndis_bulkin_thread_stack.  */
@@ -359,7 +358,7 @@ UINT                                        status = UX_SUCCESS;
         _ux_utility_memory_free(rndis -> ux_slave_class_rndis_bulkin_thread_stack);
 
     /* Delete rndis -> ux_slave_class_rndis_bulkout_thread.  */
-    if (rndis -> ux_slave_class_rndis_bulkout_thread.tx_thread_id != 0)
+    if (_ux_utility_thread_created(rndis -> ux_slave_class_rndis_bulkout_thread)!= 0)
         _ux_device_thread_delete(&rndis -> ux_slave_class_rndis_bulkout_thread);
 
     /* Free rndis -> ux_slave_class_rndis_bulkout_thread_stack.  */
@@ -367,7 +366,7 @@ UINT                                        status = UX_SUCCESS;
         _ux_utility_memory_free(rndis -> ux_slave_class_rndis_bulkout_thread_stack);
     
     /* Delete rndis -> ux_slave_class_rndis_interrupt_thread.  */
-    if (rndis -> ux_slave_class_rndis_interrupt_thread.tx_thread_id != 0)
+    if (_ux_utility_thread_created(rndis -> ux_slave_class_rndis_interrupt_thread)!= 0)
         _ux_device_thread_delete(&rndis -> ux_slave_class_rndis_interrupt_thread);
     
     /* Free rndis -> ux_slave_class_rndis_interrupt_thread_stack.  */

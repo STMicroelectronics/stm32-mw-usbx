@@ -1,13 +1,12 @@
-/**************************************************************************/
-/*                                                                        */
-/*       Copyright (c) Microsoft Corporation. All rights reserved.        */
-/*                                                                        */
-/*       This software is licensed under the Microsoft Software License   */
-/*       Terms for Microsoft Azure RTOS. Full text of the license can be  */
-/*       found in the LICENSE file at https://aka.ms/AzureRTOS_EULA       */
-/*       and in the root directory of this software.                      */
-/*                                                                        */
-/**************************************************************************/
+/***************************************************************************
+ * Copyright (c) 2024 Microsoft Corporation 
+ * 
+ * This program and the accompanying materials are made available under the
+ * terms of the MIT License which is available at
+ * https://opensource.org/licenses/MIT.
+ * 
+ * SPDX-License-Identifier: MIT
+ **************************************************************************/
 
 
 /**************************************************************************/
@@ -105,7 +104,7 @@ struct UX_PICTBRIDGE_STRUCT;
 #define UX_PICTBRIDGE_MAX_NUMBER_OBJECT_HANDLES             64
 #define UX_PICTBRIDGE_OBJECT_SCRIPT                         0x3002
 #define UX_PICTBRIDGE_THREAD_STACK_SIZE                     2048
-#define UX_PICTBRIDGE_THREAD_PRIORITY_CLASS                 20
+#define UX_PICTBRIDGE_THREAD_PRIORITY_CLASS                 UX_PICTBRIDGE_OS_THREAD_PRIORITY_CLASS
 #define UX_PICTBRIDGE_LEADING_ZERO_ON                       1
 #define UX_PICTBRIDGE_LEADING_ZERO_OFF                      2
 #define UX_PICTBRIDGE_REQUEST                               1

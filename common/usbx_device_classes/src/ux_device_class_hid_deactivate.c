@@ -1,13 +1,12 @@
-/**************************************************************************/
-/*                                                                        */
-/*       Copyright (c) Microsoft Corporation. All rights reserved.        */
-/*                                                                        */
-/*       This software is licensed under the Microsoft Software License   */
-/*       Terms for Microsoft Azure RTOS. Full text of the license can be  */
-/*       found in the LICENSE file at https://aka.ms/AzureRTOS_EULA       */
-/*       and in the root directory of this software.                      */
-/*                                                                        */
-/**************************************************************************/
+/***************************************************************************
+ * Copyright (c) 2024 Microsoft Corporation 
+ * 
+ * This program and the accompanying materials are made available under the
+ * terms of the MIT License which is available at
+ * https://opensource.org/licenses/MIT.
+ * 
+ * SPDX-License-Identifier: MIT
+ **************************************************************************/
 
 /**************************************************************************/
 /**************************************************************************/
@@ -74,7 +73,7 @@
 /**************************************************************************/
 UINT  _ux_device_class_hid_deactivate(UX_SLAVE_CLASS_COMMAND *command)
 {
-                                          
+
 UX_SLAVE_CLASS_HID         *hid;
 UX_SLAVE_CLASS             *class_ptr;
 
@@ -86,6 +85,10 @@ UX_SLAVE_CLASS             *class_ptr;
 
     /* Terminate the transactions pending on the endpoints.  */
     _ux_device_stack_transfer_all_request_abort(hid -> ux_device_class_hid_interrupt_endpoint, UX_TRANSFER_BUS_RESET);
+	
+#if defined(UX_DEVICE_CLASS_HID_INTERRUPT_OUT_SUPPORT)
+    _ux_device_stack_transfer_all_request_abort(hid -> ux_device_class_hid_read_endpoint, UX_TRANSFER_BUS_RESET);
+#endif
 
     /* If there is a deactivate function call it.  */
     if (hid -> ux_slave_class_hid_instance_deactivate != UX_NULL)
