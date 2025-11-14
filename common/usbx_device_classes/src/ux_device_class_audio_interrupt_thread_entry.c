@@ -86,8 +86,8 @@ UCHAR                           *buff;
     /* Get Audio class instance.  */
     UX_THREAD_EXTENSION_PTR_GET(audio, UX_DEVICE_CLASS_AUDIO, audio_inst)
 
-    /* Get stack device instance.  */
-    device = audio -> ux_device_class_audio_device;
+    /* Get the pointer to the device.  */
+    device =  &_ux_system_slave -> ux_system_slave_device;
 
     /* This thread runs forever but can be suspended or resumed.  */
     while(1)

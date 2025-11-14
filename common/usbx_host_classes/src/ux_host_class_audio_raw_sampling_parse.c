@@ -537,7 +537,7 @@ static UINT _ux_host_class_audio20_sam_parse_func(VOID *arg,
 struct UX_HOST_CLASS_AUDIO20_SAM_PARSER         *parser = (struct UX_HOST_CLASS_AUDIO20_SAM_PARSER *)arg;
 UX_HOST_CLASS_AUDIO                             *audio = parser -> audio;
 
-UCHAR                                           *csd;
+UCHAR                                           *csd = NULL;
 ULONG                                           clk_id, clk_mul = 1, clk_div = 1;
 UINT                                            status;
 UX_DEVICE                                       *device;

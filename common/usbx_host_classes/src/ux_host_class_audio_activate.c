@@ -143,6 +143,7 @@ UINT                    status;
         /* Search for IAD or UAC1.0 AC header descriptor.  */
         as_count = 0;
         iad = UX_NULL;
+        uac10_ifd = UX_NULL;
         uac10_acd = UX_NULL;
         desc = ac -> ux_host_class_audio_configuration_descriptor;
         for (pos = 0; pos < ac -> ux_host_class_audio_configuration_descriptor_length;)

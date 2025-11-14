@@ -2775,6 +2775,7 @@ typedef struct UX_HOST_CLASS_DPUMP_STRUCT
 #define ux_host_stack_interface_setting_select                  _uxe_host_stack_interface_setting_select
 #define ux_host_stack_transfer_request                          _uxe_host_stack_transfer_request
 #define ux_host_stack_transfer_request_abort                    _uxe_host_stack_transfer_request_abort
+#define ux_host_stack_configuration_interface_get               _uxe_host_stack_configuration_interface_get
 
 #else
 
@@ -2793,13 +2794,13 @@ typedef struct UX_HOST_CLASS_DPUMP_STRUCT
 #define ux_host_stack_interface_setting_select                  _ux_host_stack_interface_setting_select
 #define ux_host_stack_transfer_request                          _ux_host_stack_transfer_request
 #define ux_host_stack_transfer_request_abort                    _ux_host_stack_transfer_request_abort
+#define ux_host_stack_configuration_interface_get               _ux_host_stack_configuration_interface_get
 
 #endif
 
 #define ux_host_stack_class_instance_create                     _ux_host_stack_class_instance_create
 #define ux_host_stack_class_instance_destroy                    _ux_host_stack_class_instance_destroy
 #define ux_host_stack_class_unregister                          _ux_host_stack_class_unregister
-#define ux_host_stack_configuration_interface_get               _ux_host_stack_configuration_interface_get
 #define ux_host_stack_device_configuration_reset                _ux_host_stack_device_configuration_reset
 #define ux_host_stack_device_configuration_select               _ux_host_stack_device_configuration_select
 #define ux_host_stack_initialize                                _ux_host_stack_initialize

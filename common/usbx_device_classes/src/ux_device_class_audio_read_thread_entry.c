@@ -107,8 +107,8 @@ ULONG                           actual_length;
     /* Get Audio class instance.  */
     UX_THREAD_EXTENSION_PTR_GET(stream, UX_DEVICE_CLASS_AUDIO_STREAM, audio_stream)
 
-    /* Get stack device instance.  */
-    device = stream -> ux_device_class_audio_stream_audio -> ux_device_class_audio_device;
+    /* Get the pointer to the device.  */
+    device =  &_ux_system_slave -> ux_system_slave_device;
 
     /* This thread runs forever but can be suspended or resumed.  */
     while(1)

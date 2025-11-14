@@ -112,10 +112,10 @@ UX_INTERRUPT_SAVE_AREA
 
     /* Calculate the string length.  */
     debug_location_string_length = UX_DEBUG_LOG_SIZE;
-    _ux_utility_string_length_check(source, &debug_location_string_length, UX_DEBUG_LOG_SIZE);
+    _ux_utility_string_length_check(debug_location, &debug_location_string_length, UX_DEBUG_LOG_SIZE);
     debug_message_string_length = UX_DEBUG_LOG_SIZE;
-    _ux_utility_string_length_check(source, &debug_message_string_length, UX_DEBUG_LOG_SIZE);
-    
+    _ux_utility_string_length_check(debug_message, &debug_message_string_length, UX_DEBUG_LOG_SIZE);
+
     /* Calculate the length of the entire message string.  1 fixed string, then 1 hexa
        decimal, then 2 strings then 2 hexa decimal numbers in the format 0x00000000 
        separated by commas and . at the end, zero terminated.  */
@@ -124,8 +124,8 @@ UX_INTERRUPT_SAVE_AREA
     /* Can we accommodate this debug value message at the current location ?  */
     if (total_debug_message_length >= _ux_system -> ux_system_debug_log_size)
         return;
-    if (_ux_system -> ux_system_debug_log_head +  total_debug_message_length > 
-        ux_system -> ux_system_debug_log_buffer + _ux_system -> ux_system_debug_log_size)
+    if (_ux_system -> ux_system_debug_log_head +  total_debug_message_length >
+        _ux_system -> ux_system_debug_log_buffer + _ux_system -> ux_system_debug_log_size)
     {
 
         /* The debug value log to insert goes beyond the end of the log buffer, rewind to the beginning.  */
@@ -137,7 +137,7 @@ UX_INTERRUPT_SAVE_AREA
     _ux_system -> ux_system_debug_log_head += 10;
 
     /* Get the time value from TX.  */
-    current_time = _tx_time_get();                        
+    current_time = _ux_utility_time_get();                        
 
     /* Reset the value of the length.*/
     parameter_length = 0;
