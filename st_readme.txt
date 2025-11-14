@@ -7,6 +7,10 @@
   ******************************************************************************
   */
 
+### V6.4.0 (22-10-2025) ###
+============================
+- Remove forbidden words and correct code spelling mistakes.
+
 ### V6.4.0 (22-08-2025) ###
 ============================
 - Align version against the controller drivers
