@@ -7,6 +7,14 @@
 
   ******************************************************************************
   */
+
+### V3.1.0 / 02-December-2025 ###
+===============================
+Main changes
+-------------
+- Avoid memory free from ISR context.
+- Ensure to re-submit IN interrupt request in case of NAK.
+
 ### V3.0.4 / 10-September-2024 ###
 ===============================
 Main changes

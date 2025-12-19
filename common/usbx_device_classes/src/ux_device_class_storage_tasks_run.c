@@ -1082,11 +1082,13 @@ ULONG max_n_blocks;
 }
 static inline UINT _ux_device_class_storage_disk_wait(UX_SLAVE_CLASS_STORAGE *storage)
 {
+   UINT status;
+
     switch (storage -> ux_device_class_storage_cmd)
     {
     case UX_SLAVE_CLASS_STORAGE_SCSI_READ16:
     case UX_SLAVE_CLASS_STORAGE_SCSI_READ32:
-        return storage -> ux_slave_class_storage_lun[storage -> ux_slave_class_storage_cbw_lun].
+        status = storage -> ux_slave_class_storage_lun[storage -> ux_slave_class_storage_cbw_lun].
                         ux_slave_class_storage_media_read(storage,
                             storage -> ux_slave_class_storage_cbw_lun,
                             storage -> ux_device_class_storage_buffer[
@@ -1095,9 +1097,11 @@ static inline UINT _ux_device_class_storage_disk_wait(UX_SLAVE_CLASS_STORAGE *st
                             storage -> ux_device_class_storage_cmd_lba,
                             &storage -> ux_device_class_storage_media_status);
 
+        return (status == UX_SUCCESS) ? UX_STATE_NEXT : UX_STATE_ERROR;
+
     case UX_SLAVE_CLASS_STORAGE_SCSI_WRITE16:
     case UX_SLAVE_CLASS_STORAGE_SCSI_WRITE32:
-        return storage -> ux_slave_class_storage_lun[storage -> ux_slave_class_storage_cbw_lun].
+        status = storage -> ux_slave_class_storage_lun[storage -> ux_slave_class_storage_cbw_lun].
                         ux_slave_class_storage_media_write(storage,
                             storage -> ux_slave_class_storage_cbw_lun,
                             storage -> ux_device_class_storage_buffer[
@@ -1106,20 +1110,26 @@ static inline UINT _ux_device_class_storage_disk_wait(UX_SLAVE_CLASS_STORAGE *st
                             storage -> ux_device_class_storage_cmd_lba,
                             &storage -> ux_device_class_storage_media_status);
 
+        return (status == UX_SUCCESS) ? UX_STATE_NEXT : UX_STATE_ERROR;
+
     case UX_SLAVE_CLASS_STORAGE_SCSI_SYNCHRONIZE_CACHE:
-        return storage -> ux_slave_class_storage_lun[storage -> ux_slave_class_storage_cbw_lun].
+        status = storage -> ux_slave_class_storage_lun[storage -> ux_slave_class_storage_cbw_lun].
                         ux_slave_class_storage_media_flush(storage,
                             storage -> ux_slave_class_storage_cbw_lun,
                             storage -> ux_device_class_storage_disk_n_lb,
                             storage -> ux_device_class_storage_cmd_lba,
                             &storage -> ux_device_class_storage_media_status);
 
+        return (status == UX_SUCCESS) ? UX_STATE_NEXT : UX_STATE_ERROR;
+
     case UX_SLAVE_CLASS_STORAGE_SCSI_VERIFY: /* No nothing for now.  */
     default:
         break;
     }
+
     return(UX_STATE_NEXT);
 }
+
 static inline VOID _ux_device_class_storage_disk_next(UX_SLAVE_CLASS_STORAGE *storage)
 {
 

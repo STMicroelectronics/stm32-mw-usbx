@@ -7,6 +7,11 @@
   ******************************************************************************
   */
 
+### V6.4.0 (02-12-2025) ###
+============================
+- HID device class, abort out endpoint during deactivate.
+- MSC device class, correct return value in standalone mode.
+
 ### V6.4.0 (22-10-2025) ###
 ============================
 - Remove forbidden words and correct code spelling mistakes.

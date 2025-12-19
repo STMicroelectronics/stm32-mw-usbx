@@ -104,7 +104,8 @@ UX_HCD_STM32          *hcd_stm32;
     hcd -> ux_hcd_status =  UX_HCD_STATUS_HALTED;
 
     /* Initialize the number of channels.  */
-    hcd_stm32 -> ux_hcd_stm32_nb_channels =  UX_HCD_STM32_MAX_NB_CHANNELS;
+    hcd_stm32 -> ux_hcd_stm32_nb_channels = UX_MIN(hcd_stm32->hcd_handle->Init.Host_channels,
+                                                   UX_HCD_STM32_MAX_NB_CHANNELS);
 
     /* Check if the parameter is null.  */
     if (hcd -> ux_hcd_irq == 0)

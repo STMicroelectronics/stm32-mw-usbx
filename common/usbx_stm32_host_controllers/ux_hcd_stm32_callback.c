@@ -419,6 +419,18 @@ UX_TRANSFER         *transfer_next;
         {
 
             /* Handle URB_NOTREADY state here.  */
+
+            /* If interrupt transfer is not started by schedular, start here.  */
+            if ((!ed -> ux_stm32_ed_sch_mode) && (ed -> ux_stm32_ed_type == EP_TYPE_INTR))
+            {
+              /* Call HAL driver to re-submit the transfer request.  */
+              HAL_HCD_HC_SubmitRequest(hcd_stm32 -> hcd_handle, ed -> ux_stm32_ed_channel,
+                                       ed -> ux_stm32_ed_dir,
+                                       ed -> ux_stm32_ed_type, USBH_PID_DATA,
+                                       ed -> ux_stm32_ed_data + transfer_request -> ux_transfer_request_actual_length,
+                                       ed -> ux_stm32_ed_packet_length, 0);
+            }
+
             /* Check if we need to retry the transfer by checking the status.  */
             if ((ed -> ux_stm32_ed_status == UX_HCD_STM32_ED_STATUS_CONTROL_SETUP) ||
                 (ed -> ux_stm32_ed_status == UX_HCD_STM32_ED_STATUS_CONTROL_DATA_OUT) ||
