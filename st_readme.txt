@@ -7,6 +7,10 @@
   ******************************************************************************
   */
 
+### V6.4.0 (16-01-2026) ###
+============================
+- Fix added in STM32 host controller driver interface.
+
 ### V6.4.0 (02-12-2025) ###
 ============================
 - HID device class, abort out endpoint during deactivate.
