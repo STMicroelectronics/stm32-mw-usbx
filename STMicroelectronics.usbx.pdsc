@@ -1,0 +1,1419 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<package xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:stm32="https://developer.st.com/schemas/stm32cube/1.0.0" schemaVersion="1.7.55" xsi:noNamespaceSchemaLocation="PACK.xsd" xsi:schemaLocation="https://developer.st.com/schemas/stm32cube/1.0.0 stm32cube.xsd" Dvendor="STMicroelectronics:13" Dname="STM32*">
+  <vendor>STMicroelectronics</vendor>
+  <name>usbx</name>
+  <environments>
+    <environment name="STM32Cube">
+      <stm32:pack type="MW" friendlyName="usbx" shortDesc="usbx middleware">
+        <relocation-info parent="middleware" layer="" element=""/>
+      </stm32:pack>
+    </environment>
+  </environments>
+  <ECCN>
+    <ECCN-EU>NEC</ECCN-EU>
+    <ECCN-US>EAR99</ECCN-US>
+  </ECCN>
+  <description>STMicroelectronics usbx pack</description>
+  <repository type="git">https://github.com/STMicroelectronics/stm32-mw-usbx/tree/hal2/</repository>
+  <url>https://developer.st.com/st-pack-server/api/v1/pack/</url>
+  <license>LICENSE.md</license>
+  <releases>
+    <release date="2026-03-06" version="2.0.0">
+      USBX pack version based on the V6.4.3 Release
+      ## Main changes
+      * Official release of USBX aligned with HAL2.
+    </release>
+  </releases>
+  <changelogs>
+    <changelog id="Readme" name="README.md"/>
+    <changelog id="Release Notes" default="true" name="ST_Release_Notes.html"/>
+  </changelogs>
+  <keywords>
+    <keyword>Cortex-M</keyword>
+    <keyword>STMicroelectronics</keyword>
+    <keyword>USBX</keyword>
+    <keyword>STM32</keyword>
+  </keywords>
+  <taxonomy>
+    <description Cclass="USB">USB</description>
+  </taxonomy>
+  <conditions>
+    <condition id="usbx standalone condition">
+      <require Cclass="USB" Cgroup="USBX" Csub="No_OS"/>
+    </condition>
+    <condition id="usbx freertos condition">
+      <deny Cclass="USB" Cgroup="USBX" Csub="No_OS"/>
+      <require Cclass="RTOS" Cgroup="FreeRTOS" Csub="Core"/>
+    </condition>
+    <condition id="Operating System Used">
+    </condition>
+    <condition id="Use Device Core">
+    </condition>
+    <condition id="Use Device Controllers">
+    </condition>
+    <condition id="Use HID Device Class">
+    </condition>
+    <condition id="Use HID Mouse Device Class">
+    </condition>
+    <condition id="Use HID Keyboard Device Class">
+    </condition>
+    <condition id="Use HID Custom Device Class">
+    </condition>
+    <condition id="Use CDC_ACM Device Class">
+    </condition>
+    <condition id="Use MSC Device Class">
+    </condition>
+    <condition id="Use PIMA_MTP Device Class">
+    </condition>
+    <condition id="Use Audio Device Class">
+    </condition>
+    <condition id="Use Video Device Class">
+    </condition>
+    <condition id="Use Printer Device Class">
+    </condition>
+    <condition id="Use CCID Device Class">
+    </condition>
+    <condition id="Use DFU Device Class">
+    </condition>
+    <condition id="Use Host Controllers">
+    </condition>
+    <condition id="Use HID Host Class">
+    </condition>
+    <condition id="Use HID Mouse Host Class">
+    </condition>
+    <condition id="Use HID Keyboard Host Class">
+    </condition>
+    <condition id="Use HID RCU Host Class">
+    </condition>
+    <condition id="Use CDC_ACM Host Class">
+    </condition>
+    <condition id="Use MSC Host Class">
+    </condition>
+    <condition id="Use PIMA_MTP Host Class">
+    </condition>
+    <condition id="Use Audio Host Class">
+    </condition>
+    <condition id="Use Video Host Class">
+    </condition>
+    <condition id="Use Printer Host Class">
+    </condition>
+    <condition id="Use GSER Host Class">
+    </condition>
+    <condition id="Use PROLIFIC Host Class">
+    </condition>
+    <condition id="Use SWAR Host Class">
+    </condition>
+    <condition id="Use HUB Host Class">
+    </condition>
+    <condition id="Use Host Core">
+    </condition>
+    <condition id="usbx core condition">
+      <require condition="Operating System Used"/>
+      <require condition="Use Device Core"/>
+      <require condition="Use Device Controllers"/>
+      <require condition="Use HID Device Class"/>
+      <require condition="Use HID Mouse Device Class"/>
+      <require condition="Use HID Keyboard Device Class"/>
+      <require condition="Use HID Custom Device Class"/>
+      <require condition="Use CDC_ACM Device Class"/>
+      <require condition="Use MSC Device Class"/>
+      <require condition="Use PIMA_MTP Device Class"/>
+      <require condition="Use Audio Device Class"/>
+      <require condition="Use Video Device Class"/>
+      <require condition="Use Printer Device Class"/>
+      <require condition="Use CCID Device Class"/>
+      <require condition="Use DFU Device Class"/>
+      <require condition="Use Host Core"/>
+      <require condition="Use Host Controllers"/>
+      <require condition="Use HID Host Class"/>
+      <require condition="Use HID Mouse Host Class"/>
+      <require condition="Use HID Keyboard Host Class"/>
+      <require condition="Use HID RCU Host Class"/>
+      <require condition="Use CDC_ACM Host Class"/>
+      <require condition="Use MSC Host Class"/>
+      <require condition="Use PIMA_MTP Host Class"/>
+      <require condition="Use Audio Host Class"/>
+      <require condition="Use Video Host Class"/>
+      <require condition="Use Printer Host Class"/>
+      <require condition="Use GSER Host Class"/>
+      <require condition="Use PROLIFIC Host Class"/>
+      <require condition="Use SWAR Host Class"/>
+      <require condition="Use HUB Host Class"/>
+      <require Cclass="USB" Cgroup="USBX Core" Csub="Common"/>
+    </condition>
+  </conditions>
+  <generators>
+    <!-- This generator is launched if any component referencing this generator by 'id' is selected and the specified <gpdsc> file does not exist -->
+    <generator id="usbx_mx2codegen">
+      <description>STMicroelectronics: STM32 Cube Code Generator for USBX Pack</description>
+      <exe>
+        <command host="win">.config/gen_code.bat</command>
+        <command host="linux">.config/gen_code.sh</command>
+        <command host="mac">.config/gen_code.sh</command>
+        <!-- #name of the gpdsc template contained in this PACK and aligned with GPDSC name-->
+        <argument>STMicroelectronics.usbx.gpdsc.hbs</argument>
+        <!-- passing the generator name-->
+        <argument>usbx_mx2codegen</argument>
+        <argument>$G</argument>
+        <!-- Flag to indicate that this Generator is dry-run capable -->
+        <argument mode="dry-run">--dry-run</argument>
+      </exe>
+      <!-- workingDir></workingDir -->
+      <!-- path is specified either absolute or relative to PDSC or GPDSC file. If not specified it is the project directory configured by the environment -->
+      <gpdsc name="$P/STMicroelectronics.usbx.gpdsc"/>
+    </generator>
+  </generators>
+  <components>
+    <!-- USBX utilities Standalone files -->
+    <component Cclass="USB" Cgroup="USBX" Csub="No_OS" Cversion="6.4.3">
+      <description>USB Standalone Mode </description>
+      <files>
+        <!-- case of standalone mode -->
+        <file category="include" name="ports/generic/inc/"/>
+      </files>
+    </component>
+    <!-- STM32 USBX Core -->
+    <component Cclass="USB" Cgroup="USBX Core" Csub="Common" Cversion="6.4.3">
+      <description>USB Core</description>
+      <files>
+        <file category="doc" name="ST_Release_Notes.md"/>
+        <file category="doc" name="ST_Release_Notes.html"/>
+        <file category="doc" name="SW_Security_Level.md"/>
+        <file category="doc" name="README.md"/>
+        <file category="doc" name="docs/usbx-features.png"/>
+        <file category="doc" name="docs/deps.png"/>
+        <!-- USBX system source files -->
+        <file category="source" name="common/core/src/ux_system_error_handler.c"/>
+        <file category="source" name="common/core/src/ux_system_initialize.c"/>
+        <file category="source" name="common/core/src/ux_system_tasks_run.c" condition="usbx standalone condition"/>
+        <file category="source" name="common/core/src/ux_system_uninitialize.c"/>
+        <!-- USBX utility source files -->
+        <file category="source" name="common/core/src/ux_utility_debug_callback_register.c"/>
+        <file category="source" name="common/core/src/ux_utility_debug_log.c"/>
+        <file category="source" name="common/core/src/ux_utility_delay_ms.c"/>
+        <file category="source" name="common/core/src/ux_utility_descriptor_pack.c"/>
+        <file category="source" name="common/core/src/ux_utility_descriptor_parse.c"/>
+        <file category="source" name="common/core/src/ux_utility_error_callback_register.c"/>
+        <file category="source" name="common/core/src/ux_utility_long_get.c"/>
+        <file category="source" name="common/core/src/ux_utility_long_get_big_endian.c"/>
+        <file category="source" name="common/core/src/ux_utility_long_put.c"/>
+        <file category="source" name="common/core/src/ux_utility_long_put_big_endian.c"/>
+        <file category="source" name="common/core/src/ux_utility_memory_allocate.c"/>
+        <file category="source" name="common/core/src/ux_utility_memory_allocate_add_safe.c"/>
+        <file category="source" name="common/core/src/ux_utility_memory_allocate_mulc_safe.c"/>
+        <file category="source" name="common/core/src/ux_utility_memory_allocate_mulv_safe.c"/>
+        <file category="source" name="common/core/src/ux_utility_memory_compare.c"/>
+        <file category="source" name="common/core/src/ux_utility_memory_copy.c"/>
+        <file category="source" name="common/core/src/ux_utility_memory_free.c"/>
+        <file category="source" name="common/core/src/ux_utility_memory_free_block_best_get.c"/>
+        <file category="source" name="common/core/src/ux_utility_memory_set.c"/>
+        <file category="source" name="common/core/src/ux_utility_memory_byte_pool_create.c"/>
+        <file category="source" name="common/core/src/ux_utility_memory_byte_pool_search.c"/>
+        <file category="source" name="common/core/src/ux_utility_physical_address.c"/>
+        <file category="source" name="common/core/src/ux_utility_set_interrupt_handler.c"/>
+        <file category="source" name="common/core/src/ux_utility_short_get.c"/>
+        <file category="source" name="common/core/src/ux_utility_short_get_big_endian.c"/>
+        <file category="source" name="common/core/src/ux_utility_short_put.c"/>
+        <file category="source" name="common/core/src/ux_utility_short_put_big_endian.c"/>
+        <file category="source" name="common/core/src/ux_utility_string_length_check.c"/>
+        <file category="source" name="common/core/src/ux_utility_string_length_get.c"/>
+        <file category="source" name="common/core/src/ux_utility_string_to_unicode.c"/>
+        <file category="source" name="common/core/src/ux_utility_unicode_to_string.c"/>
+        <file category="source" name="common/core/src/ux_utility_virtual_address.c"/>
+        <!-- USBX utilities rtos files -->
+        <file category="source" name="ports/freertos/src/ux_os_utility_thread_create.c" condition="usbx freertos condition"/>
+        <file category="source" name="ports/freertos/src/ux_os_utility_thread_delete.c" condition="usbx freertos condition"/>
+        <file category="source" name="ports/freertos/src/ux_os_utility_thread_identify.c" condition="usbx freertos condition"/>
+        <file category="source" name="ports/freertos/src/ux_os_utility_thread_relinquish.c" condition="usbx freertos condition"/>
+        <file category="source" name="ports/freertos/src/ux_os_utility_thread_resume.c" condition="usbx freertos condition"/>
+        <file category="source" name="ports/freertos/src/ux_os_utility_thread_schedule_other.c" condition="usbx freertos condition"/>
+        <file category="source" name="ports/freertos/src/ux_os_utility_thread_sleep.c" condition="usbx freertos condition"/>
+        <file category="source" name="ports/freertos/src/ux_os_utility_thread_suspend.c" condition="usbx freertos condition"/>
+        <file category="source" name="ports/freertos/src/ux_os_utility_timer_create.c" condition="usbx freertos condition"/>
+        <file category="source" name="ports/freertos/src/ux_os_utility_timer_delete.c" condition="usbx freertos condition"/>
+        <file category="source" name="ports/freertos/src/ux_os_utility_timer_start.c" condition="usbx freertos condition"/>
+        <file category="source" name="ports/freertos/src/ux_os_utility_semaphore_create.c" condition="usbx freertos condition"/>
+        <file category="source" name="ports/freertos/src/ux_os_utility_semaphore_delete.c" condition="usbx freertos condition"/>
+        <file category="source" name="ports/freertos/src/ux_os_utility_semaphore_get.c" condition="usbx freertos condition"/>
+        <file category="source" name="ports/freertos/src/ux_os_utility_semaphore_put.c" condition="usbx freertos condition"/>
+        <file category="source" name="ports/freertos/src/ux_os_utility_sleep_ms.c" condition="usbx freertos condition"/>
+        <file category="source" name="ports/freertos/src/ux_os_utility_event_flags_create.c" condition="usbx freertos condition"/>
+        <file category="source" name="ports/freertos/src/ux_os_utility_event_flags_delete.c" condition="usbx freertos condition"/>
+        <file category="source" name="ports/freertos/src/ux_os_utility_event_flags_get.c" condition="usbx freertos condition"/>
+        <file category="source" name="ports/freertos/src/ux_os_utility_event_flags_set.c" condition="usbx freertos condition"/>
+        <file category="source" name="ports/freertos/src/ux_os_utility_mutex_create.c" condition="usbx freertos condition"/>
+        <file category="source" name="ports/freertos/src/ux_os_utility_mutex_delete.c" condition="usbx freertos condition"/>
+        <file category="source" name="ports/freertos/src/ux_os_utility_mutex_off.c" condition="usbx freertos condition"/>
+        <file category="source" name="ports/freertos/src/ux_os_utility_mutex_on.c" condition="usbx freertos condition"/>
+        <!-- case of rtos mode -->
+        <file category="include" name="ports/freertos/inc/" condition="usbx freertos condition"/>
+        <!-- USBX common header files -->
+        <file category="header" name="common/core/inc/ux_api.h"/>
+        <file category="header" name="common/core/inc/ux_utility.h"/>
+        <file category="header" name="common/core/inc/ux_system.h"/>
+      </files>
+    </component>
+    <!-- STM32 USBX Device Controllers Driver -->
+    <component Cclass="USB" Cgroup="USBX Controllers Driver" Csub="Device" Cversion="6.4.3" condition="Use Device Controllers">
+      <description>USB Device Controllers Driver</description>
+      <files>
+        <file category="source" name="interfaces/usbx_stm32_device_controllers/ux_dcd_stm32_callback.c"/>
+        <file category="source" name="interfaces/usbx_stm32_device_controllers/ux_dcd_stm32_endpoint_create.c"/>
+        <file category="source" name="interfaces/usbx_stm32_device_controllers/ux_dcd_stm32_endpoint_destroy.c"/>
+        <file category="source" name="interfaces/usbx_stm32_device_controllers/ux_dcd_stm32_endpoint_reset.c"/>
+        <file category="source" name="interfaces/usbx_stm32_device_controllers/ux_dcd_stm32_endpoint_stall.c"/>
+        <file category="source" name="interfaces/usbx_stm32_device_controllers/ux_dcd_stm32_endpoint_status.c"/>
+        <file category="source" name="interfaces/usbx_stm32_device_controllers/ux_dcd_stm32_frame_number_get.c"/>
+        <file category="source" name="interfaces/usbx_stm32_device_controllers/ux_dcd_stm32_function.c"/>
+        <file category="source" name="interfaces/usbx_stm32_device_controllers/ux_dcd_stm32_initialize.c"/>
+        <file category="source" name="interfaces/usbx_stm32_device_controllers/ux_dcd_stm32_initialize_complete.c"/>
+        <file category="source" name="interfaces/usbx_stm32_device_controllers/ux_dcd_stm32_register_callback.c"/>
+        <file category="source" name="interfaces/usbx_stm32_device_controllers/ux_dcd_stm32_transfer_abort.c"/>
+        <file category="source" name="interfaces/usbx_stm32_device_controllers/ux_dcd_stm32_uninitialize.c"/>
+        <!-- USBX Device Controllers rtos source files -->
+        <file category="source" name="interfaces/usbx_stm32_device_controllers/ux_dcd_stm32_transfer_request.c" condition="usbx freertos condition"/>
+        <!-- USBX Device Controllers standalone source files -->
+        <file category="source" name="interfaces/usbx_stm32_device_controllers/ux_dcd_stm32_transfer_run.c" condition="usbx standalone condition"/>
+        <!-- USBX Device Controllers header files -->
+        <file category="header" name="interfaces/usbx_stm32_device_controllers/ux_dcd_stm32.h"/>
+        <file category="header" name="common/core/inc/ux_dcd_sim_slave.h"/>
+      </files>
+    </component>
+    <!-- STM32 USBX Device Descriptors Driver -->
+    <component Cclass="USB" Cgroup="USBX Device Descriptors Driver" Csub="Device" Cversion="2.0.0" condition="Use Device Core">
+      <description>STM32 USBX Device Descriptors Driver</description>
+      <files>
+        <file category="source" name="interfaces/usbx_stm32_device_descriptors/ux_stm32_device_descriptors.c"/>
+        <!-- STM32 USBX Device Descriptors header files -->
+        <file category="header" name="interfaces/usbx_stm32_device_descriptors/ux_stm32_device_descriptors.h"/>
+      </files>
+    </component>
+    <!-- STM32 USBX Device Core -->
+    <component Cclass="USB" Cgroup="USBX Core" Csub="Device" Cversion="6.4.3" condition="Use Device Core">
+      <description>USB Core: Device</description>
+      <files>
+        <file category="source" name="common/core/src/ux_device_stack_alternate_setting_get.c"/>
+        <file category="source" name="common/core/src/ux_device_stack_alternate_setting_set.c"/>
+        <file category="source" name="common/core/src/ux_device_stack_class_register.c"/>
+        <file category="source" name="common/core/src/ux_device_stack_class_unregister.c"/>
+        <file category="source" name="common/core/src/ux_device_stack_clear_feature.c"/>
+        <file category="source" name="common/core/src/ux_device_stack_configuration_get.c"/>
+        <file category="source" name="common/core/src/ux_device_stack_configuration_set.c"/>
+        <file category="source" name="common/core/src/ux_device_stack_control_request_process.c"/>
+        <file category="source" name="common/core/src/ux_device_stack_descriptor_send.c"/>
+        <file category="source" name="common/core/src/ux_device_stack_disconnect.c"/>
+        <file category="source" name="common/core/src/ux_device_stack_endpoint_stall.c"/>
+        <file category="source" name="common/core/src/ux_device_stack_get_status.c"/>
+        <file category="source" name="common/core/src/ux_device_stack_host_wakeup.c"/>
+        <file category="source" name="common/core/src/ux_device_stack_initialize.c"/>
+        <file category="source" name="common/core/src/ux_device_stack_interface_delete.c"/>
+        <file category="source" name="common/core/src/ux_device_stack_interface_get.c"/>
+        <file category="source" name="common/core/src/ux_device_stack_interface_set.c"/>
+        <file category="source" name="common/core/src/ux_device_stack_interface_start.c"/>
+        <file category="source" name="common/core/src/ux_device_stack_microsoft_extension_register.c"/>
+        <file category="source" name="common/core/src/ux_device_stack_set_feature.c"/>
+        <file category="source" name="common/core/src/ux_device_stack_transfer_abort.c"/>
+        <file category="source" name="common/core/src/ux_device_stack_transfer_all_request_abort.c"/>
+        <file category="source" name="common/core/src/ux_device_stack_transfer_request.c"/>
+        <file category="source" name="common/core/src/ux_device_stack_uninitialize.c"/>
+        <!-- USBX Device Core Stack standalone files -->
+        <file category="source" name="common/core/src/ux_device_stack_tasks_run.c" condition="usbx standalone condition"/>
+        <file category="source" name="common/core/src/ux_device_stack_transfer_run.c" condition="usbx standalone condition"/>
+        <!-- USBX Device header files -->
+        <file category="header" name="common/core/inc/ux_device_stack.h"/>
+        <file category="header" name="common/core/inc/ux_device_class_dpump.h"/>
+      </files>
+    </component>
+    <!-- STM32 USBX Device Class HID -->
+    <component Cclass="USB" Cgroup="USBX Device Class" Csub="HID" Cversion="6.4.3" condition="Use HID Device Class">
+      <description>USB Device: Human Interface Device Class (HID)</description>
+      <files>
+        <file category="source" name="common/usbx_device_classes/src/ux_device_class_hid_activate.c"/>
+        <file category="source" name="common/usbx_device_classes/src/ux_device_class_hid_control_request.c"/>
+        <file category="source" name="common/usbx_device_classes/src/ux_device_class_hid_deactivate.c"/>
+        <file category="source" name="common/usbx_device_classes/src/ux_device_class_hid_descriptor_send.c"/>
+        <file category="source" name="common/usbx_device_classes/src/ux_device_class_hid_entry.c"/>
+        <file category="source" name="common/usbx_device_classes/src/ux_device_class_hid_event_get.c"/>
+        <file category="source" name="common/usbx_device_classes/src/ux_device_class_hid_event_set.c"/>
+        <file category="source" name="common/usbx_device_classes/src/ux_device_class_hid_initialize.c"/>
+        <file category="source" name="common/usbx_device_classes/src/ux_device_class_hid_receiver_event_free.c"/>
+        <file category="source" name="common/usbx_device_classes/src/ux_device_class_hid_receiver_event_get.c"/>
+        <file category="source" name="common/usbx_device_classes/src/ux_device_class_hid_receiver_initialize.c"/>
+        <file category="source" name="common/usbx_device_classes/src/ux_device_class_hid_receiver_uninitialize.c"/>
+        <file category="source" name="common/usbx_device_classes/src/ux_device_class_hid_report_get.c"/>
+        <file category="source" name="common/usbx_device_classes/src/ux_device_class_hid_report_set.c"/>
+        <file category="source" name="common/usbx_device_classes/src/ux_device_class_hid_uninitialize.c"/>
+        <!-- USBX Device Class HID rtos files -->
+        <file category="source" name="common/usbx_device_classes/src/ux_device_class_hid_interrupt_thread.c" condition="usbx freertos condition"/>
+        <file category="source" name="common/usbx_device_classes/src/ux_device_class_hid_receiver_thread.c" condition="usbx freertos condition"/>
+        <file category="source" name="common/usbx_device_classes/src/ux_device_class_hid_read.c" condition="usbx freertos condition"/>
+        <!-- USBX Device Class HID standalone files -->
+        <file category="source" name="common/usbx_device_classes/src/ux_device_class_hid_tasks_run.c" condition="usbx standalone condition"/>
+        <file category="source" name="common/usbx_device_classes/src/ux_device_class_hid_receiver_tasks_run.c" condition="usbx standalone condition"/>
+        <file category="source" name="common/usbx_device_classes/src/ux_device_class_hid_read_run.c" condition="usbx standalone condition"/>
+        <!-- USBX Device Class HID header files -->
+        <file category="header" name="common/usbx_device_classes/inc/ux_device_class_hid.h"/>
+      </files>
+    </component>
+    <!-- STM32 USBX Device Class CDC ACM -->
+    <component Cclass="USB" Cgroup="USBX Device Class" Csub="CDC ACM" Cversion="6.4.3" condition="Use CDC_ACM Device Class">
+      <description>USB Device: Communication Device Class - Abstract Control Model (CDC-ACM)</description>
+      <files>
+        <file category="source" name="common/usbx_device_classes/src/ux_device_class_cdc_acm_activate.c"/>
+        <file category="source" name="common/usbx_device_classes/src/ux_device_class_cdc_acm_control_request.c"/>
+        <file category="source" name="common/usbx_device_classes/src/ux_device_class_cdc_acm_deactivate.c"/>
+        <file category="source" name="common/usbx_device_classes/src/ux_device_class_cdc_acm_entry.c"/>
+        <file category="source" name="common/usbx_device_classes/src/ux_device_class_cdc_acm_initialize.c"/>
+        <file category="source" name="common/usbx_device_classes/src/ux_device_class_cdc_acm_ioctl.c"/>
+        <file category="source" name="common/usbx_device_classes/src/ux_device_class_cdc_acm_read.c"/>
+        <file category="source" name="common/usbx_device_classes/src/ux_device_class_cdc_acm_unitialize.c"/>
+        <file category="source" name="common/usbx_device_classes/src/ux_device_class_cdc_acm_write.c"/>
+        <file category="source" name="common/usbx_device_classes/src/ux_device_class_cdc_acm_write_with_callback.c"/>
+        <!-- USBX Device Class CDC ACM rtos files -->
+        <file category="source" name="common/usbx_device_classes/src/ux_device_class_cdc_acm_bulkin_thread.c" condition="usbx freertos condition"/>
+        <file category="source" name="common/usbx_device_classes/src/ux_device_class_cdc_acm_bulkout_thread.c" condition="usbx freertos condition"/>
+        <!-- USBX Device Class CDC ACM standalone files -->
+        <file category="source" name="common/usbx_device_classes/src/ux_device_class_cdc_acm_tasks_run.c" condition="usbx standalone condition"/>
+        <file category="source" name="common/usbx_device_classes/src/ux_device_class_cdc_acm_read_run.c" condition="usbx standalone condition"/>
+        <file category="source" name="common/usbx_device_classes/src/ux_device_class_cdc_acm_write_run.c" condition="usbx standalone condition"/>
+        <!-- USBX Device Class CDC ACM header files -->
+        <file category="header" name="common/usbx_device_classes/inc/ux_device_class_cdc_acm.h"/>
+      </files>
+    </component>
+    <!-- STM32 USBX Device Class MSC -->
+    <component Cclass="USB" Cgroup="USBX Device Class" Csub="MSC" Cversion="6.4.3" condition="Use MSC Device Class">
+      <description>USB Device: Mass Storage Class (MSC)</description>
+      <files>
+        <file category="source" name="common/usbx_device_classes/src/ux_device_class_storage_activate.c"/>
+        <file category="source" name="common/usbx_device_classes/src/ux_device_class_storage_control_request.c"/>
+        <file category="source" name="common/usbx_device_classes/src/ux_device_class_storage_csw_send.c"/>
+        <file category="source" name="common/usbx_device_classes/src/ux_device_class_storage_deactivate.c"/>
+        <file category="source" name="common/usbx_device_classes/src/ux_device_class_storage_entry.c"/>
+        <file category="source" name="common/usbx_device_classes/src/ux_device_class_storage_format.c"/>
+        <file category="source" name="common/usbx_device_classes/src/ux_device_class_storage_get_configuration.c"/>
+        <file category="source" name="common/usbx_device_classes/src/ux_device_class_storage_get_performance.c"/>
+        <file category="source" name="common/usbx_device_classes/src/ux_device_class_storage_get_status_notification.c"/>
+        <file category="source" name="common/usbx_device_classes/src/ux_device_class_storage_initialize.c"/>
+        <file category="source" name="common/usbx_device_classes/src/ux_device_class_storage_inquiry.c"/>
+        <file category="source" name="common/usbx_device_classes/src/ux_device_class_storage_mode_select.c"/>
+        <file category="source" name="common/usbx_device_classes/src/ux_device_class_storage_mode_sense.c"/>
+        <file category="source" name="common/usbx_device_classes/src/ux_device_class_storage_prevent_allow_media_removal.c"/>
+        <file category="source" name="common/usbx_device_classes/src/ux_device_class_storage_read.c"/>
+        <file category="source" name="common/usbx_device_classes/src/ux_device_class_storage_read_capacity.c"/>
+        <file category="source" name="common/usbx_device_classes/src/ux_device_class_storage_read_disk_information.c"/>
+        <file category="source" name="common/usbx_device_classes/src/ux_device_class_storage_read_dvd_structure.c"/>
+        <file category="source" name="common/usbx_device_classes/src/ux_device_class_storage_read_format_capacity.c"/>
+        <file category="source" name="common/usbx_device_classes/src/ux_device_class_storage_read_toc.c"/>
+        <file category="source" name="common/usbx_device_classes/src/ux_device_class_storage_report_key.c"/>
+        <file category="source" name="common/usbx_device_classes/src/ux_device_class_storage_request_sense.c"/>
+        <file category="source" name="common/usbx_device_classes/src/ux_device_class_storage_start_stop.c"/>
+        <file category="source" name="common/usbx_device_classes/src/ux_device_class_storage_synchronize_cache.c"/>
+        <file category="source" name="common/usbx_device_classes/src/ux_device_class_storage_test_ready.c"/>
+        <file category="source" name="common/usbx_device_classes/src/ux_device_class_storage_uninitialize.c"/>
+        <file category="source" name="common/usbx_device_classes/src/ux_device_class_storage_verify.c"/>
+        <file category="source" name="common/usbx_device_classes/src/ux_device_class_storage_write.c"/>
+        <!-- USBX Device Class MSC rtos files -->
+        <file category="source" name="common/usbx_device_classes/src/ux_device_class_storage_thread.c" condition="usbx freertos condition"/>
+        <!-- USBX Device Class MSC standalone files -->
+        <file category="source" name="common/usbx_device_classes/src/ux_device_class_storage_tasks_run.c" condition="usbx standalone condition"/>
+        <!-- USBX Device Class MSC header files -->
+        <file category="header" name="common/usbx_device_classes/inc/ux_device_class_storage.h"/>
+      </files>
+    </component>
+    <!-- STM32 USBX Device Class MTP -->
+    <component Cclass="USB" Cgroup="USBX Device Class" Csub="PIMA_MTP" Cversion="6.4.3" condition="Use PIMA_MTP Device Class">
+      <description>USB Device: Photographic and Imaging Manufacturers Association - Media Transfer Protocol (PIMA-MTP)</description>
+      <files>
+        <file category="source" name="common/usbx_device_classes/src/ux_device_class_pima_activate.c"/>
+        <file category="source" name="common/usbx_device_classes/src/ux_device_class_pima_control_request.c"/>
+        <file category="source" name="common/usbx_device_classes/src/ux_device_class_pima_data.c"/>
+        <file category="source" name="common/usbx_device_classes/src/ux_device_class_pima_deactivate.c"/>
+        <file category="source" name="common/usbx_device_classes/src/ux_device_class_pima_device_info_send.c"/>
+        <file category="source" name="common/usbx_device_classes/src/ux_device_class_pima_device_prop_desc_get.c"/>
+        <file category="source" name="common/usbx_device_classes/src/ux_device_class_pima_device_prop_value_get.c"/>
+        <file category="source" name="common/usbx_device_classes/src/ux_device_class_pima_device_prop_value_set.c"/>
+        <file category="source" name="common/usbx_device_classes/src/ux_device_class_pima_device_reset.c"/>
+        <file category="source" name="common/usbx_device_classes/src/ux_device_class_pima_entry.c"/>
+        <file category="source" name="common/usbx_device_classes/src/ux_device_class_pima_event_get.c"/>
+        <file category="source" name="common/usbx_device_classes/src/ux_device_class_pima_event_set.c"/>
+        <file category="source" name="common/usbx_device_classes/src/ux_device_class_pima_initialize.c"/>
+        <file category="source" name="common/usbx_device_classes/src/ux_device_class_pima_uninitialize.c"/>
+        <file category="source" name="common/usbx_device_classes/src/ux_device_class_pima_interrupt_thread.c"/>
+        <file category="source" name="common/usbx_device_classes/src/ux_device_class_pima_object_add.c"/>
+        <file category="source" name="common/usbx_device_classes/src/ux_device_class_pima_object_data_get.c"/>
+        <file category="source" name="common/usbx_device_classes/src/ux_device_class_pima_object_data_send.c"/>
+        <file category="source" name="common/usbx_device_classes/src/ux_device_class_pima_object_delete.c"/>
+        <file category="source" name="common/usbx_device_classes/src/ux_device_class_pima_object_handles_send.c"/>
+        <file category="source" name="common/usbx_device_classes/src/ux_device_class_pima_object_info_get.c"/>
+        <file category="source" name="common/usbx_device_classes/src/ux_device_class_pima_object_info_send.c"/>
+        <file category="source" name="common/usbx_device_classes/src/ux_device_class_pima_object_prop_desc_get.c"/>
+        <file category="source" name="common/usbx_device_classes/src/ux_device_class_pima_object_prop_value_get.c"/>
+        <file category="source" name="common/usbx_device_classes/src/ux_device_class_pima_object_prop_value_set.c"/>
+        <file category="source" name="common/usbx_device_classes/src/ux_device_class_pima_object_props_supported_get.c"/>
+        <file category="source" name="common/usbx_device_classes/src/ux_device_class_pima_object_references_get.c"/>
+        <file category="source" name="common/usbx_device_classes/src/ux_device_class_pima_object_references_set.c"/>
+        <file category="source" name="common/usbx_device_classes/src/ux_device_class_pima_objects_number_send.c"/>
+        <file category="source" name="common/usbx_device_classes/src/ux_device_class_pima_partial_object_data_get.c"/>
+        <file category="source" name="common/usbx_device_classes/src/ux_device_class_pima_response_send.c"/>
+        <file category="source" name="common/usbx_device_classes/src/ux_device_class_pima_storage_format.c"/>
+        <file category="source" name="common/usbx_device_classes/src/ux_device_class_pima_storage_id_send.c"/>
+        <file category="source" name="common/usbx_device_classes/src/ux_device_class_pima_storage_info_get.c"/>
+        <!-- USBX Device Class MTP rtos files -->
+        <file category="source" name="common/usbx_device_classes/src/ux_device_class_pima_thread.c" condition="usbx freertos condition"/>
+        <!-- USBX Device Class MTP header files -->
+        <file category="header" name="common/usbx_device_classes/inc/ux_device_class_pima.h"/>
+      </files>
+    </component>
+    <!-- STM32 USBX Device Class AUDIO -->
+    <component Cclass="USB" Cgroup="USBX Device Class" Csub="AUDIO" Cversion="6.4.3" condition="Use Audio Device Class">
+      <description>USB Device: AUDIO Class</description>
+      <files>
+        <file category="source" name="common/usbx_device_classes/src/ux_device_class_audio_write_task_function.c"/>
+        <file category="source" name="common/usbx_device_classes/src/ux_device_class_audio_write_frame_get.c"/>
+        <file category="source" name="common/usbx_device_classes/src/ux_device_class_audio_write_frame_commit.c"/>
+        <file category="source" name="common/usbx_device_classes/src/ux_device_class_audio_unitialize.c"/>
+        <file category="source" name="common/usbx_device_classes/src/ux_device_class_audio_transmission_start.c"/>
+        <file category="source" name="common/usbx_device_classes/src/ux_device_class_audio_stream_get.c"/>
+        <file category="source" name="common/usbx_device_classes/src/ux_device_class_audio_speed_get.c"/>
+        <file category="source" name="common/usbx_device_classes/src/ux_device_class_audio_sample_read8.c"/>
+        <file category="source" name="common/usbx_device_classes/src/ux_device_class_audio_sample_read32.c"/>
+        <file category="source" name="common/usbx_device_classes/src/ux_device_class_audio_sample_read24.c"/>
+        <file category="source" name="common/usbx_device_classes/src/ux_device_class_audio_sample_read16.c"/>
+        <file category="source" name="common/usbx_device_classes/src/ux_device_class_audio_reception_start.c"/>
+        <file category="source" name="common/usbx_device_classes/src/ux_device_class_audio_read_task_function.c"/>
+        <file category="source" name="common/usbx_device_classes/src/ux_device_class_audio_read_frame_get.c"/>
+        <file category="source" name="common/usbx_device_classes/src/ux_device_class_audio_read_frame_free.c"/>
+        <file category="source" name="common/usbx_device_classes/src/ux_device_class_audio_ioctl.c"/>
+        <file category="source" name="common/usbx_device_classes/src/ux_device_class_audio_interrupt_task_function.c"/>
+        <file category="source" name="common/usbx_device_classes/src/ux_device_class_audio_interrupt_send.c"/>
+        <file category="source" name="common/usbx_device_classes/src/ux_device_class_audio_initialize.c"/>
+        <file category="source" name="common/usbx_device_classes/src/ux_device_class_audio_frame_write.c"/>
+        <file category="source" name="common/usbx_device_classes/src/ux_device_class_audio_feedback_task_function.c"/>
+        <file category="source" name="common/usbx_device_classes/src/ux_device_class_audio_feedback_set.c"/>
+        <file category="source" name="common/usbx_device_classes/src/ux_device_class_audio_feedback_get.c"/>
+        <file category="source" name="common/usbx_device_classes/src/ux_device_class_audio_entry.c"/>
+        <file category="source" name="common/usbx_device_classes/src/ux_device_class_audio_deactivate.c"/>
+        <file category="source" name="common/usbx_device_classes/src/ux_device_class_audio_control_request.c"/>
+        <file category="source" name="common/usbx_device_classes/src/ux_device_class_audio_change.c"/>
+        <file category="source" name="common/usbx_device_classes/src/ux_device_class_audio_activate.c"/>
+        <file category="source" name="common/usbx_device_classes/src/ux_device_class_audio20_control_process.c"/>
+        <file category="source" name="common/usbx_device_classes/src/ux_device_class_audio10_control_process.c"/>
+        <!-- USBX Device Class AUDIO rtos files -->
+        <file category="source" name="common/usbx_device_classes/src/ux_device_class_audio_read_thread_entry.c" condition="usbx freertos condition"/>
+        <file category="source" name="common/usbx_device_classes/src/ux_device_class_audio_write_thread_entry.c" condition="usbx freertos condition"/>
+        <file category="source" name="common/usbx_device_classes/src/ux_device_class_audio_interrupt_thread_entry.c" condition="usbx freertos condition"/>
+        <file category="source" name="common/usbx_device_classes/src/ux_device_class_audio_feedback_thread_entry.c" condition="usbx freertos condition"/>
+        <!-- USBX Device Class AUDIO standalone files -->
+        <file category="source" name="common/usbx_device_classes/src/ux_device_class_audio_tasks_run.c" condition="usbx standalone condition"/>
+        <!-- USBX Device Class AUDIO header files -->
+        <file category="header" name="common/usbx_device_classes/inc/ux_device_class_audio.h"/>
+        <file category="header" name="common/usbx_device_classes/inc/ux_device_class_audio10.h"/>
+        <file category="header" name="common/usbx_device_classes/inc/ux_device_class_audio20.h"/>
+        <file category="header" name="common/core/inc/ux_class_audio10.h"/>
+        <file category="header" name="common/core/inc/ux_class_audio20.h"/>
+      </files>
+    </component>
+    <!-- STM32 USBX Device Class VIDEO -->
+    <component Cclass="USB" Cgroup="USBX Device Class" Csub="VIDEO" Cversion="6.4.3" condition="Use Video Device Class">
+      <description>USB Device: VIDEO Class</description>
+      <files>
+        <file category="source" name="common/usbx_device_classes/src/ux_device_class_video_activate.c"/>
+        <file category="source" name="common/usbx_device_classes/src/ux_device_class_video_change.c"/>
+        <file category="source" name="common/usbx_device_classes/src/ux_device_class_video_control_request.c"/>
+        <file category="source" name="common/usbx_device_classes/src/ux_device_class_video_deactivate.c"/>
+        <file category="source" name="common/usbx_device_classes/src/ux_device_class_video_entry.c"/>
+        <file category="source" name="common/usbx_device_classes/src/ux_device_class_video_initialize.c"/>
+        <file category="source" name="common/usbx_device_classes/src/ux_device_class_video_ioctl.c"/>
+        <file category="source" name="common/usbx_device_classes/src/ux_device_class_video_max_payload_get.c"/>
+        <file category="source" name="common/usbx_device_classes/src/ux_device_class_video_read_payload_free.c"/>
+        <file category="source" name="common/usbx_device_classes/src/ux_device_class_video_read_payload_get.c"/>
+        <file category="source" name="common/usbx_device_classes/src/ux_device_class_video_read_task_function.c"/>
+        <file category="source" name="common/usbx_device_classes/src/ux_device_class_video_reception_start.c"/>
+        <file category="source" name="common/usbx_device_classes/src/ux_device_class_video_stream_get.c"/>
+        <file category="source" name="common/usbx_device_classes/src/ux_device_class_video_transmission_start.c"/>
+        <file category="source" name="common/usbx_device_classes/src/ux_device_class_video_uninitialize.c"/>
+        <file category="source" name="common/usbx_device_classes/src/ux_device_class_video_write_payload_commit.c"/>
+        <file category="source" name="common/usbx_device_classes/src/ux_device_class_video_write_payload_get.c"/>
+        <file category="source" name="common/usbx_device_classes/src/ux_device_class_video_write_task_function.c"/>
+        <!-- USBX Device Class VIDEO rtos files -->
+        <file category="source" name="common/usbx_device_classes/src/ux_device_class_video_read_thread_entry.c" condition="usbx freertos condition"/>
+        <file category="source" name="common/usbx_device_classes/src/ux_device_class_video_write_thread_entry.c" condition="usbx freertos condition"/>
+        <!-- USBX Device Class VIDEO standalone files -->
+        <file category="source" name="common/usbx_device_classes/src/ux_device_class_video_tasks_run.c" condition="usbx standalone condition"/>
+        <!-- USBX Device Class VIDEO header files -->
+        <file category="header" name="common/usbx_device_classes/inc/ux_device_class_video.h"/>
+      </files>
+    </component>
+    <!-- STM32 USBX Device Class PRINTER -->
+    <component Cclass="USB" Cgroup="USBX Device Class" Csub="PRINTER" Cversion="6.4.3" condition="Use Printer Device Class">
+      <description>USB Device: PRINTER Class</description>
+      <files>
+        <file category="source" name="common/usbx_device_classes/src/ux_device_class_printer_initialize.c"/>
+        <file category="source" name="common/usbx_device_classes/src/ux_device_class_printer_activate.c"/>
+        <file category="source" name="common/usbx_device_classes/src/ux_device_class_printer_control_request.c"/>
+        <file category="source" name="common/usbx_device_classes/src/ux_device_class_printer_uninitialize.c"/>
+        <file category="source" name="common/usbx_device_classes/src/ux_device_class_printer_soft_reset.c"/>
+        <file category="source" name="common/usbx_device_classes/src/ux_device_class_printer_ioctl.c"/>
+        <file category="source" name="common/usbx_device_classes/src/ux_device_class_printer_entry.c"/>
+        <file category="source" name="common/usbx_device_classes/src/ux_device_class_printer_deactivate.c"/>
+        <!-- USBX Device Class PRINTER rtos files -->
+        <file category="source" name="common/usbx_device_classes/src/ux_device_class_printer_read.c" condition="usbx freertos condition"/>
+        <file category="source" name="common/usbx_device_classes/src/ux_device_class_printer_write.c" condition="usbx freertos condition"/>
+        <!-- USBX Device Class PRINTER standalone files -->
+        <file category="source" name="common/usbx_device_classes/src/ux_device_class_printer_read_run.c" condition="usbx standalone condition"/>
+        <file category="source" name="common/usbx_device_classes/src/ux_device_class_printer_write_run.c" condition="usbx standalone condition"/>
+        <!-- USBX Device Class PRINTER header files -->
+        <file category="header" name="common/usbx_device_classes/inc/ux_device_class_printer.h"/>
+      </files>
+    </component>
+    <!-- STM32 USBX Device Class CCID -->
+    <component Cclass="USB" Cgroup="USBX Device Class" Csub="CCID" Cversion="6.4.3" condition="Use CCID Device Class">
+      <description>USB Device: CCID Class</description>
+      <files>
+        <file category="source" name="common/usbx_device_classes/src/ux_device_class_ccid_activate.c"/>
+        <file category="source" name="common/usbx_device_classes/src/ux_device_class_ccid_auto_seq_done.c"/>
+        <file category="source" name="common/usbx_device_classes/src/ux_device_class_ccid_control_abort.c"/>
+        <file category="source" name="common/usbx_device_classes/src/ux_device_class_ccid_auto_seq_start.c"/>
+        <file category="source" name="common/usbx_device_classes/src/ux_device_class_ccid_control_request.c"/>
+        <file category="source" name="common/usbx_device_classes/src/ux_device_class_ccid_deactivate.c"/>
+        <file category="source" name="common/usbx_device_classes/src/ux_device_class_ccid_hardware_error.c"/>
+        <file category="source" name="common/usbx_device_classes/src/ux_device_class_ccid_entry.c"/>
+        <file category="source" name="common/usbx_device_classes/src/ux_device_class_ccid_icc_insert.c"/>
+        <file category="source" name="common/usbx_device_classes/src/ux_device_class_ccid_initialize.c"/>
+        <file category="source" name="common/usbx_device_classes/src/ux_device_class_ccid_icc_remove.c"/>
+        <file category="source" name="common/usbx_device_classes/src/ux_device_class_ccid_response.c"/>
+        <file category="source" name="common/usbx_device_classes/src/ux_device_class_ccid_time_extension.c"/>
+        <file category="source" name="common/usbx_device_classes/src/ux_device_class_ccid_uninitialize.c"/>
+        <!-- USBX Device Class CCID rtos files -->
+        <file category="source" name="common/usbx_device_classes/src/ux_device_class_ccid_notify_thread_entry.c" condition="usbx freertos condition"/>
+        <file category="source" name="common/usbx_device_classes/src/ux_device_class_ccid_runner_thread_entry.c" condition="usbx freertos condition"/>
+        <file category="source" name="common/usbx_device_classes/src/ux_device_class_ccid_thread_entry.c" condition="usbx freertos condition"/>
+        <!-- USBX Device Class CCID standalone files -->
+        <file category="source" name="common/usbx_device_classes/src/ux_device_class_ccid_tasks_run.c" condition="usbx standalone condition"/>
+        <file category="source" name="common/usbx_device_classes/src/ux_device_class_ccid_notify_task_run.c" condition="usbx standalone condition"/>
+        <file category="source" name="common/usbx_device_classes/src/ux_device_class_ccid_runner_task_run.c" condition="usbx standalone condition"/>
+        <!-- USBX Device Class CCID header files -->
+        <file category="header" name="common/usbx_device_classes/inc/ux_device_class_ccid.h"/>
+      </files>
+    </component>
+    <!-- STM32 USBX Device Class DFU -->
+    <component Cclass="USB" Cgroup="USBX Device Class" Csub="DFU" Cversion="6.4.3" condition="Use DFU Device Class">
+      <description>USB Device: Device Firmware Update Class (DFU)</description>
+      <files>
+        <file category="source" name="common/usbx_device_classes/src/ux_device_class_dfu_activate.c"/>
+        <file category="source" name="common/usbx_device_classes/src/ux_device_class_dfu_control_request.c"/>
+        <file category="source" name="common/usbx_device_classes/src/ux_device_class_dfu_deactivate.c"/>
+        <file category="source" name="common/usbx_device_classes/src/ux_device_class_dfu_entry.c"/>
+        <file category="source" name="common/usbx_device_classes/src/ux_device_class_dfu_initialize.c"/>
+        <file category="source" name="common/usbx_device_classes/src/ux_device_class_dfu_state_get.c"/>
+        <file category="source" name="common/usbx_device_classes/src/ux_device_class_dfu_state_sync.c"/>
+        <file category="source" name="common/usbx_device_classes/src/ux_device_class_dfu_uninitialize.c"/>
+        <!-- USBX Device Class DFU rtos files -->
+        <file category="source" name="common/usbx_device_classes/src/ux_device_class_dfu_thread.c" condition="usbx freertos condition"/>
+        <!-- USBX Device Class DFU standalone files -->
+        <file category="source" name="common/usbx_device_classes/src/ux_device_class_dfu_tasks_run.c" condition="usbx standalone condition"/>
+        <!-- USBX Device Class DFU header files -->
+        <file category="header" name="common/usbx_device_classes/inc/ux_device_class_dfu.h"/>
+      </files>
+    </component>
+    <!-- STM32 USBX Host Core -->
+    <component Cclass="USB" Cgroup="USBX Core" Csub="Host" Cversion="6.4.3" condition="Use Host Core">
+      <description>USB Core: Host</description>
+      <files>
+        <file category="source" name="common/core/src/ux_host_stack_bandwidth_check.c"/>
+        <file category="source" name="common/core/src/ux_host_stack_bandwidth_claim.c"/>
+        <file category="source" name="common/core/src/ux_host_stack_bandwidth_release.c"/>
+        <file category="source" name="common/core/src/ux_host_stack_class_call.c"/>
+        <file category="source" name="common/core/src/ux_host_stack_class_device_scan.c"/>
+        <file category="source" name="common/core/src/ux_host_stack_class_get.c"/>
+        <file category="source" name="common/core/src/ux_host_stack_class_instance_create.c"/>
+        <file category="source" name="common/core/src/ux_host_stack_class_instance_destroy.c"/>
+        <file category="source" name="common/core/src/ux_host_stack_class_instance_get.c"/>
+        <file category="source" name="common/core/src/ux_host_stack_class_instance_verify.c"/>
+        <file category="source" name="common/core/src/ux_host_stack_class_interface_scan.c"/>
+        <file category="source" name="common/core/src/ux_host_stack_class_register.c"/>
+        <file category="source" name="common/core/src/ux_host_stack_class_unregister.c"/>
+        <file category="source" name="common/core/src/ux_host_stack_configuration_descriptor_parse.c"/>
+        <file category="source" name="common/core/src/ux_host_stack_configuration_enumerate.c"/>
+        <file category="source" name="common/core/src/ux_host_stack_configuration_instance_create.c"/>
+        <file category="source" name="common/core/src/ux_host_stack_configuration_instance_delete.c"/>
+        <file category="source" name="common/core/src/ux_host_stack_configuration_interface_get.c"/>
+        <file category="source" name="common/core/src/ux_host_stack_configuration_interface_scan.c"/>
+        <file category="source" name="common/core/src/ux_host_stack_configuration_set.c"/>
+        <file category="source" name="common/core/src/ux_host_stack_delay_ms.c"/>
+        <file category="source" name="common/core/src/ux_host_stack_device_address_set.c"/>
+        <file category="source" name="common/core/src/ux_host_stack_device_configuration_activate.c"/>
+        <file category="source" name="common/core/src/ux_host_stack_device_configuration_deactivate.c"/>
+        <file category="source" name="common/core/src/ux_host_stack_device_configuration_get.c"/>
+        <file category="source" name="common/core/src/ux_host_stack_device_configuration_reset.c"/>
+        <file category="source" name="common/core/src/ux_host_stack_device_configuration_select.c"/>
+        <file category="source" name="common/core/src/ux_host_stack_device_descriptor_read.c"/>
+        <file category="source" name="common/core/src/ux_host_stack_device_get.c"/>
+        <file category="source" name="common/core/src/ux_host_stack_device_remove.c"/>
+        <file category="source" name="common/core/src/ux_host_stack_device_resources_free.c"/>
+        <file category="source" name="common/core/src/ux_host_stack_device_string_get.c"/>
+        <file category="source" name="common/core/src/ux_host_stack_endpoint_instance_create.c"/>
+        <file category="source" name="common/core/src/ux_host_stack_endpoint_instance_delete.c"/>
+        <file category="source" name="common/core/src/ux_host_stack_endpoint_reset.c"/>
+        <file category="source" name="common/core/src/ux_host_stack_endpoint_transfer_abort.c"/>
+        <file category="source" name="common/core/src/ux_host_stack_enum_thread_entry.c"/>
+        <file category="source" name="common/core/src/ux_host_stack_hcd_register.c"/>
+        <file category="source" name="common/core/src/ux_host_stack_hcd_thread_entry.c"/>
+        <file category="source" name="common/core/src/ux_host_stack_hcd_transfer_request.c"/>
+        <file category="source" name="common/core/src/ux_host_stack_hcd_unregister.c"/>
+        <file category="source" name="common/core/src/ux_host_stack_hnp_polling_thread_entry.c"/>
+        <file category="source" name="common/core/src/ux_host_stack_initialize.c"/>
+        <file category="source" name="common/core/src/ux_host_stack_interface_endpoint_get.c"/>
+        <file category="source" name="common/core/src/ux_host_stack_interface_instance_create.c"/>
+        <file category="source" name="common/core/src/ux_host_stack_interface_instance_delete.c"/>
+        <file category="source" name="common/core/src/ux_host_stack_interface_set.c"/>
+        <file category="source" name="common/core/src/ux_host_stack_interface_setting_select.c"/>
+        <file category="source" name="common/core/src/ux_host_stack_interfaces_scan.c"/>
+        <file category="source" name="common/core/src/ux_host_stack_new_configuration_create.c"/>
+        <file category="source" name="common/core/src/ux_host_stack_new_device_create.c"/>
+        <file category="source" name="common/core/src/ux_host_stack_new_device_get.c"/>
+        <file category="source" name="common/core/src/ux_host_stack_new_endpoint_create.c"/>
+        <file category="source" name="common/core/src/ux_host_stack_new_interface_create.c"/>
+        <file category="source" name="common/core/src/ux_host_stack_rh_change_process.c"/>
+        <file category="source" name="common/core/src/ux_host_stack_rh_device_extraction.c"/>
+        <file category="source" name="common/core/src/ux_host_stack_rh_device_insertion.c"/>
+        <file category="source" name="common/core/src/ux_host_stack_role_swap.c"/>
+        <file category="source" name="common/core/src/ux_host_stack_transfer_request.c"/>
+        <file category="source" name="common/core/src/ux_host_stack_transfer_request_abort.c"/>
+        <file category="source" name="common/core/src/ux_host_stack_uninitialize.c"/>
+        <!-- USBX Host Core Stack standalone files -->
+        <file category="source" name="common/core/src/ux_host_stack_tasks_run.c" condition="usbx standalone condition"/>
+        <file category="source" name="common/core/src/ux_host_stack_transfer_run.c" condition="usbx standalone condition"/>
+        <!-- USBX Host Core Stack header files -->
+        <file category="header" name="common/core/inc/ux_host_stack.h"/>
+        <file category="header" name="common/core/inc/ux_host_class_dpump.h"/>
+      </files>
+    </component>
+    <!-- STM32 USBX Host Controllers Driver -->
+    <component Cclass="USB" Cgroup="USBX Controllers Driver" Csub="Host" Cversion="6.4.3" condition="Use Host Controllers">
+      <description>USBX Host Controllers Driver</description>
+      <files>
+        <file category="source" name="interfaces/usbx_stm32_host_controllers/ux_hcd_stm32_callback.c"/>
+        <file category="source" name="interfaces/usbx_stm32_host_controllers/ux_hcd_stm32_controller_disable.c"/>
+        <file category="source" name="interfaces/usbx_stm32_host_controllers/ux_hcd_stm32_ed_obtain.c"/>
+        <file category="source" name="interfaces/usbx_stm32_host_controllers/ux_hcd_stm32_endpoint_create.c"/>
+        <file category="source" name="interfaces/usbx_stm32_host_controllers/ux_hcd_stm32_endpoint_destroy.c"/>
+        <file category="source" name="interfaces/usbx_stm32_host_controllers/ux_hcd_stm32_endpoint_reset.c"/>
+        <file category="source" name="interfaces/usbx_stm32_host_controllers/ux_hcd_stm32_entry.c"/>
+        <file category="source" name="interfaces/usbx_stm32_host_controllers/ux_hcd_stm32_frame_number_get.c"/>
+        <file category="source" name="interfaces/usbx_stm32_host_controllers/ux_hcd_stm32_initialize.c"/>
+        <file category="source" name="interfaces/usbx_stm32_host_controllers/ux_hcd_stm32_least_traffic_list_get.c"/>
+        <file category="source" name="interfaces/usbx_stm32_host_controllers/ux_hcd_stm32_periodic_schedule.c"/>
+        <file category="source" name="interfaces/usbx_stm32_host_controllers/ux_hcd_stm32_port_disable.c"/>
+        <file category="source" name="interfaces/usbx_stm32_host_controllers/ux_hcd_stm32_port_enable.c"/>
+        <file category="source" name="interfaces/usbx_stm32_host_controllers/ux_hcd_stm32_port_reset.c"/>
+        <file category="source" name="interfaces/usbx_stm32_host_controllers/ux_hcd_stm32_port_resume.c"/>
+        <file category="source" name="interfaces/usbx_stm32_host_controllers/ux_hcd_stm32_port_status_get.c"/>
+        <file category="source" name="interfaces/usbx_stm32_host_controllers/ux_hcd_stm32_port_suspend.c"/>
+        <file category="source" name="interfaces/usbx_stm32_host_controllers/ux_hcd_stm32_power_down_port.c"/>
+        <file category="source" name="interfaces/usbx_stm32_host_controllers/ux_hcd_stm32_power_on_port.c"/>
+        <file category="source" name="interfaces/usbx_stm32_host_controllers/ux_hcd_stm32_register_callback.c"/>
+        <file category="source" name="interfaces/usbx_stm32_host_controllers/ux_hcd_stm32_request_bulk_transfer.c"/>
+        <file category="source" name="interfaces/usbx_stm32_host_controllers/ux_hcd_stm32_request_control_transfer.c"/>
+        <file category="source" name="interfaces/usbx_stm32_host_controllers/ux_hcd_stm32_request_transfer.c"/>
+        <file category="source" name="interfaces/usbx_stm32_host_controllers/ux_hcd_stm32_request_trans_finish.c"/>
+        <file category="source" name="interfaces/usbx_stm32_host_controllers/ux_hcd_stm32_request_trans_prepare.c"/>
+        <file category="source" name="interfaces/usbx_stm32_host_controllers/ux_hcd_stm32_transfer_abort.c"/>
+        <file category="source" name="interfaces/usbx_stm32_host_controllers/ux_hcd_stm32_request_periodic_transfer.c"/>
+        <!-- USBX Host Controllers header files -->
+        <file category="header" name="interfaces/usbx_stm32_host_controllers/ux_hcd_stm32.h"/>
+        <file category="header" name="common/core/inc/ux_hcd_sim_host.h"/>
+      </files>
+    </component>
+    <!-- STM32 USBX Host Class HID -->
+    <component Cclass="USB" Cgroup="USBX Host Class" Csub="HID" Cversion="6.4.3" condition="Use HID Host Class">
+      <description>USB Host: Human Interface Host Class (HID)</description>
+      <files>
+        <file category="source" name="common/usbx_host_classes/src/ux_host_class_hid_activate.c"/>
+        <file category="source" name="common/usbx_host_classes/src/ux_host_class_hid_client_register.c"/>
+        <file category="source" name="common/usbx_host_classes/src/ux_host_class_hid_client_search.c"/>
+        <file category="source" name="common/usbx_host_classes/src/ux_host_class_hid_configure.c"/>
+        <file category="source" name="common/usbx_host_classes/src/ux_host_class_hid_deactivate.c"/>
+        <file category="source" name="common/usbx_host_classes/src/ux_host_class_hid_descriptor_parse.c"/>
+        <file category="source" name="common/usbx_host_classes/src/ux_host_class_hid_entry.c"/>
+        <file category="source" name="common/usbx_host_classes/src/ux_host_class_hid_field_decompress.c"/>
+        <file category="source" name="common/usbx_host_classes/src/ux_host_class_hid_global_item_parse.c"/>
+        <file category="source" name="common/usbx_host_classes/src/ux_host_class_hid_idle_get.c"/>
+        <file category="source" name="common/usbx_host_classes/src/ux_host_class_hid_idle_set.c"/>
+        <file category="source" name="common/usbx_host_classes/src/ux_host_class_hid_instance_clean.c"/>
+        <file category="source" name="common/usbx_host_classes/src/ux_host_class_hid_interrupt_endpoint_search.c"/>
+        <file category="source" name="common/usbx_host_classes/src/ux_host_class_hid_item_data_get.c"/>
+        <file category="source" name="common/usbx_host_classes/src/ux_host_class_hid_local_item_parse.c"/>
+        <file category="source" name="common/usbx_host_classes/src/ux_host_class_hid_main_item_parse.c"/>
+        <file category="source" name="common/usbx_host_classes/src/ux_host_class_hid_periodic_report_start.c"/>
+        <file category="source" name="common/usbx_host_classes/src/ux_host_class_hid_periodic_report_stop.c"/>
+        <file category="source" name="common/usbx_host_classes/src/ux_host_class_hid_report_add.c"/>
+        <file category="source" name="common/usbx_host_classes/src/ux_host_class_hid_report_callback_register.c"/>
+        <file category="source" name="common/usbx_host_classes/src/ux_host_class_hid_report_compress.c"/>
+        <file category="source" name="common/usbx_host_classes/src/ux_host_class_hid_report_decompress.c"/>
+        <file category="source" name="common/usbx_host_classes/src/ux_host_class_hid_report_descriptor_get.c"/>
+        <file category="source" name="common/usbx_host_classes/src/ux_host_class_hid_report_get.c"/>
+        <file category="source" name="common/usbx_host_classes/src/ux_host_class_hid_report_id_get.c"/>
+        <file category="source" name="common/usbx_host_classes/src/ux_host_class_hid_report_item_analyse.c"/>
+        <file category="source" name="common/usbx_host_classes/src/ux_host_class_hid_report_set.c"/>
+        <file category="source" name="common/usbx_host_classes/src/ux_host_class_hid_resources_free.c"/>
+        <file category="source" name="common/usbx_host_classes/src/ux_host_class_hid_transfer_request_completed.c"/>
+        <!-- USBX Host Class HID standalone files -->
+        <file category="source" name="common/usbx_host_classes/src/ux_host_class_hid_report_set_run.c" condition="usbx standalone condition"/>
+        <file category="source" name="common/usbx_host_classes/src/ux_host_class_hid_tasks_run.c" condition="usbx standalone condition"/>
+        <file category="source" name="common/usbx_host_classes/src/ux_host_class_hid_idle_set_run.c" condition="usbx standalone condition"/>
+        <!-- USBX Host Class HID header files -->
+        <file category="header" name="common/usbx_host_classes/inc/ux_host_class_hid.h"/>
+      </files>
+    </component>
+    <!-- STM32 USBX Host Class HID Keyboard -->
+    <component Cclass="USB" Cgroup="USBX Host Class" Csub="HID Keyboard" Cversion="6.4.3" condition="Use HID Keyboard Host Class">
+      <description>USB Host: HID Keyboard</description>
+      <files>
+        <file category="source" name="common/usbx_host_classes/src/ux_host_class_hid_keyboard_activate.c"/>
+        <file category="source" name="common/usbx_host_classes/src/ux_host_class_hid_keyboard_callback.c"/>
+        <file category="source" name="common/usbx_host_classes/src/ux_host_class_hid_keyboard_deactivate.c"/>
+        <file category="source" name="common/usbx_host_classes/src/ux_host_class_hid_keyboard_entry.c"/>
+        <file category="source" name="common/usbx_host_classes/src/ux_host_class_hid_keyboard_ioctl.c"/>
+        <file category="source" name="common/usbx_host_classes/src/ux_host_class_hid_keyboard_key_get.c"/>
+        <!-- USBX Host Class HID Keyboard RTOS files -->
+        <file category="source" name="common/usbx_host_classes/src/ux_host_class_hid_keyboard_thread.c" condition="usbx freertos condition"/>
+        <!-- USBX Host Class HID Keyboard standalone files -->
+        <file category="source" name="common/usbx_host_classes/src/ux_host_class_hid_keyboard_tasks_run.c" condition="usbx standalone condition"/>
+        <!-- USBX Host Class HID Keyboard header files -->
+        <file category="header" name="common/usbx_host_classes/inc/ux_host_class_hid_keyboard.h"/>
+      </files>
+    </component>
+    <!-- STM32 USBX Host Class HID Mouse -->
+    <component Cclass="USB" Cgroup="USBX Host Class" Csub="HID Mouse" Cversion="6.4.3" condition="Use HID Mouse Host Class">
+      <description>USB Host: HID Mouse</description>
+      <files>
+        <file category="source" name="common/usbx_host_classes/src/ux_host_class_hid_mouse_activate.c"/>
+        <file category="source" name="common/usbx_host_classes/src/ux_host_class_hid_mouse_buttons_get.c"/>
+        <file category="source" name="common/usbx_host_classes/src/ux_host_class_hid_mouse_callback.c"/>
+        <file category="source" name="common/usbx_host_classes/src/ux_host_class_hid_mouse_deactivate.c"/>
+        <file category="source" name="common/usbx_host_classes/src/ux_host_class_hid_mouse_entry.c"/>
+        <file category="source" name="common/usbx_host_classes/src/ux_host_class_hid_mouse_position_get.c"/>
+        <file category="source" name="common/usbx_host_classes/src/ux_host_class_hid_mouse_wheel_get.c"/>
+        <!-- USBX Host Class HID Mouse header files -->
+        <file category="header" name="common/usbx_host_classes/inc/ux_host_class_hid_mouse.h"/>
+      </files>
+    </component>
+    <!-- STM32 USBX Host Class HID RCU -->
+    <component Cclass="USB" Cgroup="USBX Host Class" Csub="HID RCU" Cversion="6.4.3" condition="Use HID RCU Host Class">
+      <description>USB Host: HID RCU</description>
+      <files>
+        <file category="source" name="common/usbx_host_classes/src/ux_host_class_hid_remote_control_activate.c"/>
+        <file category="source" name="common/usbx_host_classes/src/ux_host_class_hid_remote_control_callback.c"/>
+        <file category="source" name="common/usbx_host_classes/src/ux_host_class_hid_remote_control_deactivate.c"/>
+        <file category="source" name="common/usbx_host_classes/src/ux_host_class_hid_remote_control_entry.c"/>
+        <file category="source" name="common/usbx_host_classes/src/ux_host_class_hid_remote_control_usage_get.c"/>
+        <!-- USBX Host Class HID RCU header files -->
+        <file category="header" name="common/usbx_host_classes/inc/ux_host_class_hid_remote_control.h"/>
+      </files>
+    </component>
+    <!-- STM32 USBX Host Class CDC ACM -->
+    <component Cclass="USB" Cgroup="USBX Host Class" Csub="CDC ACM" Cversion="6.4.3" condition="Use CDC_ACM Host Class">
+      <description>USB Host: Communication Device Class - Abstract Control Model (CDC-ACM)</description>
+      <files>
+        <file category="source" name="common/usbx_host_classes/src/ux_host_class_cdc_acm_activate.c"/>
+        <file category="source" name="common/usbx_host_classes/src/ux_host_class_cdc_acm_capabilities_get.c"/>
+        <file category="source" name="common/usbx_host_classes/src/ux_host_class_cdc_acm_command.c"/>
+        <file category="source" name="common/usbx_host_classes/src/ux_host_class_cdc_acm_configure.c"/>
+        <file category="source" name="common/usbx_host_classes/src/ux_host_class_cdc_acm_deactivate.c"/>
+        <file category="source" name="common/usbx_host_classes/src/ux_host_class_cdc_acm_endpoints_get.c"/>
+        <file category="source" name="common/usbx_host_classes/src/ux_host_class_cdc_acm_entry.c"/>
+        <file category="source" name="common/usbx_host_classes/src/ux_host_class_cdc_acm_ioctl.c"/>
+        <file category="source" name="common/usbx_host_classes/src/ux_host_class_cdc_acm_read.c"/>
+        <file category="source" name="common/usbx_host_classes/src/ux_host_class_cdc_acm_reception_callback.c"/>
+        <file category="source" name="common/usbx_host_classes/src/ux_host_class_cdc_acm_reception_start.c"/>
+        <file category="source" name="common/usbx_host_classes/src/ux_host_class_cdc_acm_reception_stop.c"/>
+        <file category="source" name="common/usbx_host_classes/src/ux_host_class_cdc_acm_transfer_request_completed.c"/>
+        <file category="source" name="common/usbx_host_classes/src/ux_host_class_cdc_acm_write.c"/>
+        <!-- USBX Host Class CDC ACM standalone files -->
+        <file category="source" name="common/usbx_host_classes/src/ux_host_class_cdc_acm_transmission_callback.c" condition="usbx standalone condition"/>
+        <file category="source" name="common/usbx_host_classes/src/ux_host_class_cdc_acm_write_with_callback.c" condition="usbx standalone condition"/>
+        <!-- USBX Host Class CDC ACM header files -->
+        <file category="header" name="common/usbx_host_classes/inc/ux_host_class_cdc_acm.h"/>
+      </files>
+    </component>
+    <!-- STM32 USBX Host Class MSC -->
+    <component Cclass="USB" Cgroup="USBX Host Class" Csub="MSC" Cversion="6.4.3" condition="Use MSC Host Class">
+      <description>USB Host: Class Mass storage (MSC)</description>
+      <files>
+        <file category="source" name="common/usbx_host_classes/src/ux_host_class_storage_activate.c"/>
+        <file category="source" name="common/usbx_host_classes/src/ux_host_class_storage_cbw_initialize.c"/>
+        <file category="source" name="common/usbx_host_classes/src/ux_host_class_storage_configure.c"/>
+        <file category="source" name="common/usbx_host_classes/src/ux_host_class_storage_deactivate.c"/>
+        <file category="source" name="common/usbx_host_classes/src/ux_host_class_storage_device_reset.c"/>
+        <file category="source" name="common/usbx_host_classes/src/ux_host_class_storage_device_support_check.c"/>
+        <file category="source" name="common/usbx_host_classes/src/ux_host_class_storage_driver_entry.c"/>
+        <file category="source" name="common/usbx_host_classes/src/ux_host_class_storage_endpoints_get.c"/>
+        <file category="source" name="common/usbx_host_classes/src/ux_host_class_storage_entry.c"/>
+        <file category="source" name="common/usbx_host_classes/src/ux_host_class_storage_max_lun_get.c"/>
+        <file category="source" name="common/usbx_host_classes/src/ux_host_class_storage_media_capacity_get.c"/>
+        <file category="source" name="common/usbx_host_classes/src/ux_host_class_storage_media_characteristics_get.c"/>
+        <file category="source" name="common/usbx_host_classes/src/ux_host_class_storage_media_format_capacity_get.c"/>
+        <file category="source" name="common/usbx_host_classes/src/ux_host_class_storage_media_mount.c"/>
+        <file category="source" name="common/usbx_host_classes/src/ux_host_class_storage_media_open.c"/>
+        <file category="source" name="common/usbx_host_classes/src/ux_host_class_storage_media_protection_check.c"/>
+        <file category="source" name="common/usbx_host_classes/src/ux_host_class_storage_media_read.c"/>
+        <file category="source" name="common/usbx_host_classes/src/ux_host_class_storage_media_recovery_sense_get.c"/>
+        <file category="source" name="common/usbx_host_classes/src/ux_host_class_storage_media_write.c"/>
+        <file category="source" name="common/usbx_host_classes/src/ux_host_class_storage_partition_read.c"/>
+        <file category="source" name="common/usbx_host_classes/src/ux_host_class_storage_request_sense.c"/>
+        <file category="source" name="common/usbx_host_classes/src/ux_host_class_storage_sense_code_translate.c"/>
+        <file category="source" name="common/usbx_host_classes/src/ux_host_class_storage_start_stop.c"/>
+        <file category="source" name="common/usbx_host_classes/src/ux_host_class_storage_transport.c"/>
+        <file category="source" name="common/usbx_host_classes/src/ux_host_class_storage_unit_ready_test.c"/>
+        <file category="source" name="common/usbx_host_classes/src/ux_host_class_storage_media_get.c"/>
+        <file category="source" name="common/usbx_host_classes/src/ux_host_class_storage_media_lock.c"/>
+        <!-- USBX Host Class MSC RTOS files -->
+        <file category="source" name="common/usbx_host_classes/src/ux_host_class_storage_thread_entry.c" condition="usbx freertos condition"/>
+        <file category="source" name="common/usbx_host_classes/src/ux_host_class_storage_device_initialize.c" condition="usbx freertos condition"/>
+        <file category="source" name="common/usbx_host_classes/src/ux_host_class_storage_transport_cbi.c" condition="usbx freertos condition"/>
+        <file category="source" name="common/usbx_host_classes/src/ux_host_class_storage_transport_bo.c" condition="usbx freertos condition"/>
+        <file category="source" name="common/usbx_host_classes/src/ux_host_class_storage_transport_cb.c" condition="usbx freertos condition"/>
+        <!-- USBX Host Class MSC standalone files -->
+        <file category="source" name="common/usbx_host_classes/src/ux_host_class_storage_media_check.c" condition="usbx standalone condition"/>
+        <file category="source" name="common/usbx_host_classes/src/ux_host_class_storage_lock.c" condition="usbx standalone condition"/>
+        <file category="source" name="common/usbx_host_classes/src/ux_host_class_storage_check_run.c" condition="usbx standalone condition"/>
+        <file category="source" name="common/usbx_host_classes/src/ux_host_class_storage_read_write_run.c" condition="usbx standalone condition"/>
+        <file category="source" name="common/usbx_host_classes/src/ux_host_class_storage_tasks_run.c" condition="usbx standalone condition"/>
+        <file category="source" name="common/usbx_host_classes/src/ux_host_class_storage_transport_run.c" condition="usbx standalone condition"/>
+        <!-- USBX Host Class MSC header files -->
+        <file category="header" name="common/usbx_host_classes/inc/ux_host_class_storage.h"/>
+      </files>
+    </component>
+    <!-- STM32 USBX Host Class MTP -->
+    <component Cclass="USB" Cgroup="USBX Host Class" Csub="PIMA_MTP" Cversion="6.4.3" condition="Use PIMA_MTP Host Class">
+      <description>USB Host: MTP Class</description>
+      <files>
+        <file category="source" name="common/usbx_host_classes/src/ux_host_class_pima_activate.c"/>
+        <file category="source" name="common/usbx_host_classes/src/ux_host_class_pima_command.c"/>
+        <file category="source" name="common/usbx_host_classes/src/ux_host_class_pima_configure.c"/>
+        <file category="source" name="common/usbx_host_classes/src/ux_host_class_pima_deactivate.c"/>
+        <file category="source" name="common/usbx_host_classes/src/ux_host_class_pima_device_info_get.c"/>
+        <file category="source" name="common/usbx_host_classes/src/ux_host_class_pima_device_reset.c"/>
+        <file category="source" name="common/usbx_host_classes/src/ux_host_class_pima_endpoints_get.c"/>
+        <file category="source" name="common/usbx_host_classes/src/ux_host_class_pima_entry.c"/>
+        <file category="source" name="common/usbx_host_classes/src/ux_host_class_pima_notification.c"/>
+        <file category="source" name="common/usbx_host_classes/src/ux_host_class_pima_num_objects_get.c"/>
+        <file category="source" name="common/usbx_host_classes/src/ux_host_class_pima_object_close.c"/>
+        <file category="source" name="common/usbx_host_classes/src/ux_host_class_pima_object_copy.c"/>
+        <file category="source" name="common/usbx_host_classes/src/ux_host_class_pima_object_delete.c"/>
+        <file category="source" name="common/usbx_host_classes/src/ux_host_class_pima_object_get.c"/>
+        <file category="source" name="common/usbx_host_classes/src/ux_host_class_pima_object_handles_get.c"/>
+        <file category="source" name="common/usbx_host_classes/src/ux_host_class_pima_object_info_get.c"/>
+        <file category="source" name="common/usbx_host_classes/src/ux_host_class_pima_object_info_send.c"/>
+        <file category="source" name="common/usbx_host_classes/src/ux_host_class_pima_object_move.c"/>
+        <file category="source" name="common/usbx_host_classes/src/ux_host_class_pima_object_open.c"/>
+        <file category="source" name="common/usbx_host_classes/src/ux_host_class_pima_object_send.c"/>
+        <file category="source" name="common/usbx_host_classes/src/ux_host_class_pima_object_transfer_abort.c"/>
+        <file category="source" name="common/usbx_host_classes/src/ux_host_class_pima_read.c"/>
+        <file category="source" name="common/usbx_host_classes/src/ux_host_class_pima_request_cancel.c"/>
+        <file category="source" name="common/usbx_host_classes/src/ux_host_class_pima_session_close.c"/>
+        <file category="source" name="common/usbx_host_classes/src/ux_host_class_pima_session_open.c"/>
+        <file category="source" name="common/usbx_host_classes/src/ux_host_class_pima_storage_ids_get.c"/>
+        <file category="source" name="common/usbx_host_classes/src/ux_host_class_pima_storage_info_get.c"/>
+        <file category="source" name="common/usbx_host_classes/src/ux_host_class_pima_thumb_get.c"/>
+        <file category="source" name="common/usbx_host_classes/src/ux_host_class_pima_write.c"/>
+        <!-- USBX Host Class MTP header files -->
+        <file category="header" name="common/usbx_host_classes/inc/ux_host_class_pima.h"/>
+      </files>
+    </component>
+    <!-- STM32 USBX Host Class AUDIO -->
+    <component Cclass="USB" Cgroup="USBX Host Class" Csub="AUDIO" Cversion="6.4.3" condition="Use Audio Host Class">
+      <description>USB Host: AUDIO Class</description>
+      <files>
+        <file category="source" name="common/usbx_host_classes/src/ux_host_class_audio_activate.c"/>
+        <file category="source" name="common/usbx_host_classes/src/ux_host_class_audio_alternate_setting_locate.c"/>
+        <file category="source" name="common/usbx_host_classes/src/ux_host_class_audio_configure.c"/>
+        <file category="source" name="common/usbx_host_classes/src/ux_host_class_audio_control_get.c"/>
+        <file category="source" name="common/usbx_host_classes/src/ux_host_class_audio_control_request.c"/>
+        <file category="source" name="common/usbx_host_classes/src/ux_host_class_audio_control_value_get.c"/>
+        <file category="source" name="common/usbx_host_classes/src/ux_host_class_audio_control_value_set.c"/>
+        <file category="source" name="common/usbx_host_classes/src/ux_host_class_audio_deactivate.c"/>
+        <file category="source" name="common/usbx_host_classes/src/ux_host_class_audio_descriptor_get.c"/>
+        <file category="source" name="common/usbx_host_classes/src/ux_host_class_audio_descriptors_parse.c"/>
+        <file category="source" name="common/usbx_host_classes/src/ux_host_class_audio_device_controls_list_get.c"/>
+        <file category="source" name="common/usbx_host_classes/src/ux_host_class_audio_device_type_get.c"/>
+        <file category="source" name="common/usbx_host_classes/src/ux_host_class_audio_endpoints_get.c"/>
+        <file category="source" name="common/usbx_host_classes/src/ux_host_class_audio_entity_control_get.c"/>
+        <file category="source" name="common/usbx_host_classes/src/ux_host_class_audio_entity_control_value_get.c"/>
+        <file category="source" name="common/usbx_host_classes/src/ux_host_class_audio_entity_control_value_set.c"/>
+        <file category="source" name="common/usbx_host_classes/src/ux_host_class_audio_entry.c"/>
+        <file category="source" name="common/usbx_host_classes/src/ux_host_class_audio_feedback_get.c"/>
+        <file category="source" name="common/usbx_host_classes/src/ux_host_class_audio_feedback_set.c"/>
+        <file category="source" name="common/usbx_host_classes/src/ux_host_class_audio_feedback_transfer_completed.c"/>
+        <file category="source" name="common/usbx_host_classes/src/ux_host_class_audio_interrupt_notification.c"/>
+        <file category="source" name="common/usbx_host_classes/src/ux_host_class_audio_interrupt_start.c"/>
+        <file category="source" name="common/usbx_host_classes/src/ux_host_class_audio_raw_sampling_parse.c"/>
+        <file category="source" name="common/usbx_host_classes/src/ux_host_class_audio_read.c"/>
+        <file category="source" name="common/usbx_host_classes/src/ux_host_class_audio_stop.c"/>
+        <file category="source" name="common/usbx_host_classes/src/ux_host_class_audio_streaming_sampling_get.c"/>
+        <file category="source" name="common/usbx_host_classes/src/ux_host_class_audio_streaming_sampling_set.c"/>
+        <file category="source" name="common/usbx_host_classes/src/ux_host_class_audio_streaming_terminal_get.c"/>
+        <file category="source" name="common/usbx_host_classes/src/ux_host_class_audio_transfer_request.c"/>
+        <file category="source" name="common/usbx_host_classes/src/ux_host_class_audio_transfer_request_completed.c"/>
+        <file category="source" name="common/usbx_host_classes/src/ux_host_class_audio_write.c"/>
+        <!-- USBX Host Class AUDIO header files -->
+        <file category="header" name="common/usbx_host_classes/inc/ux_host_class_audio.h"/>
+      </files>
+    </component>
+    <!-- STM32 USBX Host Class VIDEO -->
+    <component Cclass="USB" Cgroup="USBX Host Class" Csub="VIDEO" Cversion="6.4.3" condition="Use Video Host Class">
+      <description>USB Host: VIDEO Class</description>
+      <files>
+        <file category="source" name="common/usbx_host_classes/src/ux_host_class_video_activate.c"/>
+        <file category="source" name="common/usbx_host_classes/src/ux_host_class_video_alternate_setting_locate.c"/>
+        <file category="source" name="common/usbx_host_classes/src/ux_host_class_video_channel_start.c"/>
+        <file category="source" name="common/usbx_host_classes/src/ux_host_class_video_configure.c"/>
+        <file category="source" name="common/usbx_host_classes/src/ux_host_class_video_control_get.c"/>
+        <file category="source" name="common/usbx_host_classes/src/ux_host_class_video_control_list_get.c"/>
+        <file category="source" name="common/usbx_host_classes/src/ux_host_class_video_control_request.c"/>
+        <file category="source" name="common/usbx_host_classes/src/ux_host_class_video_control_value_get.c"/>
+        <file category="source" name="common/usbx_host_classes/src/ux_host_class_video_control_value_set.c"/>
+        <file category="source" name="common/usbx_host_classes/src/ux_host_class_video_deactivate.c"/>
+        <file category="source" name="common/usbx_host_classes/src/ux_host_class_video_descriptor_get.c"/>
+        <file category="source" name="common/usbx_host_classes/src/ux_host_class_video_endpoints_get.c"/>
+        <file category="source" name="common/usbx_host_classes/src/ux_host_class_video_entities_parse.c"/>
+        <file category="source" name="common/usbx_host_classes/src/ux_host_class_video_entry.c"/>
+        <file category="source" name="common/usbx_host_classes/src/ux_host_class_video_format_data_get.c"/>
+        <file category="source" name="common/usbx_host_classes/src/ux_host_class_video_frame_data_get.c"/>
+        <file category="source" name="common/usbx_host_classes/src/ux_host_class_video_frame_interval_get.c"/>
+        <file category="source" name="common/usbx_host_classes/src/ux_host_class_video_frame_parameters_set.c"/>
+        <file category="source" name="common/usbx_host_classes/src/ux_host_class_video_input_format_get.c"/>
+        <file category="source" name="common/usbx_host_classes/src/ux_host_class_video_input_terminal_get.c"/>
+        <file category="source" name="common/usbx_host_classes/src/ux_host_class_video_ioctl.c"/>
+        <file category="source" name="common/usbx_host_classes/src/ux_host_class_video_max_payload_get.c"/>
+        <file category="source" name="common/usbx_host_classes/src/ux_host_class_video_read.c"/>
+        <file category="source" name="common/usbx_host_classes/src/ux_host_class_video_start.c"/>
+        <file category="source" name="common/usbx_host_classes/src/ux_host_class_video_stop.c"/>
+        <file category="source" name="common/usbx_host_classes/src/ux_host_class_video_transfer_buffer_add.c"/>
+        <file category="source" name="common/usbx_host_classes/src/ux_host_class_video_transfer_buffers_add.c"/>
+        <file category="source" name="common/usbx_host_classes/src/ux_host_class_video_transfer_callback_set.c"/>
+        <file category="source" name="common/usbx_host_classes/src/ux_host_class_video_transfer_request.c"/>
+        <file category="source" name="common/usbx_host_classes/src/ux_host_class_video_transfer_request_callback.c"/>
+        <file category="source" name="common/usbx_host_classes/src/ux_host_class_video_transfer_request_completed.c"/>
+        <!-- USBX Host Class VIDEO header files -->
+        <file category="header" name="common/usbx_host_classes/inc/ux_host_class_video.h"/>
+      </files>
+    </component>
+    <!-- STM32 USBX Host Class PRINTER -->
+    <component Cclass="USB" Cgroup="USBX Host Class" Csub="PRINTER" Cversion="6.4.3" condition="Use Printer Host Class">
+      <description>USB Host: PRINTER Class</description>
+      <files>
+        <file category="source" name="common/usbx_host_classes/src/ux_host_class_printer_activate.c"/>
+        <file category="source" name="common/usbx_host_classes/src/ux_host_class_printer_status_get.c"/>
+        <file category="source" name="common/usbx_host_classes/src/ux_host_class_printer_soft_reset.c"/>
+        <file category="source" name="common/usbx_host_classes/src/ux_host_class_printer_name_get.c"/>
+        <file category="source" name="common/usbx_host_classes/src/ux_host_class_printer_entry.c"/>
+        <file category="source" name="common/usbx_host_classes/src/ux_host_class_printer_endpoints_get.c"/>
+        <file category="source" name="common/usbx_host_classes/src/ux_host_class_printer_device_id_get.c"/>
+        <file category="source" name="common/usbx_host_classes/src/ux_host_class_printer_deactivate.c"/>
+        <file category="source" name="common/usbx_host_classes/src/ux_host_class_printer_configure.c"/>
+        <file category="source" name="common/usbx_host_classes/src/ux_host_class_printer_read.c"/>
+        <file category="source" name="common/usbx_host_classes/src/ux_host_class_printer_write.c"/>
+        <!-- USBX Host Class PRINTER header files -->
+        <file category="header" name="common/usbx_host_classes/inc/ux_host_class_printer.h"/>
+      </files>
+    </component>
+    <!-- STM32 USBX Host Class GSER -->
+    <component Cclass="USB" Cgroup="USBX Host Class" Csub="GSER" Cversion="6.4.3" condition="Use GSER Host Class">
+      <description>USB Host: GSER Class</description>
+      <files>
+        <file category="source" name="common/usbx_host_classes/src/ux_host_class_gser_activate.c"/>
+        <file category="source" name="common/usbx_host_classes/src/ux_host_class_gser_command.c"/>
+        <file category="source" name="common/usbx_host_classes/src/ux_host_class_gser_configure.c"/>
+        <file category="source" name="common/usbx_host_classes/src/ux_host_class_gser_deactivate.c"/>
+        <file category="source" name="common/usbx_host_classes/src/ux_host_class_gser_endpoints_get.c"/>
+        <file category="source" name="common/usbx_host_classes/src/ux_host_class_gser_entry.c"/>
+        <file category="source" name="common/usbx_host_classes/src/ux_host_class_gser_ioctl.c"/>
+        <file category="source" name="common/usbx_host_classes/src/ux_host_class_gser_read.c"/>
+        <file category="source" name="common/usbx_host_classes/src/ux_host_class_gser_reception_callback.c"/>
+        <file category="source" name="common/usbx_host_classes/src/ux_host_class_gser_reception_start.c"/>
+        <file category="source" name="common/usbx_host_classes/src/ux_host_class_gser_reception_stop.c"/>
+        <file category="source" name="common/usbx_host_classes/src/ux_host_class_gser_write.c"/>
+        <!-- USBX Host Class GSER -->
+        <file category="header" name="common/usbx_host_classes/inc/ux_host_class_gser.h"/>
+      </files>
+    </component>
+    <!-- STM32 USBX Host Class PROLIFIC -->
+    <component Cclass="USB" Cgroup="USBX Host Class" Csub="PROLIFIC" Cversion="6.4.3" condition="Use PROLIFIC Host Class">
+      <description>USB Host: PROLIFIC Class</description>
+      <files>
+        <file category="source" name="common/usbx_host_classes/src/ux_host_class_prolific_activate.c"/>
+        <file category="source" name="common/usbx_host_classes/src/ux_host_class_prolific_command.c"/>
+        <file category="source" name="common/usbx_host_classes/src/ux_host_class_prolific_configure.c"/>
+        <file category="source" name="common/usbx_host_classes/src/ux_host_class_prolific_deactivate.c"/>
+        <file category="source" name="common/usbx_host_classes/src/ux_host_class_prolific_endpoints_get.c"/>
+        <file category="source" name="common/usbx_host_classes/src/ux_host_class_prolific_entry.c"/>
+        <file category="source" name="common/usbx_host_classes/src/ux_host_class_prolific_ioctl.c"/>
+        <file category="source" name="common/usbx_host_classes/src/ux_host_class_prolific_read.c"/>
+        <file category="source" name="common/usbx_host_classes/src/ux_host_class_prolific_reception_callback.c"/>
+        <file category="source" name="common/usbx_host_classes/src/ux_host_class_prolific_reception_start.c"/>
+        <file category="source" name="common/usbx_host_classes/src/ux_host_class_prolific_reception_stop.c"/>
+        <file category="source" name="common/usbx_host_classes/src/ux_host_class_prolific_setup.c"/>
+        <file category="source" name="common/usbx_host_classes/src/ux_host_class_prolific_transfer_request_completed.c"/>
+        <file category="source" name="common/usbx_host_classes/src/ux_host_class_prolific_write.c"/>
+        <!-- USBX Host Class PROLIFIC -->
+        <file category="header" name="common/usbx_host_classes/inc/ux_host_class_prolific.h"/>
+      </files>
+    </component>
+    <!-- STM32 USBX Host Class SWAR -->
+    <component Cclass="USB" Cgroup="USBX Host Class" Csub="SWAR" Cversion="6.4.3" condition="Use SWAR Host Class">
+      <description>USB Host: SWAR Class</description>
+      <files>
+        <file category="source" name="common/usbx_host_classes/src/ux_host_class_swar_activate.c"/>
+        <file category="source" name="common/usbx_host_classes/src/ux_host_class_swar_deactivate.c"/>
+        <file category="source" name="common/usbx_host_classes/src/ux_host_class_swar_configure.c"/>
+        <file category="source" name="common/usbx_host_classes/src/ux_host_class_swar_endpoints_get.c"/>
+        <file category="source" name="common/usbx_host_classes/src/ux_host_class_swar_entry.c"/>
+        <file category="source" name="common/usbx_host_classes/src/ux_host_class_swar_ioctl.c"/>
+        <file category="source" name="common/usbx_host_classes/src/ux_host_class_swar_read.c"/>
+        <file category="source" name="common/usbx_host_classes/src/ux_host_class_swar_reception_callback.c"/>
+        <file category="source" name="common/usbx_host_classes/src/ux_host_class_swar_reception_start.c"/>
+        <file category="source" name="common/usbx_host_classes/src/ux_host_class_swar_reception_stop.c"/>
+        <file category="source" name="common/usbx_host_classes/src/ux_host_class_swar_write.c"/>
+        <!-- USBX Host Class SWAR -->
+        <file category="header" name="common/usbx_host_classes/inc/ux_host_class_swar.h"/>
+      </files>
+    </component>
+    <!-- STM32 USBX Host Class HUB -->
+    <component Cclass="USB" Cgroup="USBX Host Class" Csub="HUB" Cversion="6.4.3" condition="Use HUB Host Class">
+      <description>USB Host: HUB Class</description>
+      <files>
+        <file category="source" name="common/usbx_host_classes/src/ux_host_class_hub_activate.c"/>
+        <file category="source" name="common/usbx_host_classes/src/ux_host_class_hub_transfer_request_completed.c"/>
+        <file category="source" name="common/usbx_host_classes/src/ux_host_class_hub_status_get.c"/>
+        <file category="source" name="common/usbx_host_classes/src/ux_host_class_hub_ports_power.c"/>
+        <file category="source" name="common/usbx_host_classes/src/ux_host_class_hub_port_reset.c"/>
+        <file category="source" name="common/usbx_host_classes/src/ux_host_class_hub_port_change_suspend_process.c"/>
+        <file category="source" name="common/usbx_host_classes/src/ux_host_class_hub_port_change_reset_process.c"/>
+        <file category="source" name="common/usbx_host_classes/src/ux_host_class_hub_port_change_process.c"/>
+        <file category="source" name="common/usbx_host_classes/src/ux_host_class_hub_port_change_over_current_process.c"/>
+        <file category="source" name="common/usbx_host_classes/src/ux_host_class_hub_port_change_enable_process.c"/>
+        <file category="source" name="common/usbx_host_classes/src/ux_host_class_hub_port_change_connection_process.c"/>
+        <file category="source" name="common/usbx_host_classes/src/ux_host_class_hub_interrupt_endpoint_start.c"/>
+        <file category="source" name="common/usbx_host_classes/src/ux_host_class_hub_hub_change_process.c"/>
+        <file category="source" name="common/usbx_host_classes/src/ux_host_class_hub_feature.c"/>
+        <file category="source" name="common/usbx_host_classes/src/ux_host_class_hub_entry.c"/>
+        <file category="source" name="common/usbx_host_classes/src/ux_host_class_hub_descriptor_get.c"/>
+        <file category="source" name="common/usbx_host_classes/src/ux_host_class_hub_deactivate.c"/>
+        <file category="source" name="common/usbx_host_classes/src/ux_host_class_hub_configure.c"/>
+        <file category="source" name="common/usbx_host_classes/src/ux_host_class_hub_change_process.c"/>
+        <file category="source" name="common/usbx_host_classes/src/ux_host_class_hub_change_detect.c"/>
+        <!-- USBX Host Class HUB standalone files -->
+        <file category="source" name="common/usbx_host_classes/src/ux_host_class_hub_tasks_run.c" condition="usbx standalone condition"/>
+        <!-- USBX Host Class HUB header files -->
+        <file category="header" name="common/usbx_host_classes/inc/ux_host_class_hub.h"/>
+      </files>
+    </component>
+    <!-- mx_usbx_device_hid_mouse -->
+    <component generator="usbx_mx2codegen" Cclass="USB" Cgroup="STM32CubeMX2 Codegen" Csub="HID_Mouse_Device_Class" Cversion="2.0.0" condition="Use HID Mouse Device Class">
+      <description>Enables USB device to act as a mouse.</description>
+      <files>
+        <file category="genAsset" name=".config/template/mx_usbx_device_hid_mouse_template.c.hbs"/>
+        <file category="genAsset" name=".config/template/mx_usbx_device_hid_mouse_template.h.hbs"/>
+        <!-- License files -->
+        <file category="genAsset" name=".config/template/partials/LICENSE_partial.hbs"/>
+        <file category="genAsset" name=".config/template/license/mx_usbx_license_template.md.hbs"/>
+      </files>
+    </component>
+    <!-- mx_usbx_device_hid_keyboard -->
+    <component generator="usbx_mx2codegen" Cclass="USB" Cgroup="STM32CubeMX2 Codegen" Csub="HID_Keyboard_Device_Class" Cversion="2.0.0" condition="Use HID Keyboard Device Class">
+      <description>Enables USB device to act as a keyboard.</description>
+      <files>
+        <file category="genAsset" name=".config/template/mx_usbx_device_hid_keyboard_template.c.hbs"/>
+        <file category="genAsset" name=".config/template/mx_usbx_device_hid_keyboard_template.h.hbs"/>
+        <!-- License files -->
+        <file category="genAsset" name=".config/template/partials/LICENSE_partial.hbs"/>
+        <file category="genAsset" name=".config/template/license/mx_usbx_license_template.md.hbs"/>
+      </files>
+    </component>
+    <!-- mx_usbx_device_hid_custom -->
+    <component generator="usbx_mx2codegen" Cclass="USB" Cgroup="STM32CubeMX2 Codegen" Csub="HID_Custom_Device_Class" Cversion="2.0.0" condition="Use HID Custom Device Class">
+      <description>Configures USB device for custom HID functions.</description>
+      <files>
+        <file category="genAsset" name=".config/template/mx_usbx_device_hid_custom_template.c.hbs"/>
+        <file category="genAsset" name=".config/template/mx_usbx_device_hid_custom_template.h.hbs"/>
+        <!-- License files -->
+        <file category="genAsset" name=".config/template/partials/LICENSE_partial.hbs"/>
+        <file category="genAsset" name=".config/template/license/mx_usbx_license_template.md.hbs"/>
+      </files>
+    </component>
+    <!-- mx_usbx_device_CDC_ACM -->
+    <component generator="usbx_mx2codegen" Cclass="USB" Cgroup="STM32CubeMX2 Codegen" Csub="CDC_ACM_Device_Class" Cversion="2.0.0" condition="Use CDC_ACM Device Class">
+      <description>Enables USB device for serial communication.</description>
+      <files>
+        <file category="genAsset" name=".config/template/mx_usbx_device_cdc_acm_template.c.hbs"/>
+        <file category="genAsset" name=".config/template/mx_usbx_device_cdc_acm_template.h.hbs"/>
+        <!-- License files -->
+        <file category="genAsset" name=".config/template/partials/LICENSE_partial.hbs"/>
+        <file category="genAsset" name=".config/template/license/mx_usbx_license_template.md.hbs"/>
+      </files>
+    </component>
+    <!-- mx_usbx_device_MSC -->
+    <component generator="usbx_mx2codegen" Cclass="USB" Cgroup="STM32CubeMX2 Codegen" Csub="MSC_Device_Class" Cversion="2.0.0" condition="Use MSC Device Class">
+      <description>Configures USB device as a mass storage device.</description>
+      <files>
+        <file category="genAsset" name=".config/template/mx_usbx_device_msc_template.c.hbs"/>
+        <file category="genAsset" name=".config/template/mx_usbx_device_msc_template.h.hbs"/>
+        <!-- License files -->
+        <file category="genAsset" name=".config/template/partials/LICENSE_partial.hbs"/>
+        <file category="genAsset" name=".config/template/license/mx_usbx_license_template.md.hbs"/>
+      </files>
+    </component>
+    <!-- mx_usbx_device_PIMA_MTP -->
+    <component generator="usbx_mx2codegen" Cclass="USB" Cgroup="STM32CubeMX2 Codegen" Csub="PIMA_MTP_Device_Class" Cversion="2.0.0" condition="Use PIMA_MTP Device Class">
+      <description>Enables USB device for media transfer.</description>
+      <files>
+        <file category="genAsset" name=".config/template/mx_usbx_device_pima_mtp_template.c.hbs"/>
+        <file category="genAsset" name=".config/template/mx_usbx_device_pima_mtp_template.h.hbs"/>
+        <!-- License files -->
+        <file category="genAsset" name=".config/template/partials/LICENSE_partial.hbs"/>
+        <file category="genAsset" name=".config/template/license/mx_usbx_license_template.md.hbs"/>
+      </files>
+    </component>
+    <!-- mx_usbx_device_audio -->
+    <component generator="usbx_mx2codegen" Cclass="USB" Cgroup="STM32CubeMX2 Codegen" Csub="Audio_Device_Class" Cversion="2.0.0" condition="Use Audio Device Class">
+      <description>Configures USB device for audio streaming.</description>
+      <files>
+        <file category="genAsset" name=".config/template/mx_usbx_device_audio_template.c.hbs"/>
+        <file category="genAsset" name=".config/template/mx_usbx_device_audio_template.h.hbs"/>
+        <!-- License files -->
+        <file category="genAsset" name=".config/template/partials/LICENSE_partial.hbs"/>
+        <file category="genAsset" name=".config/template/license/mx_usbx_license_template.md.hbs"/>
+      </files>
+    </component>
+    <!-- mx_usbx_device_video -->
+    <component generator="usbx_mx2codegen" Cclass="USB" Cgroup="STM32CubeMX2 Codegen" Csub="Video_Device_Class" Cversion="2.0.0" condition="Use Video Device Class">
+      <description>Enables USB device for video streaming.</description>
+      <files>
+        <file category="genAsset" name=".config/template/mx_usbx_device_video_template.c.hbs"/>
+        <file category="genAsset" name=".config/template/mx_usbx_device_video_template.h.hbs"/>
+        <!-- License files -->
+        <file category="genAsset" name=".config/template/partials/LICENSE_partial.hbs"/>
+        <file category="genAsset" name=".config/template/license/mx_usbx_license_template.md.hbs"/>
+      </files>
+    </component>
+    <!-- mx_usbx_device_printer -->
+    <component generator="usbx_mx2codegen" Cclass="USB" Cgroup="STM32CubeMX2 Codegen" Csub="Printer_Device_Class" Cversion="2.0.0" condition="Use Printer Device Class">
+      <description>Configures USB device as a printer.</description>
+      <files>
+        <file category="genAsset" name=".config/template/mx_usbx_device_printer_template.c.hbs"/>
+        <file category="genAsset" name=".config/template/mx_usbx_device_printer_template.h.hbs"/>
+        <!-- License files -->
+        <file category="genAsset" name=".config/template/partials/LICENSE_partial.hbs"/>
+        <file category="genAsset" name=".config/template/license/mx_usbx_license_template.md.hbs"/>
+      </files>
+    </component>
+    <!-- mx_usbx_device_ccid -->
+    <component generator="usbx_mx2codegen" Cclass="USB" Cgroup="STM32CubeMX2 Codegen" Csub="CCID_Device_Class" Cversion="2.0.0" condition="Use CCID Device Class">
+      <description>Enables USB device for smart card interface.</description>
+      <files>
+        <file category="genAsset" name=".config/template/mx_usbx_device_ccid_template.c.hbs"/>
+        <file category="genAsset" name=".config/template/mx_usbx_device_ccid_template.h.hbs"/>
+        <!-- License files -->
+        <file category="genAsset" name=".config/template/partials/LICENSE_partial.hbs"/>
+        <file category="genAsset" name=".config/template/license/mx_usbx_license_template.md.hbs"/>
+      </files>
+    </component>
+    <!-- mx_usbx_device_dfu -->
+    <component generator="usbx_mx2codegen" Cclass="USB" Cgroup="STM32CubeMX2 Codegen" Csub="DFU_Device_Class" Cversion="2.0.0" condition="Use DFU Device Class">
+      <description>Configures USB device for firmware updates.</description>
+      <files>
+        <file category="genAsset" name=".config/template/mx_usbx_device_dfu_template.c.hbs"/>
+        <file category="genAsset" name=".config/template/mx_usbx_device_dfu_template.h.hbs"/>
+        <!-- License files -->
+        <file category="genAsset" name=".config/template/partials/LICENSE_partial.hbs"/>
+        <file category="genAsset" name=".config/template/license/mx_usbx_license_template.md.hbs"/>
+      </files>
+    </component>
+    <!-- mx_usbx_host_hid_mouse -->
+    <component generator="usbx_mx2codegen" Cclass="USB" Cgroup="STM32CubeMX2 Codegen" Csub="HID_Mouse_Host_Class" Cversion="2.0.0" condition="Use HID Mouse Host Class">
+      <description>Enables USB host to support mouse devices.</description>
+      <files>
+        <file category="genAsset" name=".config/template/mx_usbx_host_hid_mouse_template.c.hbs"/>
+        <file category="genAsset" name=".config/template/mx_usbx_host_hid_mouse_template.h.hbs"/>
+        <!-- License files -->
+        <file category="genAsset" name=".config/template/partials/LICENSE_partial.hbs"/>
+        <file category="genAsset" name=".config/template/license/mx_usbx_license_template.md.hbs"/>
+      </files>
+    </component>
+    <!-- mx_usbx_host_hid_keyboard -->
+    <component generator="usbx_mx2codegen" Cclass="USB" Cgroup="STM32CubeMX2 Codegen" Csub="HID_Keyboard_Host_Class" Cversion="2.0.0" condition="Use HID Keyboard Host Class">
+      <description>Enables USB host to support keyboard devices.</description>
+      <files>
+        <file category="genAsset" name=".config/template/mx_usbx_host_hid_keyboard_template.c.hbs"/>
+        <file category="genAsset" name=".config/template/mx_usbx_host_hid_keyboard_template.h.hbs"/>
+        <!-- License files -->
+        <file category="genAsset" name=".config/template/partials/LICENSE_partial.hbs"/>
+        <file category="genAsset" name=".config/template/license/mx_usbx_license_template.md.hbs"/>
+      </files>
+    </component>
+    <!-- mx_usbx_host_hid_RCU -->
+    <component generator="usbx_mx2codegen" Cclass="USB" Cgroup="STM32CubeMX2 Codegen" Csub="HID_RCU_Host_Class" Cversion="2.0.0" condition="Use HID RCU Host Class">
+      <description>Enables USB host to support remote control units.</description>
+      <files>
+        <file category="genAsset" name=".config/template/mx_usbx_host_hid_rcu_template.c.hbs"/>
+        <file category="genAsset" name=".config/template/mx_usbx_host_hid_rcu_template.h.hbs"/>
+        <!-- License files -->
+        <file category="genAsset" name=".config/template/partials/LICENSE_partial.hbs"/>
+        <file category="genAsset" name=".config/template/license/mx_usbx_license_template.md.hbs"/>
+      </files>
+    </component>
+    <!-- mx_usbx_host_cdc_acm -->
+    <component generator="usbx_mx2codegen" Cclass="USB" Cgroup="STM32CubeMX2 Codegen" Csub="CDC_ACM_Host_Class" Cversion="2.0.0" condition="Use CDC_ACM Host Class">
+      <description>Enables USB host for serial communication devices.</description>
+      <files>
+        <file category="genAsset" name=".config/template/mx_usbx_host_cdc_acm_template.c.hbs"/>
+        <file category="genAsset" name=".config/template/mx_usbx_host_cdc_acm_template.h.hbs"/>
+        <!-- License files -->
+        <file category="genAsset" name=".config/template/partials/LICENSE_partial.hbs"/>
+        <file category="genAsset" name=".config/template/license/mx_usbx_license_template.md.hbs"/>
+      </files>
+    </component>
+    <!-- mx_usbx_host_msc -->
+    <component generator="usbx_mx2codegen" Cclass="USB" Cgroup="STM32CubeMX2 Codegen" Csub="MSC_Host_Class" Cversion="2.0.0" condition="Use MSC Host Class">
+      <description>Enables USB host to support mass storage devices.</description>
+      <files>
+        <file category="genAsset" name=".config/template/mx_usbx_host_msc_template.c.hbs"/>
+        <file category="genAsset" name=".config/template/mx_usbx_host_msc_template.h.hbs"/>
+        <!-- License files -->
+        <file category="genAsset" name=".config/template/partials/LICENSE_partial.hbs"/>
+        <file category="genAsset" name=".config/template/license/mx_usbx_license_template.md.hbs"/>
+      </files>
+    </component>
+    <!-- mx_usbx_host_pima_mtp -->
+    <component generator="usbx_mx2codegen" Cclass="USB" Cgroup="STM32CubeMX2 Codegen" Csub="PIMA_MTP_Host_Class" Cversion="2.0.0" condition="Use PIMA_MTP Host Class">
+      <description>Enables USB host for media transfer protocol.</description>
+      <files>
+        <file category="genAsset" name=".config/template/mx_usbx_host_pima_mtp_template.c.hbs"/>
+        <file category="genAsset" name=".config/template/mx_usbx_host_pima_mtp_template.h.hbs"/>
+        <!-- License files -->
+        <file category="genAsset" name=".config/template/partials/LICENSE_partial.hbs"/>
+        <file category="genAsset" name=".config/template/license/mx_usbx_license_template.md.hbs"/>
+      </files>
+    </component>
+    <!-- mx_usbx_host_audio -->
+    <component generator="usbx_mx2codegen" Cclass="USB" Cgroup="STM32CubeMX2 Codegen" Csub="Audio_Host_Class" Cversion="2.0.0" condition="Use Audio Host Class">
+      <description>Enables USB host for audio devices.</description>
+      <files>
+        <file category="genAsset" name=".config/template/mx_usbx_host_audio_template.c.hbs"/>
+        <file category="genAsset" name=".config/template/mx_usbx_host_audio_template.h.hbs"/>
+        <!-- License files -->
+        <file category="genAsset" name=".config/template/partials/LICENSE_partial.hbs"/>
+        <file category="genAsset" name=".config/template/license/mx_usbx_license_template.md.hbs"/>
+      </files>
+    </component>
+    <!-- mx_usbx_host_video -->
+    <component generator="usbx_mx2codegen" Cclass="USB" Cgroup="STM32CubeMX2 Codegen" Csub="Video_Host_Class" Cversion="2.0.0" condition="Use Video Host Class">
+      <description>Enables USB host for video devices.</description>
+      <files>
+        <file category="genAsset" name=".config/template/mx_usbx_host_video_template.c.hbs"/>
+        <file category="genAsset" name=".config/template/mx_usbx_host_video_template.h.hbs"/>
+        <!-- License files -->
+        <file category="genAsset" name=".config/template/partials/LICENSE_partial.hbs"/>
+        <file category="genAsset" name=".config/template/license/mx_usbx_license_template.md.hbs"/>
+      </files>
+    </component>
+    <!-- mx_usbx_host_printer -->
+    <component generator="usbx_mx2codegen" Cclass="USB" Cgroup="STM32CubeMX2 Codegen" Csub="Printer_Host_Class" Cversion="2.0.0" condition="Use Printer Host Class">
+      <description>Enables USB host to support printers.</description>
+      <files>
+        <file category="genAsset" name=".config/template/mx_usbx_host_printer_template.c.hbs"/>
+        <file category="genAsset" name=".config/template/mx_usbx_host_printer_template.h.hbs"/>
+        <!-- License files -->
+        <file category="genAsset" name=".config/template/partials/LICENSE_partial.hbs"/>
+        <file category="genAsset" name=".config/template/license/mx_usbx_license_template.md.hbs"/>
+      </files>
+    </component>
+    <!-- mx_usbx_host_gser -->
+    <component generator="usbx_mx2codegen" Cclass="USB" Cgroup="STM32CubeMX2 Codegen" Csub="GSER_Host_Class" Cversion="2.0.0" condition="Use GSER Host Class">
+      <description>Enables USB host for generic serial devices.</description>
+      <files>
+        <file category="genAsset" name=".config/template/mx_usbx_host_gser_template.c.hbs"/>
+        <file category="genAsset" name=".config/template/mx_usbx_host_gser_template.h.hbs"/>
+        <!-- License files -->
+        <file category="genAsset" name=".config/template/partials/LICENSE_partial.hbs"/>
+        <file category="genAsset" name=".config/template/license/mx_usbx_license_template.md.hbs"/>
+      </files>
+    </component>
+    <!-- mx_usbx_host_prolific -->
+    <component generator="usbx_mx2codegen" Cclass="USB" Cgroup="STM32CubeMX2 Codegen" Csub="Prolific_Host_Class" Cversion="2.0.0" condition="Use PROLIFIC Host Class">
+      <description>Enables USB host for Prolific serial devices.</description>
+      <files>
+        <file category="genAsset" name=".config/template/mx_usbx_host_prolific_template.c.hbs"/>
+        <file category="genAsset" name=".config/template/mx_usbx_host_prolific_template.h.hbs"/>
+        <!-- License files -->
+        <file category="genAsset" name=".config/template/partials/LICENSE_partial.hbs"/>
+        <file category="genAsset" name=".config/template/license/mx_usbx_license_template.md.hbs"/>
+      </files>
+    </component>
+    <!-- mx_usbx_host_swar -->
+    <component generator="usbx_mx2codegen" Cclass="USB" Cgroup="STM32CubeMX2 Codegen" Csub="SWAR_Host_Class" Cversion="2.0.0" condition="Use SWAR Host Class">
+      <description>Enables USB host for SWAR devices.</description>
+      <files>
+        <file category="genAsset" name=".config/template/mx_usbx_host_swar_template.c.hbs"/>
+        <file category="genAsset" name=".config/template/mx_usbx_host_swar_template.h.hbs"/>
+        <!-- License files -->
+        <file category="genAsset" name=".config/template/partials/LICENSE_partial.hbs"/>
+        <file category="genAsset" name=".config/template/license/mx_usbx_license_template.md.hbs"/>
+      </files>
+    </component>
+    <!-- mx_usbx_host -->
+    <component generator="usbx_mx2codegen" Cclass="USB" Cgroup="STM32CubeMX2 Codegen" Csub="Host_Core" Cversion="2.0.0" condition="Use Host Core">
+      <description>Host USBX configuration.</description>
+      <files>
+        <!-- helper file -->
+        <file category="genAsset" name=".config/template/helpers/usbx_helpers.js"/>
+        <file category="genAsset" name=".config/template/mx_usbx_host_template.c.hbs"/>
+        <file category="genAsset" name=".config/template/mx_usbx_host_template.h.hbs"/>
+        <!-- License files -->
+        <file category="genAsset" name=".config/template/partials/LICENSE_partial.hbs"/>
+        <file category="genAsset" name=".config/template/license/mx_usbx_license_template.md.hbs"/>
+      </files>
+    </component>
+    <!-- mx_usbx_device -->
+    <component generator="usbx_mx2codegen" Cclass="USB" Cgroup="STM32CubeMX2 Codegen" Csub="Device_Core" Cversion="2.0.0" condition="Use Device Core">
+      <description>Device USBX configuration.</description>
+      <files>
+        <!-- helper file -->
+        <file category="genAsset" name=".config/template/helpers/usbx_helpers.js"/>
+        <file category="genAsset" name=".config/template/mx_usbx_device_template.c.hbs"/>
+        <file category="genAsset" name=".config/template/mx_usbx_device_template.h.hbs"/>
+        <file category="genAsset" name=".config/template/ux_stm32_device_descriptors_config_template.h.hbs"/>
+        <!-- License files -->
+        <file category="genAsset" name=".config/template/partials/LICENSE_partial.hbs"/>
+        <file category="genAsset" name=".config/template/license/mx_usbx_license_template.md.hbs"/>
+      </files>
+    </component>
+    <!-- STM32 USBX MX2CodeGen -->
+    <component generator="usbx_mx2codegen" Cclass="USB" Cgroup="STM32CubeMX2 Config" Csub="USBX" Cversion="2.0.0" condition="usbx core condition">
+      <description>Temporary component that will store all the resulting generated code and initialize code generation for USBX MW</description>
+      <environments>
+        <environment name="STM32Cube">
+        </environment>
+      </environments>
+      <files>
+        <!-- Configuration files -->
+        <file category="genAsset" name=".config/gen_code.bat"/>
+        <file category="genAsset" name=".config/gen_code.sh"/>
+        <file category="genAsset" name=".config/STMicroelectronics.usbx.gpdsc.hbs"/>
+        <file category="genAsset" name=".config/usbx_config_parameters.json"/>
+        <!-- helper file -->
+        <file category="genAsset" name=".config/template/helpers/usbx_helpers.js"/>
+        <!-- mx_usbx_app -->
+        <file category="genAsset" name=".config/template/mx_usbx_app_template.c.hbs"/>
+        <file category="genAsset" name=".config/template/mx_usbx_app_template.h.hbs"/>
+        <!-- ux_user_template -->
+        <file category="genAsset" name=".config/template/ux_user_template.h.hbs"/>
+        <!-- License files -->
+        <file category="genAsset" name=".config/template/partials/LICENSE_partial.hbs"/>
+        <file category="genAsset" name=".config/template/license/mx_usbx_license_template.md.hbs"/>
+      </files>
+    </component>
+  </components>
+</package>
