@@ -221,6 +221,13 @@ INT         i;
 
             /* After reset, adjust phy speed.  */
             UX_HCD_EHCI_EXT_USBPHY_HIGHSPEED_MODE_SET(hcd_ehci, UX_TRUE);
+            ULONG                   ehci_register;
+            ehci_register = _ux_hcd_ehci_register_read(hcd_ehci, EHCI_HCOR_USB_COMMAND);
+
+            /* Enable asynchronous and periodic schedules (ASE | PSE). */
+            ehci_register |= EHCI_HC_IO_ASE
+                             | EHCI_HC_IO_PSE;
+            _ux_hcd_ehci_register_write(hcd_ehci, EHCI_HCOR_USB_COMMAND, ehci_register);
             return(UX_SUCCESS);
         }
     }

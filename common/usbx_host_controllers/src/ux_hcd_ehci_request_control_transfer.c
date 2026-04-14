@@ -131,6 +131,9 @@ UINT            pid;
     /* Set the endpoint address (this should have changed after address setting).  */
     ed -> ux_ehci_ed_cap0 |=  device -> ux_device_address;
 
+    /* Set the endpoint speed */
+    ed -> ux_ehci_ed_cap0 |=  (device -> ux_device_speed << UX_EHCI_QH_ED_EPS_LOC);
+
     /* Set the default MPS Capability info in the ED.  */
     ed -> ux_ehci_ed_cap0 &=  ~UX_EHCI_QH_MPS_MASK;
     ed -> ux_ehci_ed_cap0 |=  (ULONG)endpoint -> ux_endpoint_descriptor.wMaxPacketSize << UX_EHCI_QH_MPS_LOC;
@@ -213,6 +216,13 @@ UINT            pid;
     td_component &=  ~UX_EHCI_TD_T;
     ed -> ux_ehci_ed_queue_element =  (UX_EHCI_TD *) td_component;
 
+#if defined(UX_HOST_STANDALONE)
+    /* Ring doorbell to ensure EHCI processes newly queued async TDs. */
+    _ux_hcd_ehci_door_bell_wait(hcd_ehci);
+
+    /* Transfer started in background, fine.  */
+    return(UX_SUCCESS);
+#else
     /* Wait for the completion of the transfer request.  */
     status =  _ux_host_semaphore_get(&transfer_request -> ux_transfer_request_semaphore, UX_MS_TO_TICK(UX_CONTROL_TRANSFER_TIMEOUT));
 
@@ -238,6 +248,7 @@ UINT            pid;
     _ux_utility_memory_free(setup_request);
 
     /* Return completion status.  */
-    return(transfer_request -> ux_transfer_request_completion_code);           
+    return(transfer_request -> ux_transfer_request_completion_code);
+#endif
 }
 

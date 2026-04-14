@@ -1,6 +1,6 @@
 /***************************************************************************
  * Copyright (c) 2024 Microsoft Corporation
- * Copyright (c) 2025 STMicroelectronics.
+ * Copyright (c) 2025-2026 STMicroelectronics.
  *
  * This program and the accompanying materials are made available under the
  * terms of the MIT License which is available at
@@ -74,7 +74,7 @@
 /*                                            resulting in version 6.4.1  */
 /*                                                                        */
 /**************************************************************************/
-UINT _ux_os_utility_timer_create(TX_TIMER *timer, CHAR *timer_name, VOID (*expiration_function) (ULONG),
+UINT _ux_os_utility_timer_create(UX_TIMER *timer, CHAR *timer_name, VOID (*expiration_function) (ULONG),
                                  ULONG expiration_input, ULONG initial_ticks, ULONG reschedule_ticks,
                                  UINT activation_flag)
 {

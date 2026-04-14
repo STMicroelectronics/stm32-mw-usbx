@@ -1,72 +1,46 @@
-# Contributing to Eclipse ThreadX
+# Contributing guide
 
-Thanks for your interest in this project.
+This guide mainly focuses on the steps to follow to submit an issue or a pull request.
 
-## Project description
+## 1. Issues
 
-Eclipse ThreadX provides a vendor-neutral, open source, safety certified OS for
-real-time applications published on under a permissive license. The Eclipse
-ThreadX suite encompasses:  
-* ThreadX - advanced real-time operating system (RTOS) designed specifically for deeply embedded applications
-* NetX Duo - advanced, industrial-grade TCP/IP network stack designed specifically for deeply embedded real-time and IoT applications
-* FileX - high-performance, FAT-compatible file system that’s fully integrated with ThreadX kernel
-* GUIX - provides a complete, embedded graphical user interface (GUI) library
-* USBX - high-performance USB host, device, and on-the-go (OTG) embedded stack, that is fully integrated with ThreadX kernel
-* LevelX - Flash Wear Leveling for FileX and stand-alone purposes
-* GuiX Studio - design environment, facilitating the creation and maintenance of all graphical elements for GUIX
-* TraceX - analysis tool that provides a graphical view of real-time system events to better understand the behavior of real-time systems
+### 1.1 Before opening an issue
 
-Project site: https://projects.eclipse.org/projects/iot.threadx
+Before posting an issue, please ensure:
+* You are using the latest commit.
+* Your issue is **not** a vulnerability. Otherwise, please refer to section [3](CONTRIBUTING.md#3-vulnerabilities) below.
+* Your issue is **related to** the software provided in this repository. Otherwise, please refer to section [4](CONTRIBUTING.md#4-support-requests-and-miscellaneous) below.
+* Your issue is not already reported, fixed or discussed in a previous one. Remember to browse the **closed** issues.
 
-## Terms of Use
+### 1.2 Posting the issue
 
-This repository is subject to the Terms of Use of the Eclipse Foundation  
-https://www.eclipse.org/legal/termsofuse.php
+When you have checked the previous points, create a new report from the **Issues** tab of this repository. A couple of templates are available [here](../../issues/new/choose).
 
-## Developer resources
+## 2. Pull Requests
 
-Information regarding source code management, builds, coding standards, and more.
-https://projects.eclipse.org/projects/iot.threadx/developer
+### 2.1 Before opening a pull request
 
-The project maintains the following source code repositories
+STMicrolectronics is happy to receive contributions from the community, based on an initial Contributor License Agreement (CLA) procedure.
 
-* https://github.com/eclipse-threadx/.github
-* https://github.com/eclipse-threadx/cmsis-packs
-* https://github.com/eclipse-threadx/filex
-* https://github.com/eclipse-threadx/getting-started
-* https://github.com/eclipse-threadx/guix
-* https://github.com/eclipse-threadx/levelx
-* https://github.com/eclipse-threadx/netxduo
-* https://github.com/eclipse-threadx/rtos-docs
-* https://github.com/eclipse-threadx/samples
-* https://github.com/eclipse-threadx/threadx
-* https://github.com/eclipse-threadx/threadx-learn-samples
-* https://github.com/eclipse-threadx/tracex
-* https://github.com/eclipse-threadx/usbx
+* If you are an individual writing original source code and you are sure **you own the intellectual property**, then you need to sign an **Individual** [CLA](https://cla.st.com).
+* If you work for a company that wants also to allow you to contribute with your work, your company needs to provide a **Corporate** [CLA](https://cla.st.com) mentioning your GitHub account name.
+* If you are not sure that a CLA (Individual or Corporate) has been signed for your GitHub account you can check the [CLA](https://cla.st.com) dedicated page.
 
-## Eclipse Development Process
+> [!IMPORTANT]
+> Please note that:
+> * The Corporate CLA will always take precedence over the Individual CLA.
+> * One CLA submission is sufficient, for any project proposed by STMicroelectronics.
 
-This Eclipse Foundation open project is governed by the Eclipse Foundation
-Development Process and operates under the terms of the Eclipse IP Policy.
+### 2.2 How to proceed
 
-* https://eclipse.org/projects/dev_process
-* https://www.eclipse.org/org/documents/Eclipse_IP_Policy.pdf
+* We recommend to engage first a communication thru an issue, in order to present your proposal, just to confirm that it corresponds to STMicroelectronics' domain or scope.
+* Then fork the project to your GitHub account to further develop your contribution. Please use the latest commit version.
+* Please, submit one pull request per new feature or proposal. This will ease the analysis and the final merge if accepted.
 
-## Eclipse Contributor Agreement
+## 3. Vulnerabilities
 
-In order to be able to contribute to Eclipse Foundation projects you must electronically sign the Eclipse Contributor Agreement (ECA).  
-https://www.eclipse.org/legal/ECA.php
+To report a **vulnerability**, please refer to the [SECURITY.md](./SECURITY.md) file for instructions.
 
-The ECA provides the Eclipse Foundation with a permanent record that you agree
-that each of your contributions will comply with the commitments documented in
-the Developer Certificate of Origin (DCO). Having an ECA on file associated with
-the email address matching the "Author" field of your contribution's Git commits
-fulfills the DCO's requirement that you sign-off on your contributions.
+## 4. Support requests and miscellaneous
 
-For more information, please see the Eclipse Committer Handbook:  
-https://www.eclipse.org/projects/handbook/#resources-commit
-
-## Contact
-
-Contact the project developers via the project's "dev" list.  
-https://accounts.eclipse.org/mailing-list/threadx-dev
+For support requests or any other topics not related to the content of this repository, you can submit a post to the **ST Community** on the appropriate topic [page](https://community.st.com/s/topiccatalog).

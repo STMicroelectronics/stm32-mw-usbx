@@ -456,7 +456,7 @@ UINT        status;
             if (status == UX_STATE_NEXT || status == UX_STATE_IDLE)
             {
                 hub -> ux_host_class_hub_run_state = hub -> ux_host_class_hub_next_state;
-                continue;
+                return;
             }
 
             /* Check error.  */

@@ -1,6 +1,6 @@
 /***************************************************************************
  * Copyright (c) 2024 Microsoft Corporation
- * Copyright (c) 2025 STMicroelectronics.
+ * Copyright (c) 2026 STMicroelectronics.
  *
  * This program and the accompanying materials are made available under the
  * terms of the MIT License which is available at
@@ -69,6 +69,7 @@ static inline UINT _ux_utility_semaphore_get_count(UX_SEMAPHORE *semaphore)
   return (count);
 }
 
+#define _ux_utility_mutex_created(mtx)                              (mtx.mutex_handle != NULL)
 #define _ux_utility_semaphore_waiting(sem)                          (_ux_utility_semaphore_get_count(sem) != 0)
 #define _ux_utility_semaphore_created(sem)                          (sem.semaphore_handle != NULL)
 #define _ux_utility_thread_created(thr)                             (thr.task_handle != NULL)
@@ -124,7 +125,7 @@ extern  ULONG       _ux_utility_time_get(VOID);
 #endif
 
 #ifndef             _ux_utility_time_elapsed
-#define             _ux_utility_time_elapsed(a,b)          (((b)>=(a)) ? ((b)-(a)) : (0xFFFFFFFFul-(b)+(a)+1))
+#define             _ux_utility_time_elapsed(a,b)          (((b)>=(a)) ? ((b)-(a)) : (0xFFFFFFFFul-(a)+(b)+1))
 #else
 extern  ALIGN_TYPE  _ux_utility_time_elapsed(ALIGN_TYPE, ALIGN_TYPE);
 #endif

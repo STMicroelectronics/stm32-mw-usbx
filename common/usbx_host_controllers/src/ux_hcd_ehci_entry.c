@@ -166,6 +166,16 @@ UX_HCD_EHCI     *hcd_ehci;
     case UX_HCD_RESET_PORT:
 
         status =  _ux_hcd_ehci_port_reset(hcd_ehci, (ULONG) parameter);
+#if defined(UX_HOST_STANDALONE)
+        if (status == UX_SUCCESS)
+        {
+            status = UX_STATE_NEXT;
+        }
+        else if (status == UX_ERROR)
+        {
+            status = UX_STATE_ERROR;
+        }
+#endif /* UX_HOST_STANDALONE */
         break;
     
     
@@ -185,6 +195,16 @@ UX_HCD_EHCI     *hcd_ehci;
     case UX_HCD_TRANSFER_REQUEST:
 
         status =  _ux_hcd_ehci_request_transfer(hcd_ehci, (UX_TRANSFER *) parameter);
+#if defined(UX_HOST_STANDALONE)
+        if (status == UX_SUCCESS)
+        {
+            status = UX_STATE_NEXT;
+        }
+        else if (status == UX_ERROR)
+        {
+            status = UX_STATE_ERROR;
+        }
+#endif /* UX_HOST_STANDALONE */
         break;
     
     

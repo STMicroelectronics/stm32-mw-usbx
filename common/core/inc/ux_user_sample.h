@@ -636,7 +636,7 @@
 
 /* Defined, this enables function parameters checking. This define is typically used
    when the application is debugging and removed after the application is fully debugged.  */
-#define UX_ENABLE_PARAM_CHECHING
+#define UX_ENABLE_PARAM_CHECKING
 
 #endif
 

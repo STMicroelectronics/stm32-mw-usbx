@@ -1,20 +1,31 @@
-# Security Policy
+# Report potential product security vulnerabilities
 
-## Supported Versions
+ST places a high priority on security, and our Product Security Incident
+Response Team (PSIRT) is committed to rapidly addressing potential security
+vulnerabilities affecting our products. PSIRT's long history and vast experience
+in security allows ST to perform clear analyses and provide appropriate guidance
+on mitigations and solutions when applicable.
 
-| Version | Supported          |
-| ------- | ------------------ |
-| 6.4.x   | :white_check_mark: |
+If you wish to report potential security vulnerabilities regarding our products,
+**please do not report them through public GitHub issues.** Instead, we
+encourage you to report them to our ST PSIRT following the process described at:
+**https://www.st.com/content/st_com/en/security/report-vulnerabilities.html**
 
-## Reporting a Vulnerability
+### IMPORTANT - READ CAREFULLY:
 
-If you think you have found a vulnerability in <project> you can report it using one of the following ways:
+STMicroelectronics International N.V., on behalf of itself, its affiliates and
+subsidiaries, (collectively “ST”) takes all potential security vulnerability
+reports or other related communications (“Report(s)”) seriously. In order to
+review Your Report (the terms “You” and “Yours” include your employer, and all
+affiliates, subsidiaries and related persons or entities) and take actions as
+deemed appropriate, ST requires that we have the rights and Your permission to
+do so.
 
-* Contact the [Eclipse Foundation Security Team](mailto:security@eclipse-foundation.org)
-* [Report a Vulnerability](https://github.com/eclipse-threadx/usbx/security/advisories/new)
+As such, by submitting Your Report to ST, You agree that You have the right to
+do so, and You grant to ST the rights to use the Report for purposes related to
+security vulnerability analysis, testing, correction, patching, reporting and
+any other related purpose or function.
 
-You can find more information about reporting and disclosure at the [Eclipse Foundation Security page](https://www.eclipse.org/security/).
-
-## Security Policy
-
-This project follows [Eclipse Foundation Vulnerability Reporting Policy](https://www.eclipse.org/security/policy/).
+By submitting Your Report, You agree that ST’s
+[Privacy Policy](https://www.st.com/content/st_com/en/common/privacy-portal.html)
+applies to all related communications.

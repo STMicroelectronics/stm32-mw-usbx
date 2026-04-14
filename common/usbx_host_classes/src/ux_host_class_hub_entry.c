@@ -461,7 +461,7 @@ ULONG                   current_ms, elapsed_ms;
             if (status == UX_STATE_NEXT || status == UX_STATE_IDLE)
             {
                 hub -> ux_host_class_hub_enum_state = hub -> ux_host_class_hub_next_state;
-                continue;
+                return(UX_STATE_WAIT);
             }
 
             /* Check error.  */

@@ -1,6 +1,6 @@
 /***************************************************************************
  * Copyright (c) 2024 Microsoft Corporation
- * Copyright (c) 2025 STMicroelectronics.
+ * Copyright (c) 2025-2026 STMicroelectronics.
  *
  * This program and the accompanying materials are made available under the
  * terms of the MIT License which is available at
@@ -41,7 +41,7 @@
 #ifndef UX_OS_UTILITY_H
 #define UX_OS_UTILITY_H
 
-
+#define _ux_utility_mutex_created(mtx)                              ((mtx)->tx_mutex_id != UX_EMPTY)
 #define _ux_utility_semaphore_waiting(sem)                          ((sem)->tx_semaphore_count != UX_EMPTY)
 #define _ux_utility_semaphore_created(sem)                          ((sem)->tx_semaphore_id != UX_EMPTY)
 #define _ux_utility_thread_created(thr)                             ((thr)->tx_thread_id != UX_EMPTY)
@@ -97,7 +97,7 @@ VOID             _ux_os_utility_sleep_ms(ULONG ms_wait);
 #endif
 
 #ifndef             _ux_utility_time_elapsed
-#define             _ux_utility_time_elapsed(a,b)          (((b)>=(a)) ? ((b)-(a)) : (0xFFFFFFFFul-(b)+(a)+1))
+#define             _ux_utility_time_elapsed(a,b)          (((b)>=(a)) ? ((b)-(a)) : (0xFFFFFFFFul-(a)+(b)+1))
 #else
 extern  ALIGN_TYPE  _ux_utility_time_elapsed(ALIGN_TYPE, ALIGN_TYPE);
 #endif

@@ -141,9 +141,12 @@
 /*                                            resulting in version 6.3.0  */
 /*  12-31-2023     Chaoqiong Xiao           Modified comment(s),          */
 /*                                            resulting in version 6.4.0  */
-/*  03-01-2024      Tiejun Zhou             Modified comment(s),          */
+/*  03-01-2024     Tiejun Zhou              Modified comment(s),          */
 /*                                            update version number,      */
 /*                                            resulting in version 6.4.1  */
+/*  02-19-2025     Frédéric Desbiens        Modified comment(s),          */
+/*                                            update version number,      */
+/*                                            resulting in version 6.4.2  */
 /*                                                                        */
 /**************************************************************************/
 
@@ -351,7 +354,9 @@ typedef signed char               SCHAR;
 #define AZURE_RTOS_USBX
 #define USBX_MAJOR_VERSION            6
 #define USBX_MINOR_VERSION            4
-#define USBX_PATCH_VERSION            1
+#define USBX_PATCH_VERSION            3
+#define USBX_BUILD_VERSION            202503
+#define USBX_HOTFIX_VERSION           'a'
 
 /* Macros for concatenating tokens, where UX_CONCATn concatenates n tokens.  */
 
@@ -2691,6 +2696,10 @@ typedef struct UX_SYSTEM_SLAVE_STRUCT
 #define UX_SYSTEM_DEVICE_MAX_CLASS_GET()        (1)
 #endif
 
+#define UX_SLAVE_DEVICE_CHECK_STATE(state)                                                        \
+  (_ux_system_slave->ux_system_slave_device.ux_slave_device_state & (state)) ? UX_TRUE : UX_FALSE \
+
+
 typedef struct UX_SYSTEM_OTG_STRUCT
 {
 
@@ -2746,9 +2755,9 @@ typedef struct UX_HOST_CLASS_DPUMP_STRUCT
 /* Define USBX Services.  */
 
 #if defined(UX_SYSTEM_ENABLE_ERROR_CHECKING)
-#define ux_system_initialize                                    _ux_system_initialize
-#else
 #define ux_system_initialize                                    _uxe_system_initialize
+#else
+#define ux_system_initialize                                    _ux_system_initialize
 #endif
 
 #define ux_system_uninitialize                                  _ux_system_uninitialize
@@ -2845,6 +2854,7 @@ typedef struct UX_HOST_CLASS_DPUMP_STRUCT
 #define ux_device_stack_interface_start                         _ux_device_stack_interface_start
 #define ux_device_stack_transfer_request                        _ux_device_stack_transfer_request
 #define ux_device_stack_transfer_abort                          _ux_device_stack_transfer_abort
+#define ux_device_stack_microsoft_extension_register            _ux_device_stack_microsoft_extension_register
 
 #define ux_device_stack_tasks_run                               _ux_device_stack_tasks_run
 #define ux_device_stack_transfer_run                            _ux_device_stack_transfer_run
@@ -2945,6 +2955,8 @@ UINT    ux_device_stack_interface_set(UCHAR * device_framework, ULONG device_fra
 UINT    ux_device_stack_interface_start(UX_SLAVE_INTERFACE *ux_interface);
 UINT    ux_device_stack_transfer_request(UX_SLAVE_TRANSFER *transfer_request, ULONG slave_length, ULONG host_length);
 UINT    ux_device_stack_transfer_request_abort(UX_SLAVE_TRANSFER *transfer_request, ULONG completion_code);
+UINT    ux_device_stack_microsoft_extension_register(ULONG vendor_request,
+                                    UINT (*vendor_request_function)(ULONG, ULONG, ULONG, ULONG, UCHAR *, ULONG *));
 
 UINT    ux_device_stack_tasks_run(VOID);
 UINT    ux_device_stack_transfer_run(UX_SLAVE_TRANSFER *transfer_request, ULONG slave_length, ULONG host_length);

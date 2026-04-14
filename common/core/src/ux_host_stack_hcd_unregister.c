@@ -1,10 +1,10 @@
 /***************************************************************************
- * Copyright (c) 2024 Microsoft Corporation 
- * 
+ * Copyright (c) 2024 Microsoft Corporation
+ *
  * This program and the accompanying materials are made available under the
  * terms of the MIT License which is available at
  * https://opensource.org/licenses/MIT.
- * 
+ *
  * SPDX-License-Identifier: MIT
  **************************************************************************/
 
@@ -137,7 +137,7 @@ UINT        hcd_name_length =  0;
             if (status == UX_TRUE)
                 break;
 #endif
-            }
+         }
 
 #if UX_MAX_CLASS_DRIVER > 1
         /* Try the next HCD structure */
@@ -148,6 +148,9 @@ UINT        hcd_name_length =  0;
     /* No valid HCD found.  */
     if (status != UX_TRUE)
         return(UX_ERROR);
+
+    /* Stop USB host low-level.  */
+    hcd -> ux_hcd_entry_function(hcd, UX_HCD_DISABLE_PORT, UX_NULL);
 
     /* Now disable controller.  */
     hcd -> ux_hcd_entry_function(hcd, UX_HCD_UNINITIALIZE, UX_NULL);

@@ -80,24 +80,26 @@ VOID  _ux_hcd_ehci_door_bell_wait(UX_HCD_EHCI *hcd_ehci)
 {
 
 ULONG       ehci_register;
+#if !defined(UX_HOST_STANDALONE)
 UINT        status;
-    
-
     /* Protect against multiple thread entry to this HCD.  */
     status =  _ux_host_semaphore_get(&hcd_ehci -> ux_hcd_ehci_protect_semaphore, UX_WAIT_FOREVER);
     if (status != UX_SUCCESS)
         return;
+#endif /* !UX_HOST_STANDALONE */
 
     /* Raise the doorbell to the HCD.  */
     ehci_register =  _ux_hcd_ehci_register_read(hcd_ehci, EHCI_HCOR_USB_COMMAND);
     ehci_register |=  EHCI_HC_IO_IAAD;
     _ux_hcd_ehci_register_write(hcd_ehci, EHCI_HCOR_USB_COMMAND, ehci_register);
 
+#if !defined(UX_HOST_STANDALONE)
     /* Wait for the doorbell to be awaken.  */
     _ux_host_semaphore_get_norc(&hcd_ehci -> ux_hcd_ehci_doorbell_semaphore, UX_WAIT_FOREVER);
 
     /* Free the protection semaphore.  */
     _ux_host_semaphore_put(&hcd_ehci -> ux_hcd_ehci_protect_semaphore);
+#endif /* !UX_HOST_STANDALONE */
 
     /* Return to caller.  */        
     return;

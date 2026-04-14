@@ -129,7 +129,10 @@ ULONG           port_index;
                     /* We have some transactions done in the past frame/micro-frame.
                        The controller thread needs to wake up and process them.  */
                     hcd -> ux_hcd_thread_signal++;
+#if !defined(UX_HOST_STANDALONE)
                     _ux_host_semaphore_put(&_ux_system_host -> ux_system_host_hcd_semaphore);
+#endif /* defined(UX_HOST_STANDALONE) */
+
                 }
                     
                 if (ehci_register & EHCI_HC_STS_HSE)

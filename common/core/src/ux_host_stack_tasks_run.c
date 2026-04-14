@@ -966,7 +966,7 @@ INT                     immediate_state = UX_TRUE;
             {
                 device -> ux_device_enum_trans = UX_NULL;
                 device -> ux_device_enum_state = device -> ux_device_enum_next_state;
-                continue;
+                return;
             }
 
             /* Check error.  */

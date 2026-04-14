@@ -60,6 +60,8 @@
 #ifndef UX_HCD_EHCI_H
 #define UX_HCD_EHCI_H
 
+#include "ux_port.h"
+#include "ux_api.h"
 /* Determine if a C++ compiler is being used.  If so, ensure that standard 
    C is used to process the API information.  */ 
 
@@ -72,7 +74,7 @@ extern   "C" {
 
 
 /* Possible defined EHCI HCD extensions.  */
-
+/* #define UX_HCD_EHCI_SPLIT_TRANSFER_ENABLE */
 /* Extension for peripheral host mode select (function like).  */
 /* #define UX_HCD_EHCI_EXT_USB_HOST_MODE_ENABLE(hcd_ehci) */
 
@@ -118,7 +120,13 @@ extern   "C" {
 #define EHCI_HC_IO_PSE                                      0x00000010u
 #define EHCI_HC_IO_ASE                                      0x00000020u
 #define EHCI_HC_IO_IAAD                                     0x00000040u
-#define EHCI_HC_IO_ITC                                      0x00010000u
+#define EHCI_HC_IO_ITC_01_MICRO_FRAME                       0x00010000u
+#define EHCI_HC_IO_ITC_02_MICRO_FRAME                       0x00020000u
+#define EHCI_HC_IO_ITC_04_MICRO_FRAME                       0x00040000u
+#define EHCI_HC_IO_ITC_08_MICRO_FRAME                       0x00080000u
+#define EHCI_HC_IO_ITC_16_MICRO_FRAME                       0x00100000u
+#define EHCI_HC_IO_ITC_32_MICRO_FRAME                       0x00200000u
+#define EHCI_HC_IO_ITC_64_MICRO_FRAME                       0x00400000u
 #define EHCI_HC_IO_FRAME_SIZE_1024                          0x00000000u
 #define EHCI_HC_IO_FRAME_SIZE_512                           0x00000004u
 #define EHCI_HC_IO_FRAME_SIZE_256                           0x00000008u
@@ -455,7 +463,8 @@ typedef struct UX_EHCI_ED_STRUCT
 #define UX_EHCI_QH_MPS_MASK                                 0x07ff0000u
 #define UX_EHCI_QH_NCR                                      0xf0000000u
 #define UX_EHCI_QH_CEF                                      0x08000000u
-#define UX_EHCI_QH_ED_AD_LOC                                8u 
+#define UX_EHCI_QH_ED_EPS_LOC                               12u
+#define UX_EHCI_QH_ED_AD_LOC                                8u
 #define UX_EHCI_QH_HBPM                                     0x40000000u
 #define UX_EHCI_QH_HBPM_LOC                                 30u
 #define UX_EHCI_QH_HEAD                                     0x00008000u

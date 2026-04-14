@@ -120,10 +120,6 @@
 /**************************************************************************/
 UINT  _ux_hcd_ehci_initialize(UX_HCD *hcd)
 {
-#if defined(UX_HOST_STANDALONE)
-    UX_PARAMETER_NOT_USED(hcd);
-    return(UX_FUNCTION_NOT_SUPPORTED);
-#else
 
 UX_HCD_EHCI             *hcd_ehci;
 UX_EHCI_ED              *ed;
@@ -301,7 +297,6 @@ UINT                    status = UX_SUCCESS;
 
         /* Make this ED point to itself.  */
         lp.void_ptr = _ux_utility_physical_address(ed);
-
         /* Store the physical address of this Ed into the asynch list.  */
         _ux_hcd_ehci_register_write(hcd_ehci, EHCI_HCOR_ASYNCH_LIST_ADDRESS, lp.value);
 
@@ -319,7 +314,9 @@ UINT                    status = UX_SUCCESS;
 
         /* Set the EHCI Interrupt threshold default value (1 or 8 per ms)
         and the size of the frame list.  */
-        _ux_hcd_ehci_register_write(hcd_ehci, EHCI_HCOR_USB_COMMAND, EHCI_HC_IO_ITC);
+        ehci_register =  _ux_hcd_ehci_register_read(hcd_ehci, EHCI_HCOR_USB_COMMAND);
+        ehci_register |= EHCI_HC_IO_ITC_08_MICRO_FRAME;
+        _ux_hcd_ehci_register_write(hcd_ehci, EHCI_HCOR_USB_COMMAND, ehci_register);
 
         /* Get the number of ports on the controller. The number of ports
         needs to be reflected both for the generic HCD container and the
@@ -358,15 +355,13 @@ UINT                    status = UX_SUCCESS;
 
     if (status == UX_SUCCESS)
     {
-
+        
         /* The EHCI Controller can now be Started. */
         ehci_register =  _ux_hcd_ehci_register_read(hcd_ehci, EHCI_HCOR_USB_COMMAND);
 
         /* Set the Frame list size and the RUN bit.. */
         ehci_register |= UX_EHCI_FRAME_LIST_MASK
-                        | EHCI_HC_IO_RS
-                        | EHCI_HC_IO_ASE
-                        | EHCI_HC_IO_PSE;
+                        | EHCI_HC_IO_RS;
         _ux_hcd_ehci_register_write(hcd_ehci, EHCI_HCOR_USB_COMMAND, ehci_register);
 
         /* Regular EHCI with embedded TT.  */
@@ -378,12 +373,11 @@ UINT                    status = UX_SUCCESS;
         /* Set the state of the controller to OPERATIONAL.  */
         hcd -> ux_hcd_status =  UX_HCD_STATUS_OPERATIONAL;
 
-        /* Set the EHCI Interrupt Register.  */
-        _ux_hcd_ehci_register_write(hcd_ehci, EHCI_HCOR_USB_INTERRUPT, EHCI_HC_INTERRUPT_ENABLE_NORMAL);
-
         /* The controller interrupt must have a handler and be active now.  */
         _ux_utility_set_interrupt_handler(hcd -> ux_hcd_irq, _ux_hcd_ehci_interrupt_handler);
 
+        /* Set the EHCI Interrupt Register.  */
+        _ux_hcd_ehci_register_write(hcd_ehci, EHCI_HCOR_USB_INTERRUPT, EHCI_HC_INTERRUPT_ENABLE_NORMAL);
 
         /* Force a enum process if CCS detected.
         ** Because CSC may keep zero in this case.
@@ -425,15 +419,16 @@ UINT                    status = UX_SUCCESS;
     if (hcd_ehci -> ux_hcd_ehci_hsiso_td_list)
         _ux_utility_memory_free(hcd_ehci -> ux_hcd_ehci_hsiso_td_list);
 #endif
-    if (hcd_ehci -> ux_hcd_ehci_periodic_mutex.tx_mutex_id != 0)
+#if !defined(UX_HOST_STANDALONE)
+    if (_ux_utility_mutex_created(hcd_ehci -> ux_hcd_ehci_periodic_mutex) != 0)
         _ux_host_mutex_delete(&hcd_ehci -> ux_hcd_ehci_periodic_mutex);
     if (_ux_utility_semaphore_created(hcd_ehci -> ux_hcd_ehci_protect_semaphore) != 0)
         _ux_host_semaphore_delete(&hcd_ehci -> ux_hcd_ehci_protect_semaphore);
     if (_ux_utility_semaphore_created(hcd_ehci -> ux_hcd_ehci_doorbell_semaphore) != 0)
         _ux_host_semaphore_delete(&hcd_ehci -> ux_hcd_ehci_doorbell_semaphore);
+#endif
     _ux_utility_memory_free(hcd_ehci);
 
     /* Return error status code.  */
     return(status);
-#endif
 }

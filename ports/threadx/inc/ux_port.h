@@ -1,6 +1,6 @@
 /***************************************************************************
  * Copyright (c) 2024 Microsoft Corporation
- * Copyright (c) 2025 STMicroelectronics.
+ * Copyright (c) 2025-2026 STMicroelectronics.
  *
  * This program and the accompanying materials are made available under the
  * terms of the MIT License which is available at
@@ -172,6 +172,10 @@ typedef long                        SLONG;
 
 #ifndef UX_HOST_CLASS_STORAGE_MAX_MEDIA
 #define UX_HOST_CLASS_STORAGE_MAX_MEDIA                     1
+#endif
+
+#ifndef UX_HOST_CLASS_STORAGE_MAX_PARTITIONS_COUNT
+#define UX_HOST_CLASS_STORAGE_MAX_PARTITIONS_COUNT          8
 #endif
 
 #ifndef UX_SLAVE_REQUEST_CONTROL_MAX_LENGTH
@@ -841,8 +845,8 @@ VOID    _ux_os_trace_event_update(TX_TRACE_BUFFER_ENTRY *event, ULONG timestamp,
 /* Define the version ID of USBX.  This may be utilized by the application.  */
 
 #ifdef  UX_SYSTEM_INIT
-CHAR                            _ux_version_id[] =
-                                    "Copyright (c) Microsoft Corporation. All rights reserved. * USBX Generic Version 6.4.1 *";
+CHAR                            _ux_version_id[] = 
+                                    "Copyright (c) 2024 Microsoft Corporation. * USBX ARM9/GNU Version 6.4.1 *";
 #else
 extern  CHAR                    _ux_version_id[];
 #endif

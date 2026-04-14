@@ -233,10 +233,34 @@ ULONG                           first_new_aborted = 1;
         /* Release the periodic table.  */
         _ux_host_mutex_off(&hcd_ehci -> ux_hcd_ehci_periodic_mutex);
     }
-    else
+    else if ((endpoint -> ux_endpoint_descriptor.bmAttributes & UX_MASK_ENDPOINT_TYPE) == UX_INTERRUPT_ENDPOINT)
+    {
+        UX_EHCI_ED *ed;
+        UX_EHCI_TD *td;
+        UX_EHCI_TD *next_td;
+        ed = lp.ed_ptr;
+        td = ed -> ux_ehci_ed_first_td;
+        while (td != UX_NULL)
+        {
+            /* Get the next TD pointed by the current TD.  */
+            /* Mark the current TD as free.  */
+            next_td =  td -> ux_ehci_td_link_pointer;
+            next_td =  (UX_EHCI_TD *) ((ULONG) next_td & ~UX_EHCI_TD_T);
+            td -> ux_ehci_td_status =  UX_UNUSED;
+            td =  next_td;
+        }
 
+        /* Reset the first TD.  */
+        ed -> ux_ehci_ed_first_td =  UX_NULL;
+
+        /* Reset the last TD.  */
+        ed -> ux_ehci_ed_last_td =  UX_NULL;
+    }
+    else
+    {
         /* Clean the TDs attached to the ED.  */
         _ux_hcd_ehci_ed_clean(lp.ed_ptr);
+    }
 
     /* Return successful completion.  */
     return(UX_SUCCESS);
