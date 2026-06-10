@@ -1,35 +1,31 @@
-## Security
+# Report potential product security vulnerabilities
 
-Microsoft takes the security of our software products and services seriously, which includes all source code repositories managed through our GitHub organizations, which include [Microsoft](https://github.com/Microsoft), [Azure](https://github.com/Azure), [DotNet](https://github.com/dotnet), [AspNet](https://github.com/aspnet), [Xamarin](https://github.com/xamarin), and [our GitHub organizations](https://opensource.microsoft.com/).
+ST places a high priority on security, and our Product Security Incident
+Response Team (PSIRT) is committed to rapidly addressing potential security
+vulnerabilities affecting our products. PSIRT's long history and vast experience
+in security allows ST to perform clear analyses and provide appropriate guidance
+on mitigations and solutions when applicable.
 
-If you believe you have found a security vulnerability in any Microsoft-owned repository that meets Microsoft's [Microsoft's definition of a security vulnerability](https://docs.microsoft.com/en-us/previous-versions/tn-archive/cc751383(v=technet.10)), please report it to us as described below.
+If you wish to report potential security vulnerabilities regarding our products,
+**please do not report them through public GitHub issues.** Instead, we
+encourage you to report them to our ST PSIRT following the process described at:
+**https://www.st.com/content/st_com/en/security/report-vulnerabilities.html**
 
-## Reporting Security Issues
+### IMPORTANT - READ CAREFULLY:
 
-**Please do not report security vulnerabilities through public GitHub issues.**
+STMicroelectronics International N.V., on behalf of itself, its affiliates and
+subsidiaries, (collectively “ST”) takes all potential security vulnerability
+reports or other related communications (“Report(s)”) seriously. In order to
+review Your Report (the terms “You” and “Yours” include your employer, and all
+affiliates, subsidiaries and related persons or entities) and take actions as
+deemed appropriate, ST requires that we have the rights and Your permission to
+do so.
 
-Instead, please report them to the Microsoft Security Response Center (MSRC) at [https://msrc.microsoft.com/create-report](https://msrc.microsoft.com/create-report).
+As such, by submitting Your Report to ST, You agree that You have the right to
+do so, and You grant to ST the rights to use the Report for purposes related to
+security vulnerability analysis, testing, correction, patching, reporting and
+any other related purpose or function.
 
-If you prefer to submit without logging in, send email to [secure@microsoft.com](mailto:secure@microsoft.com).  If possible, encrypt your message with our PGP key; please download it from the the [Microsoft Security Response Center PGP Key page](https://www.microsoft.com/en-us/msrc/pgp-key-msrc).
-
-You should receive a response within 24 hours. If for some reason you do not, please follow up via email to ensure we received your original message. Additional information can be found at [microsoft.com/msrc](https://www.microsoft.com/msrc).
-
-Please include the requested information listed below (as much as you can provide) to help us better understand the nature and scope of the possible issue:
-
-  * Type of issue (e.g. buffer overflow, SQL injection, cross-site scripting, etc.)
-  * Full paths of source file(s) related to the manifestation of the issue
-  * The location of the affected source code (tag/branch/commit or direct URL)
-  * Any special configuration required to reproduce the issue
-  * Step-by-step instructions to reproduce the issue
-  * Proof-of-concept or exploit code (if possible)
-  * Impact of the issue, including how an attacker might exploit the issue
-
-This information will help us triage your report more quickly.
-
-## Preferred Languages
-
-We prefer all communications to be in English.
-
-## Policy
-
-Microsoft follows the principle of [Coordinated Vulnerability Disclosure](https://www.microsoft.com/en-us/msrc/cvd).
+By submitting Your Report, You agree that ST’s
+[Privacy Policy](https://www.st.com/content/st_com/en/common/privacy-portal.html)
+applies to all related communications.
