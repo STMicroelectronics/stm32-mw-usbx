@@ -1,0 +1,171 @@
+{{assign "usbxFilter" (JSONparse '{"cgroup": "STM32CubeMX2 Config", "csub": "USBX"}')~}}
+{{assign 'usbx_context' (@root.SWConfigurationAPI.getInstancesConfiguration @root.usbxFilter)~}}
+{{assign 'usbx_cxt' @root.usbx_context.[0].settings.parameters~}}
+{{assign 'USBX_Controllers_Driver' (@root.SWProjectAPI.getUsedComponents 'asObject' cgroup="USBX Controllers Driver")~}}
+{{assign 'USBX_device_class' (@root.SWProjectAPI.getUsedComponents 'asObject' cgroup="USBX Device Class")~}}
+{{!
+/**
+  ******************************************************************************
+  * @file    mx_usbx_device_hid_mouse_template.c.hbs
+  * @brief   USBX Device Mouse HID applicative source file
+  ******************************************************************************
+  * @attention
+  *
+  * Copyright (c) 2025-2026 STMicroelectronics.
+  * All rights reserved.
+  *
+  * This software is licensed under terms that can be found in the LICENSE file
+  * in the root directory of this software component.
+  * If no LICENSE file comes with this software, it is provided AS-IS.
+  *
+  ******************************************************************************
+~}}
+/**
+  ******************************************************************************
+  * @file    mx_usbx_device_hid_mouse.c
+  * @brief   USBX Device Mouse HID applicative source file
+{{> LICENSE}}
+
+{{#with @root.usbx_cxt~}}
+/* Includes ------------------------------------------------------------------*/
+#include "mx_usbx_device_hid_mouse.h"
+/* Private typedef -----------------------------------------------------------*/
+/* Private define ------------------------------------------------------------*/
+/* Private macro -------------------------------------------------------------*/
+/* Private variables ---------------------------------------------------------*/
+UX_SLAVE_CLASS_HID      *p_hid_mouse;
+UCHAR usbd_hid_mouse_report_descriptor[] =
+{
+  0x05U, 0x01U, /* Usage Page (Generic Desktop)*/
+  0x09U, 0x02U, /* Usage (Mouse) */
+  0xA1U, 0x01U, /* Collection (Application) */
+  0x09U, 0x01U, /* Usage (Pointer) */
+
+  0xA1U, 0x00U, /* Collection (Physical) */
+  0x05U, 0x09U, /* Usage Page (Buttons) */
+  0x19U, 0x01U, /* Usage Minimum (01U) */
+  0x29U, 0x03U, /* Usage Maximum (03U) */
+
+  0x15U, 0x00U, /* Logical Minimum (0U) */
+  0x25U, 0x01U, /* Logical Maximum (1U) */
+  0x95U, 0x03U, /* Report Count (3U) */
+  0x75U, 0x01U, /* Report Size (1U) */
+
+  0x81U, 0x02U, /* Input(Data, Variable, Absolute) 3U button bit fields */
+  0x95U, 0x01U, /* Report Count (1U) */
+  0x75U, 0x05U, /* Report Size (5U) */
+  0x81U, 0x01U, /* Input (Constant), 5U constant field */
+
+  0x05U, 0x01U, /* Usage Page (Generic Desktop) */
+  0x09U, 0x30U, /* Usage (X) */
+  0x09U, 0x31U, /* Usage (Y) */
+  0x09U, 0x38U, /* Usage (Z) */
+
+  0x15U, 0x81U, /* Logical Minimum (-127) */
+  0x25U, 0x7FU, /* Logical Maximum (127) */
+  0x75U, 0x08U, /* Report Size (8U) */
+  0x95U, 0x03U, /* Report Count (3U) */
+
+  0x81U, 0x06U, /* Input(Data, Variable, Relative), Three position bytes (X & Y & Z)*/
+  0xC0U, 0xC0U  /* End collection, Close Pointer collection*/
+};
+/* Private function prototypes -----------------------------------------------*/
+
+/**
+  * @brief  usbd_hid_mouse_activate
+  *         This function is called when insertion of a HID Mouse device.
+  * @retval none
+  */
+VOID usbd_hid_mouse_activate(VOID *hid_instance)
+{
+  /* Save the HID mouse instance */
+  if (p_hid_mouse == UX_NULL)
+  {
+    p_hid_mouse = (UX_SLAVE_CLASS_HID *) hid_instance;
+  }
+
+  return;
+}
+
+/**
+  * @brief  usbd_hid_mouse_deactivate
+  *         This function is called when extraction of a HID Mouse device.
+  * @param  hid_instance: Pointer to the hid class instance.
+  * @retval none
+  */
+VOID usbd_hid_mouse_deactivate(VOID *hid_instance)
+{
+  /* Reset the HID mouse instance */
+  if (p_hid_mouse == hid_instance)
+  {
+    p_hid_mouse = UX_NULL;
+  }
+
+  return;
+}
+
+/**
+  * @brief  usbd_hid_mouse_set_report
+  *         This function is invoked when the host sends a HID SET_REPORT
+  *         to the application over Endpoint 0.
+  * @retval status
+  */
+UINT usbd_hid_mouse_set_report(UX_SLAVE_CLASS_HID *hid_instance,
+                               UX_SLAVE_CLASS_HID_EVENT *hid_event)
+{
+  UINT status = UX_SUCCESS;
+
+  UX_PARAMETER_NOT_USED(hid_instance);
+  UX_PARAMETER_NOT_USED(hid_event);
+
+  return status;
+}
+
+/**
+  * @brief  usbd_hid_mouse_get_report
+  *         This function is invoked when host is requesting event through
+  *         control GET_REPORT request.
+  * @retval status
+  */
+UINT usbd_hid_mouse_get_report(UX_SLAVE_CLASS_HID *hid_instance,
+                               UX_SLAVE_CLASS_HID_EVENT *hid_event)
+{
+  UINT status = UX_SUCCESS;
+
+  UX_PARAMETER_NOT_USED(hid_instance);
+  UX_PARAMETER_NOT_USED(hid_event);
+
+  return status;
+}
+
+/**
+  * @brief  usbd_hid_mouse_report_address
+  *         Return the device HID MOUSE Report Descriptor
+  * @retval Pointer to HID Report Descriptor buffer
+  */
+UCHAR *usbd_hid_mouse_report_address(VOID)
+{
+  return usbd_hid_mouse_report_descriptor;
+}
+
+/**
+  * @brief  usbd_hid_mouse_report_length
+  *         Return the device HID Report Descriptor
+  * @retval Size of HID Report Descriptor buffer
+  */
+ULONG usbd_hid_mouse_report_length(VOID)
+{
+  return sizeof(usbd_hid_mouse_report_descriptor);
+}
+
+/**
+  * @brief  usbd_hid_mouse_report_id
+  *         Return the device HID Report ID Support
+  * @retval UX_FALSE / UX_TRUE
+  */
+ULONG usbd_hid_mouse_report_id(VOID)
+{
+  return UX_FALSE;
+}
+
+{{/with}}

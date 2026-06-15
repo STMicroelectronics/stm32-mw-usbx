@@ -1,0 +1,55 @@
+{{assign "usbxFilter" (JSONparse '{"cgroup": "STM32CubeMX2 Config", "csub": "USBX"}')~}}
+{{assign 'usbx_context' (@root.SWConfigurationAPI.getInstancesConfiguration @root.usbxFilter)~}}
+{{assign 'usbx_cxt' @root.usbx_context.[0].settings.parameters~}}
+{{!
+/**
+  ******************************************************************************
+  * @file    mx_usbx_device_hid_mouse_template.h.hbs
+  * @brief   USBX Device Mouse HID applicative header file
+  ******************************************************************************
+  * @attention
+  *
+  * Copyright (c) 2025-2026 STMicroelectronics.
+  * All rights reserved.
+  *
+  * This software is licensed under terms that can be found in the LICENSE file
+  * in the root directory of this software component.
+  * If no LICENSE file comes with this software, it is provided AS-IS.
+  *
+  ******************************************************************************
+~}}
+/**
+  ******************************************************************************
+  * @file    mx_usbx_device_hid_mouse.h
+  * @brief   USBX Device Mouse HID applicative header file
+{{> LICENSE}}
+
+/* Define to prevent recursive inclusion -------------------------------------*/
+#ifndef MX_USBX_DEVICE_HID_MOUSE_H
+#define MX_USBX_DEVICE_HID_MOUSE_H
+
+#ifdef __cplusplus
+extern "C" {
+#endif /* __cplusplus */
+{{#with @root.usbx_cxt~}}
+/* Includes ------------------------------------------------------------------*/
+#include "ux_api.h"
+#include "ux_device_class_hid.h"
+/* Exported types ------------------------------------------------------------*/
+/* Exported constants --------------------------------------------------------*/
+/* Exported macro ------------------------------------------------------------*/
+/* Exported functions prototypes ---------------------------------------------*/
+VOID usbd_hid_mouse_activate(VOID *hid_instance);
+VOID usbd_hid_mouse_deactivate(VOID *hid_instance);
+UCHAR *usbd_hid_mouse_report_address(VOID);
+ULONG usbd_hid_mouse_report_length(VOID);
+ULONG usbd_hid_mouse_report_id(VOID);
+UINT usbd_hid_mouse_set_report(UX_SLAVE_CLASS_HID *hid_instance, UX_SLAVE_CLASS_HID_EVENT *hid_event);
+UINT usbd_hid_mouse_get_report(UX_SLAVE_CLASS_HID *hid_instance, UX_SLAVE_CLASS_HID_EVENT *hid_event);
+/* Exported defines -----------------------------------------------------------*/
+
+#ifdef __cplusplus
+}
+#endif
+#endif  /* MX_USBX_DEVICE_HID_MOUSE_H */
+{{~/with~}}

@@ -1,0 +1,74 @@
+{{assign "usbxFilter" (JSONparse '{"cgroup": "STM32CubeMX2 Config", "csub": "USBX"}')~}}
+{{assign 'usbx_context' (@root.SWConfigurationAPI.getInstancesConfiguration @root.usbxFilter)~}}
+{{assign 'usbx_cxt' @root.usbx_context.[0].settings.parameters~}}
+{{!
+/**
+  ******************************************************************************
+  * @file    mx_usbx_device_cdc_acm_template.c.hbs
+  * @brief   USBX Device CDC ACM applicative source file
+  ******************************************************************************
+  * @attention
+  *
+  * Copyright (c) 2025-2026 STMicroelectronics.
+  * All rights reserved.
+  *
+  * This software is licensed under terms that can be found in the LICENSE file
+  * in the root directory of this software component.
+  * If no LICENSE file comes with this software, it is provided AS-IS.
+  *
+  ******************************************************************************
+~}}
+/**
+  ******************************************************************************
+  * @file    mx_usbx_device_cdc_acm.c
+  * @brief   USBX Device CDC ACM applicative source file
+{{> LICENSE}}
+
+{{#with @root.usbx_cxt~}}
+/* Includes ------------------------------------------------------------------*/
+#include "mx_usbx_device_cdc_acm.h"
+/* Private typedef -----------------------------------------------------------*/
+/* Private define ------------------------------------------------------------*/
+/* Private macro -------------------------------------------------------------*/
+/* Private variables ---------------------------------------------------------*/
+/* Private function prototypes -----------------------------------------------*/
+
+/**
+  * @brief  usbd_cdc_acm_activate
+  *         This function is called when insertion of a CDC ACM device.
+  * @param  cdc_acm_instance: Pointer to the cdc acm class instance.
+  * @retval none
+  */
+VOID usbd_cdc_acm_activate(VOID *cdc_acm_instance)
+{
+  UX_PARAMETER_NOT_USED(cdc_acm_instance);
+
+  return;
+}
+
+/**
+  * @brief  usbd_cdc_acm_deactivate
+  *         This function is called when extraction of a CDC ACM device.
+  * @param  cdc_acm_instance: Pointer to the cdc acm class instance.
+  * @retval none
+  */
+VOID usbd_cdc_acm_deactivate(VOID *cdc_acm_instance)
+{
+  UX_PARAMETER_NOT_USED(cdc_acm_instance);
+
+  return;
+}
+
+/**
+  * @brief  usbd_cdc_acm_ParameterChange
+  *         This function is invoked to manage the CDC ACM class requests.
+  * @param  cdc_acm_instance: Pointer to the cdc acm class instance.
+  * @retval none
+  */
+VOID usbd_cdc_acm_ParameterChange(VOID *cdc_acm_instance)
+{
+  UX_PARAMETER_NOT_USED(cdc_acm_instance);
+
+  return;
+}
+{{/with}}

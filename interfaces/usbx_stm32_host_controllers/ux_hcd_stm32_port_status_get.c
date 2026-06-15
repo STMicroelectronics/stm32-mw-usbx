@@ -98,6 +98,7 @@
 ULONG _ux_hcd_stm32_port_status_get(UX_HCD_STM32 *hcd_stm32, ULONG port_index)
 {
   ULONG       port_status;
+  ULONG       port_speed;
 
   /* Check to see if this port is valid on this controller.  */
   if (UX_HCD_STM32_NB_ROOT_PORTS < port_index)
@@ -120,7 +121,9 @@ ULONG _ux_hcd_stm32_port_status_get(UX_HCD_STM32 *hcd_stm32, ULONG port_index)
   if (hcd_stm32 -> ux_hcd_stm32_controller_flag & UX_HCD_STM32_CONTROLLER_FLAG_DEVICE_ATTACHED)
     port_status |= UX_PS_CCS;
 
-  switch (HAL_HCD_GetPortSpeed(hcd_stm32 -> hcd_handle))
+  port_speed = (ULONG)HAL_HCD_GetPortSpeed(hcd_stm32 -> hcd_handle);
+
+  switch (port_speed)
   {
   case 0:
     /* High Speed.  */

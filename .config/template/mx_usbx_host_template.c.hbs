@@ -1,0 +1,581 @@
+{{assign "usbxFilter" (JSONparse '{"cgroup": "STM32CubeMX2 Config", "csub": "USBX"}')~}}
+{{assign 'usbx_context' (@root.SWConfigurationAPI.getInstancesConfiguration @root.usbxFilter)~}}
+{{#if @root.usbx_context.[0]~}}
+{{assign 'usbx_cxt' @root.usbx_context.[0].settings.parameters~}}
+{{assign 'USBX_Controllers_Driver' (@root.SWProjectAPI.getUsedComponents 'asObject' cgroup="USBX Controllers Driver")~}}
+{{assign 'USBX_Class_Selected' (@root.SWProjectAPI.getUsedComponents 'asObject' cgroup="STM32CubeMX2 Codegen")~}}
+{{!--
+/**
+  ******************************************************************************
+  * @file    mx_usbx_host_template.c.hbs
+  * @brief   USBX Host applicative source file
+  ******************************************************************************
+  * @attention
+  *
+  * Copyright (c) 2025-2026 STMicroelectronics.
+  * All rights reserved.
+  *
+  * This software is licensed under terms that can be found in the LICENSE file
+  * in the root directory of this software component.
+  * If no LICENSE file comes with this software, it is provided AS-IS.
+  *
+  ******************************************************************************
+--~}}
+/**
+  ******************************************************************************
+  * @file    mx_usbx_host.c
+  * @brief   USBX Host applicative source file
+{{> LICENSE}}
+
+{{#with @root.usbx_cxt~}}
+/* Includes ------------------------------------------------------------------*/
+#include "mx_usbx_host.h"
+{{#if (helper_usbx_controllers_is_enabled @root.USBX_Controllers_Driver 'Host')}}
+#include "ux_hcd_stm32.h"
+{{/if}}
+/* Private typedef -----------------------------------------------------------*/
+/* Private define ------------------------------------------------------------*/
+/* Private macro -------------------------------------------------------------*/
+/* Private variables ---------------------------------------------------------*/
+{{#if (helper_usbx_controllers_is_enabled @root.USBX_Controllers_Driver 'Host')}}
+{{#if interfaces.logical_interface.host_controllers_enable}}
+{{#with interfaces.resources_allocation}}
+{{#if @root.usbx_cxt.core.applicative.usbx_host_generate_init_code}}
+{{#if (helper_usbx_is_greater (helper_usbx_array_length host_instance) 1)}}
+{{#each host_instance}}
+{{#with select_the_host_instance}}
+{{#if selection}}
+hal_hcd_handle_t *p_usb_host_{{@index}} = UX_NULL;
+{{/if}}
+{{/with}}
+{{/each}}
+{{else}}
+{{#each host_instance}}
+{{#with select_the_host_instance}}
+{{#if selection}}
+hal_hcd_handle_t *p_usb_host = UX_NULL;
+{{/if}}
+{{/with}}
+{{/each}}
+{{/if}}
+{{else}}
+{{#if (eq @root.usbx_cxt.core.basic.usb_core_system.ux_standalone 'No OS')}}
+{{#if (helper_usbx_is_greater (helper_usbx_array_length host_instance) 1)}}
+{{#each host_instance}}
+{{#with select_the_host_instance}}
+{{#if selection}}
+hal_hcd_handle_t *p_usb_host_{{@index}} = UX_NULL;
+{{/if}}
+{{/with}}
+{{/each}}
+{{else}}
+{{#each host_instance}}
+{{#with select_the_host_instance}}
+{{#if selection}}
+hal_hcd_handle_t *p_usb_host = UX_NULL;
+{{/if}}
+{{/with}}
+{{/each}}
+{{/if}}
+{{/if}}
+{{/if}}
+{{/with}}
+{{/if}}
+{{/if}}
+{{#if (helper_usbx_is_freertos @root.usbx_cxt.core.basic.usb_core_system.ux_standalone)}}
+{{#with core.applicative~}}
+{{#if usbx_host_generate_init_code}}
+TaskHandle_t ux_host_app_thread;
+/* Private function prototypes -----------------------------------------------*/
+VOID {{usbx_host_application_thread_name}}(void *argument);
+{{/if}}
+{{/with}}
+{{/if}}
+static UINT ux_host_event_callback(ULONG event, UX_HOST_CLASS *current_class, VOID *current_instance);
+static VOID ux_host_error_callback(UINT system_level, UINT system_context, UINT error_code);
+/* Exported functions --------------------------------------------------------*/
+/**
+  * @brief  Application USBX Host Initialization.
+    * @retval status
+  */
+UINT app_usbx_host_init(VOID)
+{
+  UINT status = UX_SUCCESS;
+
+  /* Install the host portion of USBX */
+  status = ux_host_stack_initialize(ux_host_event_callback);
+  if (status != UX_SUCCESS)
+  {
+    return status;
+  }
+
+  /* Register a callback error function */
+  ux_utility_error_callback_register(&ux_host_error_callback);
+{{#with core.basic.host_class~}}
+{{#if hid_class}}
+  /* Register HID host class. */
+  status = ux_host_stack_class_register(_ux_system_host_class_hid_name, ux_host_class_hid_entry);
+  if (status != UX_SUCCESS)
+  {
+    return status;
+  }
+  {{#if host_mouse}}
+  /* Register HID class for Mouse. */
+  status = ux_host_class_hid_client_register(_ux_system_host_class_hid_client_mouse_name, ux_host_class_hid_mouse_entry);
+  if (status != UX_SUCCESS)
+  {
+    return status;
+  }
+  {{/if}}
+  {{#if host_keyboard}}
+  /* Register HID class for Keyboard. */
+  status = ux_host_class_hid_client_register(_ux_system_host_class_hid_client_keyboard_name, ux_host_class_hid_keyboard_entry);
+  if (status != UX_SUCCESS)
+  {
+    return status;
+  }
+  {{/if}}
+  {{#if host_rcu}}
+  /* Register HID class for RCU. */
+  status = ux_host_class_hid_client_register(_ux_system_host_class_hid_client_remote_control_name, ux_host_class_hid_remote_control_entry);
+  if (status != UX_SUCCESS)
+  {
+    return status;
+  }
+{{/if}}
+{{/if}}
+{{#if cdc_acm_class}}
+  /* Register CDC ACM class. */
+  status = ux_host_stack_class_register(_ux_system_host_class_cdc_acm_name, ux_host_class_cdc_acm_entry);
+  if (status != UX_SUCCESS)
+  {
+    return status;
+  }
+{{/if}}
+{{#if msc_class}}
+  /* Register storage class. */
+  status = ux_host_stack_class_register(_ux_system_host_class_storage_name, ux_host_class_storage_entry);
+  if (status != UX_SUCCESS)
+  {
+    return status;
+  }
+{{/if}}
+{{#if hub_class}}
+  /* Register hub class. */
+  status = ux_host_stack_class_register(_ux_system_host_class_hub_name, ux_host_class_hub_entry);
+  if (status != UX_SUCCESS)
+  {
+    return status;
+  }
+{{/if}}
+{{#if printer_class}}
+  /* Register printer class. */
+  status = ux_host_stack_class_register(_ux_system_host_class_printer_name, ux_host_class_printer_entry);
+  if (status != UX_SUCCESS)
+  {
+    return status;
+  }
+{{/if}}
+{{#if pima_mtp_class}}
+  /* Register PIMA class. */
+  status = ux_host_stack_class_register(_ux_system_host_class_pima_name, ux_host_class_pima_entry);
+  if (status != UX_SUCCESS)
+  {
+    return status;
+  }
+{{/if}}
+{{#if audio_class}}
+  /* Register audio class. */
+  status = ux_host_stack_class_register(_ux_system_host_class_audio_name, ux_host_class_audio_entry);
+  if (status != UX_SUCCESS)
+  {
+    return status;
+  }
+{{/if}}
+{{#if video_class}}
+  /* Register video class. */
+  status = ux_host_stack_class_register(_ux_system_host_class_video_name, ux_host_class_video_entry);
+  if (status != UX_SUCCESS)
+  {
+    return status;
+  }
+{{/if}}
+{{#if gser_class}}
+  /* Register GSER class. */
+  status = ux_host_stack_class_register(_ux_system_host_class_gser_name, ux_host_class_gser_entry);
+  if (status != UX_SUCCESS)
+  {
+    return status;
+  }
+{{/if}}
+{{#if prolific_class}}
+  /* Register Prolific class. */
+  status = ux_host_stack_class_register(_ux_system_host_class_prolific_name, ux_host_class_prolific_entry);
+  if (status != UX_SUCCESS)
+  {
+    return status;
+  }
+{{/if}}
+{{#if swar_class}}
+  /* Register SWAR class. */
+  status = ux_host_stack_class_register(_ux_system_host_class_swar_name, ux_host_class_swar_entry);
+  if (status != UX_SUCCESS)
+  {
+    return status;
+  }
+{{/if}}
+{{/with}}
+{{#if (helper_usbx_is_freertos @root.usbx_cxt.core.basic.usb_core_system.ux_standalone)}}
+{{#with core.applicative~}}
+{{#if usbx_host_generate_init_code}}
+  /* Create the host application main thread */
+  if (xTaskCreate({{usbx_host_application_thread_name}},UX_HOST_APP_THREAD_NAME,
+                  UX_HOST_APP_THREAD_STACK_SIZE, NULL,
+                  UX_HOST_APP_THREAD_PRIO, &ux_host_app_thread) != pdPASS)
+  {
+    return UX_THREAD_ERROR;
+  }
+{{/if}}
+{{/with}}
+{{/if}}
+  return UX_SUCCESS;
+}
+
+/**
+  * @brief  Application USBX Host De-Initialization.
+  * @retval none
+  */
+UINT app_usbx_host_deinit(VOID)
+{
+  UINT status = UX_SUCCESS;
+{{#if (helper_usbx_controllers_is_enabled @root.USBX_Controllers_Driver 'Host')}}
+{{#if interfaces.logical_interface.host_controllers_enable}}
+{{#with interfaces.resources_allocation}}
+{{#if (helper_usbx_is_greater (helper_usbx_array_length host_instance) 1)}}
+{{#each host_instance}}
+{{#with select_the_host_instance}}
+{{#if selection}}
+  if (p_usb_host_{{@index}} != UX_NULL)
+  {
+  /* Unregister the USB host controllers available in this system. */
+  ux_host_stack_hcd_unregister(_ux_system_host_hcd_stm32_name, 0U,
+                               (ULONG)p_usb_host_{{@index}});
+    p_usb_host_{{@index}} = UX_NULL;
+  }
+{{/if}}
+{{/with}}
+{{/each}}
+{{else}}
+{{#each host_instance}}
+{{#with select_the_host_instance}}
+{{#if selection}}
+  if (p_usb_host != UX_NULL)
+  {
+  /* Unregister all the USB host controllers available in this system. */
+  ux_host_stack_hcd_unregister(_ux_system_host_hcd_stm32_name, 0U,
+                               (ULONG)p_usb_host);
+    p_usb_host = UX_NULL;
+  }
+{{/if}}
+{{/with}}
+{{/each}}
+{{/if}}
+{{/with}}
+{{/if}}
+{{/if}}
+
+{{#with core.basic.host_class~}}
+{{#if hid_class}}
+  /* Unregister HID class. */
+  status = ux_host_stack_class_unregister(ux_host_class_hid_entry);
+  if (status != UX_SUCCESS)
+  {
+    return status;
+  }
+{{/if}}
+{{#if cdc_acm_class}}
+  /* Unregister CDC ACM class. */
+  status = ux_host_stack_class_unregister(ux_host_class_cdc_acm_entry);
+  if (status != UX_SUCCESS)
+  {
+    return status;
+  }
+{{/if}}
+{{#if msc_class}}
+  /* Unregister storage class. */
+  status = ux_host_stack_class_unregister(ux_host_class_storage_entry);
+  if (status != UX_SUCCESS)
+  {
+    return status;
+  }
+{{/if}}
+{{#if hub_class}}
+  /* Unregister hub class. */
+  status = ux_host_stack_class_unregister(ux_host_class_hub_entry);
+  if (status != UX_SUCCESS)
+  {
+    return status;
+  }
+{{/if}}
+{{#if printer_class}}
+  /* Unregister printer class. */
+  status = ux_host_stack_class_unregister(ux_host_class_printer_entry);
+  if (status != UX_SUCCESS)
+  {
+    return status;
+  }
+{{/if}}
+{{#if pima_mtp_class}}
+  /* Unregister pima class. */
+  status = ux_host_stack_class_unregister(ux_host_class_pima_entry);
+  if (status != UX_SUCCESS)
+  {
+    return status;
+  }
+{{/if}}
+{{#if audio_class}}
+  /* Unregister audio class. */
+  status = ux_host_stack_class_unregister(ux_host_class_audio_entry);
+  if (status != UX_SUCCESS)
+  {
+    return status;
+  }
+{{/if}}
+{{#if video_class}}
+  /* Unregister video class. */
+  status = ux_host_stack_class_unregister(ux_host_class_video_entry);
+  if (status != UX_SUCCESS)
+  {
+    return status;
+  }
+{{/if}}
+{{#if gser_class}}
+  /* Unregister gser class. */
+  status = ux_host_stack_class_unregister(ux_host_class_gser_entry);
+  if (status != UX_SUCCESS)
+  {
+    return status;
+  }
+{{/if}}
+{{#if prolific_class}}
+  /* Unregister prolific class. */
+  status = ux_host_stack_class_unregister(ux_host_class_prolific_entry);
+  if (status != UX_SUCCESS)
+  {
+    return status;
+  }
+{{/if}}
+{{#if swar_class}}
+  /* Unregister swar class. */
+  status = ux_host_stack_class_unregister(ux_host_class_swar_entry);
+  if (status != UX_SUCCESS)
+  {
+    return status;
+  }
+{{/if}}
+{{/with}}
+
+  /* The code below is required for uninstalling the host portion of USBX.  */
+  status = ux_host_stack_uninitialize();
+
+  if (status != UX_SUCCESS)
+  {
+    return status;
+  }
+  return UX_SUCCESS;
+}
+
+/**
+  * @brief  ux_host_event_callback
+  *         This callback is invoked to notify application of instance changes.
+  * @param  event: event code.
+  * @param  current_class: Pointer to class.
+  * @param  current_instance: Pointer to class instance.
+  * @retval status
+  */
+static UINT ux_host_event_callback(ULONG event, UX_HOST_CLASS *current_class, VOID *current_instance)
+{
+  UINT status = UX_SUCCESS;
+
+  switch (event)
+  {
+    case UX_DEVICE_INSERTION:
+
+      break;
+
+    case UX_DEVICE_REMOVAL:
+
+      break;
+
+    case UX_DEVICE_CONNECTION:
+
+      break;
+
+    case UX_DEVICE_DISCONNECTION:
+
+      break;
+
+    default:
+
+      break;
+  }
+
+  return status;
+}
+
+/**
+  * @brief ux_host_error_callback
+  *         This callback is invoked to notify application of error changes.
+  * @param  system_level: system level parameter.
+  * @param  system_context: system context code.
+  * @param  error_code: error event code.
+  * @retval Status
+  */
+static VOID ux_host_error_callback(UINT system_level, UINT system_context, UINT error_code)
+{
+  switch (error_code)
+  {
+    case UX_DEVICE_ENUMERATION_FAILURE:
+      break;
+
+    case  UX_NO_DEVICE_CONNECTED:
+      break;
+
+    default:
+      break;
+  }
+}
+{{#if (helper_usbx_is_freertos @root.usbx_cxt.core.basic.usb_core_system.ux_standalone)}}
+{{#with core.applicative~}}
+{{#if usbx_host_generate_init_code}}
+/**
+  * @brief  Function implementing {{usbx_host_application_thread_name}}.
+  * @param  thread_input: User thread input parameter.
+  * @retval none
+  */
+VOID {{usbx_host_application_thread_name}}(void *argument)
+{
+{{#if (helper_usbx_controllers_is_enabled @root.USBX_Controllers_Driver 'Host')}}
+{{#if @root.usbx_cxt.interfaces.logical_interface.host_controllers_enable}}
+{{#with @root.usbx_cxt.interfaces.resources_allocation}}
+  UINT status = UX_SUCCESS;
+
+{{/with}}
+{{/if}}
+{{/if}}
+
+  UX_PARAMETER_NOT_USED(argument);
+
+{{#if (helper_usbx_controllers_is_enabled @root.USBX_Controllers_Driver 'Host')}}
+{{#if @root.usbx_cxt.interfaces.logical_interface.host_controllers_enable}}
+{{#with @root.usbx_cxt.interfaces.resources_allocation}}
+{{#if (helper_usbx_is_greater (helper_usbx_array_length host_instance) 1)}}
+{{#each host_instance}}
+{{#with select_the_host_instance}}
+{{#if selection}}
+  p_usb_host_{{@index}} = mx_{{lowercase (helper_usbx_get_ip_name selection)}}{{@index}}_gethandle();
+
+  /* Register the USB host controllers available in this system. */
+  status = ux_host_stack_hcd_register(_ux_system_host_hcd_stm32_name,
+                                      _ux_hcd_stm32_initialize, 0U,
+                                      (ULONG)p_usb_host_{{@index}});
+
+  if (status != UX_SUCCESS)
+  {
+    return;
+  }
+{{/if}}
+{{/with}}
+{{/each}}
+{{else}}
+{{#each host_instance}}
+{{#with select_the_host_instance}}
+{{#if selection}}
+  p_usb_host = mx_{{lowercase (helper_usbx_get_ip_name selection)}}_gethandle();
+
+  /* Register all the USB host controllers available in this system. */
+  status = ux_host_stack_hcd_register(_ux_system_host_hcd_stm32_name,
+                                      _ux_hcd_stm32_initialize, 0U,
+                                      (ULONG)p_usb_host);
+
+  if (status != UX_SUCCESS)
+  {
+    return;
+  }
+{{/if}}
+{{/with}}
+{{/each}}
+{{/if}}
+{{/with}}
+{{/if}}
+{{/if}}
+}
+{{/if}}
+{{/with}}
+{{/if}}
+{{#with core.basic.usb_core_system~}}
+{{!-- check if we are in STANDALONE mode --}}
+{{#if (eq ux_standalone 'No OS')~}}
+/**
+  * @brief  Application USBX Host Process.
+  * @retval none
+  */
+UINT app_usbx_host_process(VOID)
+{
+  UINT return_status = UX_SUCCESS;
+{{#if (helper_usbx_controllers_is_enabled @root.USBX_Controllers_Driver 'Host')}}
+{{#if @root.usbx_cxt.interfaces.logical_interface.host_controllers_enable}}
+{{#with @root.usbx_cxt.interfaces.resources_allocation}}
+{{#if (helper_usbx_is_greater (helper_usbx_array_length host_instance) 1)}}
+{{#each host_instance}}
+{{#with select_the_host_instance}}
+{{#if selection}}
+  if (p_usb_host_{{@index}} == UX_NULL)
+  {
+    p_usb_host_{{@index}} = mx_{{lowercase (helper_usbx_get_ip_name selection)}}{{@index}}_gethandle();
+
+    /* Register the USB host controllers available in this system. */
+    return_status = ux_host_stack_hcd_register(_ux_system_host_hcd_stm32_name,
+                                               _ux_hcd_stm32_initialize, 0U,
+                                               (ULONG)p_usb_host_{{@index}});
+
+    if (return_status != UX_SUCCESS)
+    {
+      return return_status;
+    }
+  }
+{{/if}}
+{{/with}}
+{{/each}}
+{{else}}
+{{#each host_instance}}
+{{#with select_the_host_instance}}
+{{#if selection}}
+  if (p_usb_host == UX_NULL)
+  {
+    p_usb_host = mx_{{lowercase (helper_usbx_get_ip_name selection)}}_gethandle();
+
+    /* Register all the USB host controllers available in this system. */
+    return_status = ux_host_stack_hcd_register(_ux_system_host_hcd_stm32_name,
+                                               _ux_hcd_stm32_initialize, 0U,
+                                               (ULONG)p_usb_host);
+
+    if (return_status != UX_SUCCESS)
+    {
+      return return_status;
+    }
+  }
+{{/if}}
+{{/with}}
+{{/each}}
+{{/if}}
+{{/with}}
+{{/if}}
+{{/if}}
+  return_status = ux_host_stack_tasks_run();
+  return return_status;
+}
+{{/if}}
+{{/with}}
+{{/with}}
+{{/if}}

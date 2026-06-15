@@ -1,0 +1,124 @@
+{{assign "usbxFilter" (JSONparse '{"cgroup": "STM32CubeMX2 Config", "csub": "USBX"}')~}}
+{{assign 'usbx_context' (@root.SWConfigurationAPI.getInstancesConfiguration @root.usbxFilter)~}}
+{{assign 'usbx_cxt' @root.usbx_context.[0].settings.parameters~}}
+{{!
+/**
+  ******************************************************************************
+  * @file    mx_usbx_device_video_template.c.hbs
+  * @brief   USBX Device Video applicative source file
+  ******************************************************************************
+  * @attention
+  *
+  * Copyright (c) 2025-2026 STMicroelectronics.
+  * All rights reserved.
+  *
+  * This software is licensed under terms that can be found in the LICENSE file
+  * in the root directory of this software component.
+  * If no LICENSE file comes with this software, it is provided AS-IS.
+  *
+  ******************************************************************************
+~}}
+/**
+  ******************************************************************************
+  * @file    mx_usbx_device_video.c
+  * @brief   USBX Device Video applicative source file
+{{> LICENSE}}
+
+{{#with @root.usbx_cxt~}}
+/* Includes ------------------------------------------------------------------*/
+#include "mx_usbx_device_video.h"
+/* Private typedef -----------------------------------------------------------*/
+/* Private define ------------------------------------------------------------*/
+/* Private macro -------------------------------------------------------------*/
+/* Private variables ---------------------------------------------------------*/
+/* Private functions prototype -----------------------------------------------*/
+/**
+  * @brief  usbd_video_activate
+  *         This function is called when insertion of a video device.
+  * @param  video_instance: Pointer to the video class instance.
+  * @retval none
+  */
+VOID usbd_video_activate(VOID *video_instance)
+{
+  UX_PARAMETER_NOT_USED(video_instance);
+
+  return;
+}
+
+/**
+  * @brief  usbd_video_deactivate
+  *         This function is called when extraction of a video device.
+  * @param  video_instance: Pointer to the video class instance.
+  * @retval none
+  */
+VOID usbd_video_deactivate(VOID *video_instance)
+{
+  UX_PARAMETER_NOT_USED(video_instance);
+
+  return;
+}
+
+/**
+  * @brief  usbd_video_stream_change
+  *         This function is invoked to inform application that the
+  *         alternate setting are changed.
+  * @param  video_stream: Pointer to video class stream instance.
+  * @param  alternate_setting: interface alternate setting.
+  * @retval none
+  */
+VOID usbd_video_stream_change(UX_DEVICE_CLASS_VIDEO_STREAM *video_stream,
+                             ULONG alternate_setting)
+{
+  UX_PARAMETER_NOT_USED(video_stream);
+  UX_PARAMETER_NOT_USED(alternate_setting);
+
+  return;
+}
+
+/**
+  * @brief  usbd_video_stream_payload_done
+  *         This function is invoked when stream data payload received.
+  * @param  video_stream: Pointer to video class stream instance.
+  * @param  length: transfer length.
+  * @retval none
+  */
+VOID usbd_video_stream_payload_done(UX_DEVICE_CLASS_VIDEO_STREAM *video_stream,
+                                  ULONG length)
+{
+  UX_PARAMETER_NOT_USED(video_stream);
+  UX_PARAMETER_NOT_USED(length);
+
+  return;
+}
+
+/**
+  * @brief  usbd_video_stream_request
+  *         This function is invoked to manage the UVC class requests.
+  * @param  video_stream: Pointer to video class stream instance.
+  * @param  transfer: Pointer to the transfer request.
+  * @retval status
+  */
+UINT usbd_video_stream_request(UX_DEVICE_CLASS_VIDEO_STREAM *video_stream,
+                              UX_SLAVE_TRANSFER *transfer)
+{
+   UINT status  = UX_SUCCESS;
+
+  UX_PARAMETER_NOT_USED(video_stream);
+  UX_PARAMETER_NOT_USED(transfer);
+
+  return status;
+}
+
+/**
+  * @brief  usbd_video_stream_get_max_payload_buffer_size
+  *         Get video stream max payload buffer size.
+  * @param  none
+  * @retval max payload
+  */
+ULONG usbd_video_stream_get_max_payload_buffer_size(VOID)
+{
+  ULONG max_playload = 0U;
+
+  return max_playload;
+}
+{{/with}}

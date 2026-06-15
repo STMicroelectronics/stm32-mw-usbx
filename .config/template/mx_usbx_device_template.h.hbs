@@ -1,0 +1,61 @@
+{{assign "usbxFilter" (JSONparse '{"cgroup": "STM32CubeMX2 Config", "csub": "USBX"}')~}}
+{{assign 'usbx_context' (@root.SWConfigurationAPI.getInstancesConfiguration @root.usbxFilter)~}}
+{{assign 'usbx_cxt' @root.usbx_context.[0].settings.parameters~}}
+{{assign 'USBX_Controllers_Driver' (@root.SWProjectAPI.getUsedComponents 'asObject' cgroup="USBX Controllers Driver")~}}
+{{!
+/**
+  ******************************************************************************
+  * @file    mx_usbx_device_template.h.hbs
+  * @brief   USBX Device applicative header file
+  ******************************************************************************
+  * @attention
+  *
+  * Copyright (c) 2025-2026 STMicroelectronics.
+  * All rights reserved.
+  *
+  * This software is licensed under terms that can be found in the LICENSE file
+  * in the root directory of this software component.
+  * If no LICENSE file comes with this software, it is provided AS-IS.
+  *
+  ******************************************************************************
+~}}
+/**
+  ******************************************************************************
+  * @file    mx_usbx_device.h
+  * @brief   USBX Device applicative header file
+{{> LICENSE}}
+
+/* Define to prevent recursive inclusion -------------------------------------*/
+#ifndef MX_USBX_DEVICE_H
+#define MX_USBX_DEVICE_H
+
+#ifdef __cplusplus
+extern "C" {
+#endif /* __cplusplus */
+{{#with @root.usbx_cxt~}}
+/* Includes ----------------------------------------------------------*/
+#include "ux_api.h"
+#include "ux_stm32_device_descriptors_config.h"
+#include "ux_stm32_device_descriptors.h"
+#include "mx_hal_def.h"
+#include "mx_usbx_app.h"
+/* Exported types ------------------------------------------------------------*/
+/* Exported constants --------------------------------------------------------*/
+/* Exported macro ------------------------------------------------------------*/
+/* Exported functions prototypes ---------------------------------------------*/
+UINT app_usbx_device_init(VOID);
+UINT app_usbx_device_deinit(VOID);
+{{#with core.basic.usb_core_system~}}
+{{!-- check if we are in STANDALONE mode --}}
+{{#if (eq ux_standalone 'No OS')~}}
+UINT app_usbx_device_process(VOID);
+{{/if}}
+{{/with}}
+/* Exported defines -----------------------------------------------------------*/
+
+#ifdef __cplusplus
+}
+#endif
+
+#endif /* MX_USBX_DEVICE_H */
+{{/with}}

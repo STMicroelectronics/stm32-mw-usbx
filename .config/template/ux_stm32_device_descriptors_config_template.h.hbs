@@ -1,0 +1,446 @@
+{{assign "usbxFilter" (JSONparse '{"cgroup": "STM32CubeMX2 Config", "csub": "USBX"}')~}}
+{{assign 'usbx_context' (@root.SWConfigurationAPI.getInstancesConfiguration @root.usbxFilter)~}}
+{{assign 'usbx_cxt' @root.usbx_context.[0].settings.parameters~}}
+{{!
+/**
+  ******************************************************************************
+  * @file    ux_stm32_device_descriptors_config_template.h.hbs
+  * @brief   Configuration for STM32 USBX device descriptors
+  ******************************************************************************
+  * @attention
+  *
+  * Copyright (c) 2025-2026 STMicroelectronics.
+  * All rights reserved.
+  *
+  * This software is licensed under terms that can be found in the LICENSE file
+  * in the root directory of this software component.
+  * If no LICENSE file comes with this software, it is provided AS-IS.
+  *
+  ******************************************************************************
+~}}
+/**
+  ******************************************************************************
+  * @file    ux_stm32_device_descriptors_config.h
+  * @brief   Configuration for STM32 USBX device descriptors
+  *
+{{> LICENSE}}
+
+{{#with @root.usbx_cxt~}}
+{{#with core.basic~}}
+/* Define to prevent recursive inclusion -------------------------------------*/
+#ifndef UX_STM32_DEVICE_DESCRIPTORS_CONFIG_H
+#define UX_STM32_DEVICE_DESCRIPTORS_CONFIG_H
+
+#ifdef __cplusplus
+extern "C" {
+#endif /* __cplusplus */
+
+/* Includes ------------------------------------------------------------------*/
+/* Private typedef -----------------------------------------------------------*/
+/* Private define ------------------------------------------------------------*/
+#define USBD_HIGH_SPEED_SUPPORTED               {{#if device_class.device_descriptor_config.usbd_high_speed_supported}}1U{{else}}0U{{/if}}
+{{!-- START of device_class --}}
+{{#with device_class~}}
+{{!-- START of device_descriptor_config --}}
+{{#with device_descriptor_config~}}
+{{#if usbd_composite_use_iad}}
+#define USBD_COMPOSITE_USE_IAD                  1U
+{{else}}
+#define USBD_COMPOSITE_USE_IAD                  0U
+{{/if}}
+{{!-- END of device_descriptor_config --}}
+{{/with}}
+{{#if device_mouse}}
+#define USBD_HID_MOUSE_ACTIVATED                1U
+{{else}}
+#define USBD_HID_MOUSE_ACTIVATED                0U
+{{/if}}
+{{#if device_keyboard}}
+#define USBD_HID_KEYBOARD_ACTIVATED             1U
+{{else}}
+#define USBD_HID_KEYBOARD_ACTIVATED             0U
+{{/if}}
+{{#if device_custom}}
+#define USBD_HID_CUSTOM_ACTIVATED               1U
+{{else}}
+#define USBD_HID_CUSTOM_ACTIVATED               0U
+{{/if}}
+{{#if cdc_acm_class}}
+#define USBD_CDC_ACM_CLASS_ACTIVATED            1U
+{{else}}
+#define USBD_CDC_ACM_CLASS_ACTIVATED            0U
+{{/if}}
+{{#if msc_class}}
+#define USBD_MSC_CLASS_ACTIVATED                1U
+{{else}}
+#define USBD_MSC_CLASS_ACTIVATED                0U
+{{/if}}
+{{#if dfu_class}}
+#define USBD_DFU_CLASS_ACTIVATED                1U
+{{else}}
+#define USBD_DFU_CLASS_ACTIVATED                0U
+{{/if}}
+{{#if audio_class}}
+#define USBD_AUDIO_CLASS_ACTIVATED              1U
+{{else}}
+#define USBD_AUDIO_CLASS_ACTIVATED              0U
+{{/if}}
+{{#if video_class}}
+#define USBD_VIDEO_CLASS_ACTIVATED              1U
+{{else}}
+#define USBD_VIDEO_CLASS_ACTIVATED              0U
+{{/if}}
+{{#if printer_class}}
+#define USBD_PRINTER_CLASS_ACTIVATED            1U
+{{else}}
+#define USBD_PRINTER_CLASS_ACTIVATED            0U
+{{/if}}
+{{#if ccid_class}}
+#define USBD_CCID_CLASS_ACTIVATED               1U
+{{else}}
+#define USBD_CCID_CLASS_ACTIVATED               0U
+{{/if}}
+{{#if pima_mtp_class}}
+#define USBD_MTP_CLASS_ACTIVATED                1U
+{{else}}
+#define USBD_MTP_CLASS_ACTIVATED                0U
+{{/if}}
+{{!-- START of device_descriptor_config --}}
+{{#with device_descriptor_config~}}
+#define USBD_VENDOR_ID                          {{more.usbd_vid}}
+#define USBD_PRODUCT_ID                         {{more.usbd_pid}}
+#define USBD_LANG_ID_STRING                     {{more.usbd_langid_string}}
+#define USBD_MANUFACTURER_STRING                "{{more.usbd_manufacturer_string}}"
+#define USBD_PRODUCT_STRING                     "{{more.usbd_product_string}}"
+#define USBD_SERIAL_NUMBER_STRING               "{{more.usbd_serial_number}}"
+#define USBD_MAX_POWER                          {{more.usbd_max_power}}
+{{!-- END of device_descriptor_config --}}
+{{/with}}
+{{#if device_mouse}}
+{{!-- START of mouse_interface --}}
+{{#with mouse_interface~}}
+/* Endpoint IN for HID_MOUSE */
+#define USBD_HID_MOUSE_EPIN_ADDR                {{helper_usb_ep_in_addr usbd_hid_mouse_endpoint_in_addr}}
+#define USBD_HID_MOUSE_EPIN_TYPE                UX_INTERRUPT_ENDPOINT
+#define USBD_HID_MOUSE_EPIN_FS_MPS              {{usbd_hid_mouse_endpoint_in_fs_mps}}
+#define USBD_HID_MOUSE_EPIN_FS_BINTERVAL        {{more.usbd_hid_mouse_endpoint_in_fs_binterval}}
+#if USBD_HIGH_SPEED_SUPPORTED == 1U
+#define USBD_HID_MOUSE_EPIN_HS_MPS              {{usbd_hid_mouse_endpoint_in_hs_mps}}
+#define USBD_HID_MOUSE_EPIN_HS_BINTERVAL        {{more.usbd_hid_mouse_endpoint_in_hs_binterval}}
+#endif /* USBD_HIGH_SPEED_SUPPORTED */
+{{!-- END of mouse_interface --}}
+{{/with}}
+{{/if}}
+{{#if device_keyboard}}
+{{!-- START of keyboard_interface --}}
+{{#with keyboard_interface~}}
+/* Endpoint IN for HID_KEYBOARD */
+#define USBD_HID_KEYBOARD_EPIN_ADDR             {{helper_usb_ep_in_addr usbd_hid_keyboard_endpoint_in_addr}}
+#define USBD_HID_KEYBOARD_EPIN_TYPE             UX_INTERRUPT_ENDPOINT
+#define USBD_HID_KEYBOARD_EPIN_FS_MPS           {{usbd_hid_keyboard_endpoint_in_fs_mps}}
+#define USBD_HID_KEYBOARD_EPIN_FS_BINTERVAL     {{more.usbd_hid_keyboard_endpoint_in_fs_binterval}}
+#if USBD_HIGH_SPEED_SUPPORTED == 1U
+#define USBD_HID_KEYBOARD_EPIN_HS_MPS           {{usbd_hid_keyboard_endpoint_in_hs_mps}}
+#define USBD_HID_KEYBOARD_EPIN_HS_BINTERVAL     {{more.usbd_hid_keyboard_endpoint_in_hs_binterval}}
+#endif /* USBD_HIGH_SPEED_SUPPORTED */
+{{!-- END of keyboard_interface --}}
+{{/with}}
+{{/if}}
+{{#if device_custom}}
+{{!-- START of custom_interface --}}
+{{#with custom_interface~}}
+/* Endpoint IN for HID_CUSTOM */
+#define USBD_HID_CUSTOM_EPIN_ADDR               {{helper_usb_ep_in_addr usbd_hid_custom_endpoint_in_addr}}
+#define USBD_HID_CUSTOM_EPIN_TYPE               UX_INTERRUPT_ENDPOINT
+#define USBD_HID_CUSTOM_EPIN_FS_MPS             {{usbd_hid_custom_endpoint_in_fs_mps}}
+#define USBD_HID_CUSTOM_EPIN_FS_BINTERVAL       {{more.usbd_hid_custom_endpoint_in_fs_binterval}}
+#if USBD_HIGH_SPEED_SUPPORTED == 1U
+#define USBD_HID_CUSTOM_EPIN_HS_MPS             {{usbd_hid_custom_endpoint_in_hs_mps}}
+#define USBD_HID_CUSTOM_EPIN_HS_BINTERVAL       {{more.usbd_hid_custom_endpoint_in_hs_binterval}}
+#endif /* USBD_HIGH_SPEED_SUPPORTED */
+{{#if more.ux_device_class_hid_interrupt_out_support}}
+/* Endpoint OUT for HID_CUSTOM */
+#define USBD_HID_CUSTOM_EPOUT_ADDR              {{helper_usb_ep_out_addr more.usbd_hid_custom_endpoint_out_addr}}
+#define USBD_HID_CUSTOM_EPOUT_TYPE              UX_INTERRUPT_ENDPOINT
+#define USBD_HID_CUSTOM_EPOUT_FS_MPS            {{more.usbd_hid_custom_endpoint_out_fs_mps}}
+#define USBD_HID_CUSTOM_EPOUT_FS_BINTERVAL      {{more.usbd_hid_custom_endpoint_out_fs_binterval}}
+#if USBD_HIGH_SPEED_SUPPORTED == 1U
+#define USBD_HID_CUSTOM_EPOUT_HS_MPS            {{more.usbd_hid_custom_endpoint_out_hs_mps}}
+#define USBD_HID_CUSTOM_EPOUT_HS_BINTERVAL      {{more.usbd_hid_custom_endpoint_out_hs_binterval}}
+#endif /* USBD_HIGH_SPEED_SUPPORTED */
+{{/if}}
+{{!-- END of custom_interface --}}
+{{/with}}
+{{/if}}
+{{#if cdc_acm_class}}
+{{!-- START of cdc_acm_interface --}}
+{{#with cdc_acm_interface~}}
+/* Endpoint IN for CDC_ACM */
+#define USBD_CDC_ACM_EPIN_ADDR                  {{helper_usb_ep_in_addr usbd_cdc_acm_endpoint_in_addr}}
+#define USBD_CDC_ACM_EPIN_TYPE                  UX_BULK_ENDPOINT
+#define USBD_CDC_ACM_EPIN_FS_MPS                {{more.usbd_cdc_acm_endpoint_in_fs_mps}}
+#define USBD_CDC_ACM_EPIN_FS_BINTERVAL          {{more.usbd_cdc_acm_endpoint_in_fs_binterval}}
+#if USBD_HIGH_SPEED_SUPPORTED == 1U
+#define USBD_CDC_ACM_EPIN_HS_MPS                {{more.usbd_cdc_acm_endpoint_in_hs_mps}}
+#define USBD_CDC_ACM_EPIN_HS_BINTERVAL          {{more.usbd_cdc_acm_endpoint_in_hs_binterval}}
+#endif /* USBD_HIGH_SPEED_SUPPORTED */
+/* Endpoint OUT for CDC_ACM */
+#define USBD_CDC_ACM_EPOUT_ADDR                 {{helper_usb_ep_out_addr usbd_cdc_acm_endpoint_out_addr}}
+#define USBD_CDC_ACM_EPOUT_TYPE                 UX_BULK_ENDPOINT
+#define USBD_CDC_ACM_EPOUT_FS_MPS               {{more.usbd_cdc_acm_endpoint_out_fs_mps}}
+#define USBD_CDC_ACM_EPOUT_FS_BINTERVAL         {{more.usbd_cdc_acm_endpoint_out_fs_binterval}}
+#if USBD_HIGH_SPEED_SUPPORTED == 1U
+#define USBD_CDC_ACM_EPOUT_HS_MPS               {{more.usbd_cdc_acm_endpoint_out_hs_mps}}
+#define USBD_CDC_ACM_EPOUT_HS_BINTERVAL         {{more.usbd_cdc_acm_endpoint_out_hs_binterval}}
+#endif /* USBD_HIGH_SPEED_SUPPORTED */
+/* Endpoint notification for CDC_ACM */
+#define USBD_CDC_ACM_EPNTF_ADDR                 {{helper_usb_ep_in_addr usbd_cdc_acm_endpoint_in_cmd_addr}}
+#define USBD_CDC_ACM_EPNTF_TYPE                 UX_INTERRUPT_ENDPOINT
+#define USBD_CDC_ACM_EPNTF_FS_MPS               {{more.usbd_cdc_acm_endpoint_in_cmd_fs_mps}}
+#define USBD_CDC_ACM_EPNTF_FS_BINTERVAL         {{more.usbd_cdc_acm_endpoint_in_cmd_fs_binterval}}
+#if USBD_HIGH_SPEED_SUPPORTED == 1U
+#define USBD_CDC_ACM_EPNTF_HS_MPS               {{more.usbd_cdc_acm_endpoint_in_cmd_hs_mps}}
+#define USBD_CDC_ACM_EPNTF_HS_BINTERVAL         {{more.usbd_cdc_acm_endpoint_in_cmd_hs_binterval}}
+#endif /* USBD_HIGH_SPEED_SUPPORTED */
+{{!-- END of cdc_acm_interface --}}
+{{/with}}
+{{/if}}
+{{#if msc_class}}
+{{!-- START of msc_interface --}}
+{{#with msc_interface~}}
+/* Endpoint IN for MSC */
+#define USBD_MSC_EPIN_ADDR                      {{helper_usb_ep_in_addr usbd_msc_endpoint_in_addr}}
+#define USBD_MSC_EPIN_TYPE                      UX_BULK_ENDPOINT
+#define USBD_MSC_EPIN_FS_MPS                    {{more.usbd_msc_endpoint_in_fs_mps}}
+#define USBD_MSC_EPIN_FS_BINTERVAL              {{more.usbd_msc_endpoint_in_fs_binterval}}
+#if USBD_HIGH_SPEED_SUPPORTED == 1U
+#define USBD_MSC_EPIN_HS_MPS                    {{more.usbd_msc_endpoint_in_hs_mps}}
+#define USBD_MSC_EPIN_HS_BINTERVAL              {{more.usbd_msc_endpoint_in_hs_binterval}}
+#endif /* USBD_HIGH_SPEED_SUPPORTED */
+/* Endpoint OUT for MSC */
+#define USBD_MSC_EPOUT_ADDR                     {{helper_usb_ep_out_addr usbd_msc_endpoint_out_addr}}
+#define USBD_MSC_EPOUT_TYPE                     UX_BULK_ENDPOINT
+#define USBD_MSC_EPOUT_FS_MPS                   {{more.usbd_msc_endpoint_out_fs_mps}}
+#define USBD_MSC_EPOUT_FS_BINTERVAL             {{more.usbd_msc_endpoint_out_fs_binterval}}
+#if USBD_HIGH_SPEED_SUPPORTED == 1U
+#define USBD_MSC_EPOUT_HS_MPS                   {{more.usbd_msc_endpoint_out_hs_mps}}
+#define USBD_MSC_EPOUT_HS_BINTERVAL             {{more.usbd_msc_endpoint_out_hs_binterval}}
+#endif /* USBD_HIGH_SPEED_SUPPORTED */
+{{!-- END of msc_interface --}}
+{{/with}}
+{{/if}}
+{{#if dfu_class}}
+{{!-- START of dfu_interface --}}
+{{#with dfu_interface~}}
+#define USBD_DFU_XFER_SIZE                      {{dfu_xfer_size}}
+#define USBD_DFU_BM_ATTRIBUTES                  {{more.dfu_bm_attributes}}
+#define USBD_DFU_DETACH_TIMEOUT                 {{more.dfu_detach_timeout}}
+#define USBD_DFU_STRING_DESC                    "{{more.dfu_media}}"
+#define USBD_DFU_STRING_DESC_INDEX              0x06U
+#define DFU_DESCRIPTOR_TYPE                     0x21U
+{{!-- END of dfu_interface --}}
+{{/with}}
+{{/if}}
+{{#if audio_class}}
+{{!-- START of audio_interface --}}
+{{#with audio_interface~}}
+/* Endpoint IN for AUDIO */
+#define USBD_AUDIO_EPIN_ADDR                    {{helper_usb_ep_in_addr usbd_audio_endpoint_in_addr}}
+#define USBD_AUDIO_EPIN_TYPE                    UX_ISOCHRONOUS_ENDPOINT
+#define USBD_AUDIO_EPIN_FS_MPS                  {{more.usbd_audio_endpoint_in_fs_mps}}
+#define USBD_AUDIO_EPIN_FS_BINTERVAL            {{more.usbd_audio_endpoint_in_fs_binterval}}
+#if USBD_HIGH_SPEED_SUPPORTED == 1U
+#define USBD_AUDIO_EPIN_HS_MPS                  {{more.usbd_audio_endpoint_in_hs_mps}}
+#define USBD_AUDIO_EPIN_HS_BINTERVAL            {{more.usbd_audio_endpoint_in_hs_binterval}}
+#endif /* USBD_HIGH_SPEED_SUPPORTED */
+/* Endpoint OUT for AUDIO */
+#define USBD_AUDIO_EPOUT_ADDR                   {{helper_usb_ep_out_addr usbd_audio_endpoint_out_addr}}
+#define USBD_AUDIO_EPOUT_TYPE                   UX_ISOCHRONOUS_ENDPOINT
+#define USBD_AUDIO_EPOUT_FS_MPS                 {{more.usbd_audio_endpoint_out_fs_mps}}
+#define USBD_AUDIO_EPOUT_FS_BINTERVAL           {{more.usbd_audio_endpoint_out_fs_binterval}}
+#if USBD_HIGH_SPEED_SUPPORTED == 1U
+#define USBD_AUDIO_EPOUT_HS_MPS                 {{more.usbd_audio_endpoint_out_hs_mps}}
+#define USBD_AUDIO_EPOUT_HS_BINTERVAL           {{more.usbd_audio_endpoint_out_hs_binterval}}
+#endif /* USBD_HIGH_SPEED_SUPPORTED */
+{{#if ../audio_core.audio_feedback_support}}
+/* Endpoint Feedback supported for AUDIO */
+#define USBD_AUDIO_EPFEEDBACK_SUPPORTED
+/* Endpoint Feedback for AUDIO */
+#define USBD_AUDIO_EPFEEDBACK_ADDR              {{helper_usb_ep_in_addr usbd_audio_endpoint_feedback_addr}}
+#define USBD_AUDIO_EPFEEDBACK_TYPE              UX_ISOCHRONOUS_ENDPOINT
+#define USBD_AUDIO_EPFEEDBACK_FS_MPS            {{more.usbd_audio_endpoint_feedback_fs_mps}}
+#define USBD_AUDIO_EPFEEDBACK_FS_BINTERVAL      {{more.usbd_audio_endpoint_feedback_fs_binterval}}
+#if USBD_HIGH_SPEED_SUPPORTED == 1U
+#define USBD_AUDIO_EPFEEDBACK_HS_MPS            {{more.usbd_audio_endpoint_feedback_hs_mps}}
+#define USBD_AUDIO_EPFEEDBACK_HS_BINTERVAL      {{more.usbd_audio_endpoint_feedback_hs_binterval}}
+#endif /* USBD_HIGH_SPEED_SUPPORTED */
+{{/if}}
+{{#if ../audio_core.more.audio_interrupt_support}}
+/* Endpoint Interrupt supported for AUDIO */
+#define USBD_AUDIO_EPINTERRUPT_SUPPORTED
+/* Endpoint Interrupt for AUDIO */
+#define USBD_AUDIO_EPINTERRUPT_ADDR             {{helper_usb_ep_in_addr usbd_audio_endpoint_interrupt_addr}}
+#define USBD_AUDIO_EPINTERRUPT_TYPE             UX_INTERRUPT_ENDPOINT
+#define USBD_AUDIO_EPINTERRUPT_FS_MPS           {{more.usbd_audio_endpoint_interrupt_fs_mps}}
+#define USBD_AUDIO_EPINTERRUPT_FS_BINTERVAL     {{more.usbd_audio_endpoint_interrupt_fs_binterval}}
+#if USBD_HIGH_SPEED_SUPPORTED == 1U
+#define USBD_AUDIO_EPINTERRUPT_HS_MPS           {{more.usbd_audio_endpoint_interrupt_hs_mps}}
+#define USBD_AUDIO_EPINTERRUPT_HS_BINTERVAL     {{more.usbd_audio_endpoint_interrupt_hs_binterval}}
+#endif /* USBD_HIGH_SPEED_SUPPORTED */
+{{/if}}
+{{!-- END of audio_interface --}}
+{{/with}}
+{{/if}}
+{{#if video_class}}
+{{!-- START of video_core --}}
+{{#with video_core~}}
+{{#if (eq video_streaming_format_subtype 2)}}
+#define USBD_UVC_USE_FRAME_BASE_H264            1U
+#define USBD_UVC_USE_H264                       0U
+{{else}}
+#define USBD_UVC_USE_FRAME_BASE_H264            0U
+{{#if (eq video_streaming_format_subtype 3)}}
+#define USBD_UVC_USE_H264                       1U
+{{else}}
+#define USBD_UVC_USE_H264                       0U
+{{/if}}
+{{/if}}
+{{#if video_using_camera}}
+#define USBD_UVC_USE_CAMERA                     1U
+{{else}}
+#define USBD_UVC_USE_CAMERA                     0U
+{{/if}}
+#define UVC_FRAME_WIDTH                         {{more.uvc_frame_width}}
+#define UVC_FRAME_HEIGHT                        {{more.uvc_frame_height}}
+#define UVC_CAM_FPS_FS                          {{more.uvc_cam_fps_fs}}
+#define UVC_CAM_FPS_HS                          {{more.uvc_cam_fps_hs}}
+{{!-- END of video_core --}}
+{{!-- START of video_interface --}}
+{{#with ../video_interface~}}
+/* Endpoint IN for VIDEO */
+#define USBD_VIDEO_EPIN_ADDR                    {{helper_usb_ep_in_addr usbd_video_endpoint_in_addr}}
+#define USBD_VIDEO_EPIN_TYPE                    UX_ISOCHRONOUS_ENDPOINT
+#define USBD_VIDEO_EPIN_FS_MPS                  {{more.usbd_video_endpoint_in_fs_mps}}
+#define USBD_VIDEO_EPIN_FS_BINTERVAL            {{more.usbd_video_endpoint_in_fs_binterval}}
+#if USBD_HIGH_SPEED_SUPPORTED == 1U
+#define USBD_VIDEO_EPIN_HS_MPS                  {{more.usbd_video_endpoint_in_hs_mps}}
+#define USBD_VIDEO_EPIN_HS_BINTERVAL            {{more.usbd_video_endpoint_in_hs_binterval}}
+#endif /* USBD_HIGH_SPEED_SUPPORTED */
+{{!-- END of video_interface --}}
+{{/with}}
+{{/with}}
+{{/if}}
+{{#if printer_class}}
+{{!-- START of printer_interface --}}
+{{#with printer_interface~}}
+/* Endpoint IN for PRINTER */
+#define USBD_PRINTER_EPIN_ADDR                  {{helper_usb_ep_in_addr usbd_printer_endpoint_in_addr}}
+#define USBD_PRINTER_EPIN_TYPE                  UX_BULK_ENDPOINT
+#define USBD_PRINTER_EPIN_FS_MPS                {{more.usbd_printer_endpoint_in_fs_mps}}
+#define USBD_PRINTER_EPIN_FS_BINTERVAL          {{more.usbd_printer_endpoint_in_fs_binterval}}
+#if USBD_HIGH_SPEED_SUPPORTED == 1U
+#define USBD_PRINTER_EPIN_HS_MPS                {{more.usbd_printer_endpoint_in_hs_mps}}
+#define USBD_PRINTER_EPIN_HS_BINTERVAL          {{more.usbd_printer_endpoint_in_hs_binterval}}
+#endif /* USBD_HIGH_SPEED_SUPPORTED */
+/* Endpoint OUT for PRINTER */
+#define USBD_PRINTER_EPOUT_ADDR                 {{helper_usb_ep_out_addr usbd_printer_endpoint_out_addr}}
+#define USBD_PRINTER_EPOUT_TYPE                 UX_BULK_ENDPOINT
+#define USBD_PRINTER_EPOUT_FS_MPS               {{more.usbd_printer_endpoint_out_fs_mps}}
+#define USBD_PRINTER_EPOUT_FS_BINTERVAL         {{more.usbd_printer_endpoint_out_fs_binterval}}
+#if USBD_HIGH_SPEED_SUPPORTED == 1U
+#define USBD_PRINTER_EPOUT_HS_MPS               {{more.usbd_printer_endpoint_out_hs_mps}}
+#define USBD_PRINTER_EPOUT_HS_BINTERVAL         {{more.usbd_printer_endpoint_out_hs_binterval}}
+#endif /* USBD_HIGH_SPEED_SUPPORTED */
+{{!-- END of printer_interface --}}
+{{/with}}
+{{/if}}
+{{#if ccid_class}}
+{{!-- START of ccid_interface --}}
+{{#with ccid_interface~}}
+/* Endpoint IN for CCID */
+#define USBD_CCID_EPIN_ADDR                     {{helper_usb_ep_in_addr usbd_ccid_endpoint_in_addr}}
+#define USBD_CCID_EPIN_TYPE                     UX_BULK_ENDPOINT
+#define USBD_CCID_EPIN_FS_MPS                   {{more.usbd_ccid_endpoint_in_fs_mps}}
+#define USBD_CCID_EPIN_FS_BINTERVAL             {{more.usbd_ccid_endpoint_in_fs_binterval}}
+#if USBD_HIGH_SPEED_SUPPORTED == 1U
+#define USBD_CCID_EPIN_HS_MPS                   {{more.usbd_ccid_endpoint_in_hs_mps}}
+#define USBD_CCID_EPIN_HS_BINTERVAL             {{more.usbd_ccid_endpoint_in_hs_binterval}}
+#endif /* USBD_HIGH_SPEED_SUPPORTED */
+/* Endpoint OUT for CCID */
+#define USBD_CCID_EPOUT_ADDR                    {{helper_usb_ep_out_addr usbd_ccid_endpoint_out_addr}}
+#define USBD_CCID_EPOUT_TYPE                    UX_BULK_ENDPOINT
+#define USBD_CCID_EPOUT_FS_MPS                  {{more.usbd_ccid_endpoint_out_fs_mps}}
+#define USBD_CCID_EPOUT_FS_BINTERVAL            {{more.usbd_ccid_endpoint_out_fs_binterval}}
+#if USBD_HIGH_SPEED_SUPPORTED == 1U
+#define USBD_CCID_EPOUT_HS_MPS                  {{more.usbd_ccid_endpoint_out_hs_mps}}
+#define USBD_CCID_EPOUT_HS_BINTERVAL            {{more.usbd_ccid_endpoint_out_hs_binterval}}
+#endif /* USBD_HIGH_SPEED_SUPPORTED */
+/* Endpoint CMD for CCID */
+#define USBD_CCID_EPCTL_ADDR                    {{helper_usb_ep_in_addr usbd_ccid_endpoint_in_cmd_addr}}
+#define USBD_CCID_EPCTL_TYPE                    UX_INTERRUPT_ENDPOINT
+#define USBD_CCID_EPCTL_FS_MPS                  {{more.usbd_ccid_endpoint_in_cmd_fs_mps}}
+#define USBD_CCID_EPCTL_FS_BINTERVAL            {{more.usbd_ccid_endpoint_in_cmd_fs_binterval}}
+#if USBD_HIGH_SPEED_SUPPORTED == 1U
+#define USBD_CCID_EPCTL_HS_MPS                  {{more.usbd_ccid_endpoint_in_cmd_hs_mps}}
+#define USBD_CCID_EPCTL_HS_BINTERVAL            {{more.usbd_ccid_endpoint_in_cmd_hs_binterval}}
+#endif /* USBD_HIGH_SPEED_SUPPORTED */
+{{!-- END of ccid_interface --}}
+{{/with}}
+{{!-- START of ccid_core --}}
+{{#with ccid_core~}}
+#define USBD_CCID_DEFAULT_DATA_RATE             {{usbd_ccid_default_data_rate}}
+#define USBD_CCID_MAX_DATA_RATE                 {{usbd_ccid_max_data_rate}}
+#define USBD_CCID_DEFAULT_CLOCK_FREQ            {{usbd_ccid_default_clock_freq}}
+#define USBD_CCID_MAX_CLOCK_FREQ                {{usbd_ccid_max_clock_freq}}
+#define USBD_CCID_MAX_SLOT_INDEX                {{more.usbd_ccid_max_slot_index}}
+#define USBD_CCID_MAX_BUSY_SLOTS                {{more.usbd_ccid_max_busy_slots}}
+#define USBD_CCID_N_CLOCKS                      {{more.usbd_ccid_n_clocks}}
+#define USBD_CCID_N_DATA_RATES                  {{more.usbd_ccid_n_data_rates}}
+#define USBD_CCID_MAX_BLOCK_SIZE_HEADER         {{more.usbd_ccid_max_block_size_header}}
+#define USBD_CCID_PROTOCOL                      {{more.usbd_ccid_protocol}}
+#define USBD_CCID_VOLTAGE_SUPPLY                {{more.usbd_ccid_voltage_supply}}
+{{!-- END of ccid_core --}}
+{{/with}}
+{{/if}}
+{{#if pima_mtp_class}}
+{{!-- START of pima_mtp_interface --}}
+{{#with pima_mtp_interface~}}
+/* Endpoint IN for MTP */
+#define USBD_MTP_EPIN_ADDR                      {{helper_usb_ep_in_addr usbd_pima_endpoint_in_addr}}
+#define USBD_MTP_EPIN_TYPE                      UX_BULK_ENDPOINT
+#define USBD_MTP_EPIN_FS_MPS                    {{more.usbd_pima_endpoint_in_fs_mps}}
+#define USBD_MTP_EPIN_FS_BINTERVAL              {{more.usbd_pima_endpoint_in_fs_binterval}}
+#if USBD_HIGH_SPEED_SUPPORTED == 1U
+#define USBD_MTP_EPIN_HS_MPS                    {{more.usbd_pima_endpoint_in_hs_mps}}
+#define USBD_MTP_EPIN_HS_BINTERVAL              {{more.usbd_pima_endpoint_in_hs_binterval}}
+#endif /* USBD_HIGH_SPEED_SUPPORTED */
+/* Endpoint OUT for MTP */
+#define USBD_MTP_EPOUT_ADDR                     {{helper_usb_ep_out_addr usbd_pima_endpoint_out_addr}}
+#define USBD_MTP_EPOUT_TYPE                     UX_BULK_ENDPOINT
+#define USBD_MTP_EPOUT_FS_MPS                   {{more.usbd_pima_endpoint_out_fs_mps}}
+#define USBD_MTP_EPOUT_FS_BINTERVAL             {{more.usbd_pima_endpoint_out_fs_binterval}}
+#if USBD_HIGH_SPEED_SUPPORTED == 1U
+#define USBD_MTP_EPOUT_HS_MPS                   {{more.usbd_pima_endpoint_out_hs_mps}}
+#define USBD_MTP_EPOUT_HS_BINTERVAL             {{more.usbd_pima_endpoint_out_hs_binterval}}
+#endif /* USBD_HIGH_SPEED_SUPPORTED */
+/* Endpoint CMD for MTP */
+#define USBD_MTP_EPCTL_ADDR                     {{helper_usb_ep_in_addr usbd_pima_endpoint_cmd_addr}}
+#define USBD_MTP_EPCTL_TYPE                     UX_INTERRUPT_ENDPOINT
+#define USBD_MTP_EPCTL_FS_MPS                   {{more.usbd_pima_endpoint_cmd_fs_mps}}
+#define USBD_MTP_EPCTL_FS_BINTERVAL             {{more.usbd_pima_endpoint_cmd_fs_binterval}}
+#if USBD_HIGH_SPEED_SUPPORTED == 1U
+#define USBD_MTP_EPCTL_HS_MPS                   {{more.usbd_pima_endpoint_cmd_hs_mps}}
+#define USBD_MTP_EPCTL_HS_BINTERVAL             {{more.usbd_pima_endpoint_cmd_hs_binterval}}
+#endif /* USBD_HIGH_SPEED_SUPPORTED */
+{{!-- END of pima_mtp_interface --}}
+{{/with}}
+{{/if}}
+{{!-- END of device_class --}}
+{{/with}}
+{{/with}}
+{{/with}}
+
+#ifdef __cplusplus
+}
+#endif
+#endif  /* UX_STM32_DEVICE_DESCRIPTORS_CONFIG_H */

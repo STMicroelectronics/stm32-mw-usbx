@@ -1,0 +1,49 @@
+{{assign "usbxFilter" (JSONparse '{"cgroup": "STM32CubeMX2 Config", "csub": "USBX"}')~}}
+{{assign 'usbx_context' (@root.SWConfigurationAPI.getInstancesConfiguration @root.usbxFilter)~}}
+{{#if @root.usbx_context.[0]}}
+{{assign 'usbx_cxt' @root.usbx_context.[0].settings.parameters~}}
+{{!
+/**
+  ******************************************************************************
+  * @file    mx_usbx_host_gser_template.h.hbs
+  * @brief   USBX Host GSER applicative header file
+  ******************************************************************************
+  * @attention
+  *
+  * Copyright (c) 2025-2026 STMicroelectronics.
+  * All rights reserved.
+  *
+  * This software is licensed under terms that can be found in the LICENSE file
+  * in the root directory of this software component.
+  * If no LICENSE file comes with this software, it is provided AS-IS.
+  *
+  ******************************************************************************
+~}}
+/**
+  ******************************************************************************
+  * @file    mx_usbx_host_gser.h
+  * @brief   USBX Host GSER applicative header file
+{{> LICENSE}}
+
+/* Define to prevent recursive inclusion -------------------------------------*/
+#ifndef MX_USBX_HOST_GSER_H
+#define MX_USBX_HOST_GSER_H
+
+#ifdef __cplusplus
+extern "C" {
+#endif /* __cplusplus */
+
+/* Includes ------------------------------------------------------------------*/
+#include "ux_api.h"
+#include "ux_host_class_gser.h"
+
+/* Exported types ------------------------------------------------------------*/
+/* Exported constants --------------------------------------------------------*/
+/* Exported macro ------------------------------------------------------------*/
+/* Exported functions prototypes ---------------------------------------------*/
+
+#ifdef __cplusplus
+}
+#endif
+#endif /* MX_USBX_HOST_GSER_H */
+{{/if}}

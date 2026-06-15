@@ -1,5 +1,6 @@
 /***************************************************************************
  * Copyright (c) 2024 Microsoft Corporation
+ * Copyright (c) 2026-present Eclipse ThreadX contributors
  * Copyright (c) 2025-2026 STMicroelectronics.
  *
  * This program and the accompanying materials are made available under the
@@ -36,23 +37,6 @@
 /*                                                                        */
 /*    This file contains data type definitions that make USBX function    */
 /*    identically on a variety of different processor architectures.      */
-/*                                                                        */
-/*  RELEASE HISTORY                                                       */
-/*                                                                        */
-/*    DATE              NAME                      DESCRIPTION             */
-/*                                                                        */
-/*  12-31-2020     Chaoqiong Xiao           Initial Version 6.1.3         */
-/*  01-31-2022     Chaoqiong Xiao           Modified comment(s),          */
-/*                                            moved tx_api.h include and  */
-/*                                            typedefs from ux_api.h,     */
-/*                                            resulting in version 6.1.10 */
-/*  10-31-2023     Chaoqiong Xiao           Modified comment(s),          */
-/*                                            added basic types guards,   */
-/*                                            improved SLONG typedef,     */
-/*                                            resulting in version 6.3.0  */
-/*  21-05-2024     STMicroelectronics       Modified the code             */
-/*                                            to be RTOS agnostic support */
-/*                                            resulting in version 6.4.1  */
 /*                                                                        */
 /**************************************************************************/
 
@@ -181,7 +165,7 @@ extern  ALIGN_TYPE  _ux_utility_time_elapsed(ALIGN_TYPE, ALIGN_TYPE);
 #endif
 
 #ifndef UX_MAX_HCD
-#define UX_MAX_HCD                                          1
+#define UX_MAX_HCD                                          2
 #endif
 
 #ifndef UX_MAX_DEVICES
@@ -354,7 +338,7 @@ VOID    outpl(ULONG,ULONG);
 /* Define the version ID of USBX.  This may be utilized by the application.  */
 #ifdef  UX_SYSTEM_INIT
 CHAR                            _ux_version_id[] =
-                                    "Copyright (c) Microsoft Corporation. All rights reserved. * USBX Generic Version 6.4.1 *";
+                                    "(c) 2024 Microsoft Corp. (c) 2026-present Eclipse ThreadX contributors. * USBX Generic Version 6.5.0.202601 *";
 #else
 extern  CHAR                    _ux_version_id[];
 #endif

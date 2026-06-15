@@ -1,0 +1,610 @@
+{{assign "usbxFilter" (JSONparse '{"cgroup": "STM32CubeMX2 Config", "csub": "USBX"}')~}}
+{{assign 'usbx_context' (@root.SWConfigurationAPI.getInstancesConfiguration @root.usbxFilter)~}}
+{{assign 'usbx_cxt' @root.usbx_context.[0].settings.parameters~}}
+{{!
+/**
+  ******************************************************************************
+  * @file    mx_usbx_device_pima_mtp_template.c.hbs
+  * @brief   USBX Device PIMA MTP applicative source file
+  ******************************************************************************
+  * @attention
+  *
+  * Copyright (c) 2025-2026 STMicroelectronics.
+  * All rights reserved.
+  *
+  * This software is licensed under terms that can be found in the LICENSE file
+  * in the root directory of this software component.
+  * If no LICENSE file comes with this software, it is provided AS-IS.
+  *
+  ******************************************************************************
+~}}
+/**
+  ******************************************************************************
+  * @file    mx_usbx_device_pima_mtp.c
+  * @brief   USBX Device PIMA MTP applicative source file
+{{> LICENSE}}
+
+{{#with @root.usbx_cxt~}}
+/* Includes ------------------------------------------------------------------*/
+#include "mx_usbx_device_pima_mtp.h"
+/* Private typedef -----------------------------------------------------------*/
+/* Private define ------------------------------------------------------------*/
+/* Private macro -------------------------------------------------------------*/
+/* Private variables ---------------------------------------------------------*/
+
+/* Define PIMA supported device properties */
+USHORT usbd_mtp_DevicePropSupported[] = {
+  0
+};
+
+/* Define PIMA supported capture formats */
+USHORT usbd_mtp_DeviceSupportedCaptureFormats[] = {
+  0
+};
+
+/* Define PIMA supported image formats */
+USHORT usbd_mtp_DeviceSupportedImageFormats[] = {
+  0
+};
+
+/* Object property supported
+   WORD 0    : Object Format Code
+   WORD 1    : Number of Prop codes for this Object format
+   WORD n    : Prop Codes
+   WORD n+2  : Next Object Format code ....
+*/
+USHORT usbd_mtp_ObjectPropSupported[] = {
+  0
+};
+
+/* Private function prototypes -----------------------------------------------*/
+
+/**
+  * @brief  usbd_pima_mtp_activate
+  *         This function is called when insertion of a PIMA MTP device.
+  * @param  pima_instance: Pointer to the pima class instance.
+  * @retval none
+  */
+VOID usbd_pima_mtp_activate(VOID *pima_instance)
+{
+  UX_PARAMETER_NOT_USED(pima_instance);
+
+  return;
+}
+
+/**
+  * @brief  usbd_pima_mtp_deactivate
+  *         This function is called when extraction of a PIMA MTP device.
+  * @param  pima_instance: Pointer to the pima class instance.
+  * @retval none
+  */
+VOID usbd_pima_mtp_deactivate(VOID *pima_instance)
+{
+  UX_PARAMETER_NOT_USED(pima_instance);
+
+  return;
+}
+
+/**
+  * @brief  usbd_mtp_cancel
+  *         This function is invoked when host requested to cancel operation.
+  * @param  pima_instance: Pointer to the pima class instance.
+  * @retval status
+  */
+UINT usbd_mtp_cancel(struct UX_SLAVE_CLASS_PIMA_STRUCT *pima_instance)
+{
+  UINT status = UX_SUCCESS;
+
+  UX_PARAMETER_NOT_USED(pima_instance);
+
+  return status;
+}
+
+/**
+  * @brief  usbd_mtp_device_reset
+  *         This function is invoked when host requested to reset device.
+  * @param  pima_instance: Pointer to the pima class instance.
+  * @retval status
+  */
+UINT usbd_mtp_device_reset(struct UX_SLAVE_CLASS_PIMA_STRUCT *pima_instance)
+{
+  UINT status = UX_SUCCESS;
+
+  UX_PARAMETER_NOT_USED(pima_instance);
+
+  return status;
+}
+
+/**
+  * @brief  usbd_mtp_get_device_prop_desc
+  *         This function is invoked when host requested to get device prop.
+  * @param  pima_instance: Pointer to the pima class instance.
+  * @param  device_property: device property code.
+  * @param  device_prop_dataset: device property value.
+  * @param  device_prop_dataset_length: device property value length.
+  * @retval status
+  */
+UINT usbd_mtp_get_device_prop_desc(struct UX_SLAVE_CLASS_PIMA_STRUCT *pima_instance,
+                                ULONG device_property,
+                                UCHAR **device_prop_dataset,
+                                ULONG *device_prop_dataset_length)
+
+{
+  UINT status = UX_SUCCESS;
+
+  UX_PARAMETER_NOT_USED(pima_instance);
+  UX_PARAMETER_NOT_USED(device_property);
+  UX_PARAMETER_NOT_USED(device_prop_dataset);
+  UX_PARAMETER_NOT_USED(device_prop_dataset_length);
+
+  return status;
+}
+
+/**
+  * @brief  usbd_mtp_get_device_prop_value
+  *         This function is invoked when host requested to get device
+  *         prop value.
+  * @param  pima_instance: Pointer to the pima class instance.
+  * @param  device_property: device property code.
+  * @param  device_prop_value: device property value.
+  * @param  device_prop_value_length: device property value length.
+  * @retval status
+  */
+UINT usbd_mtp_get_device_prop_value(struct UX_SLAVE_CLASS_PIMA_STRUCT *pima_instance,
+                                 ULONG device_property,
+                                 UCHAR **device_prop_value,
+                                 ULONG *device_prop_value_length)
+
+{
+  UINT status = UX_SUCCESS;
+
+  UX_PARAMETER_NOT_USED(pima_instance);
+  UX_PARAMETER_NOT_USED(device_property);
+  UX_PARAMETER_NOT_USED(device_prop_value);
+  UX_PARAMETER_NOT_USED(device_prop_value_length);
+
+  return status;
+}
+
+/**
+  * @brief  usbd_mtp_set_device_prop_value
+  *         This function is invoked when host requested to set device
+  *         prop value.
+  * @param  pima_instance: Pointer to the pima class instance.
+  * @param  device_property: device property code.
+  * @param  device_prop_value: device property value.
+  * @param  device_prop_value_length: device property value length.
+  * @retval status
+  */
+UINT usbd_mtp_set_device_prop_value(struct UX_SLAVE_CLASS_PIMA_STRUCT *pima_instance,
+                                 ULONG device_property,
+                                 UCHAR *device_prop_value,
+                                 ULONG device_prop_value_length)
+{
+  UINT status = UX_SUCCESS;
+
+  UX_PARAMETER_NOT_USED(pima_instance);
+  UX_PARAMETER_NOT_USED(device_property);
+  UX_PARAMETER_NOT_USED(device_prop_value);
+  UX_PARAMETER_NOT_USED(device_prop_value_length);
+
+  return status;
+}
+
+/**
+  * @brief  usbd_mtp_format_storage
+  *         This function is invoked when host requested to format storage
+  *         media.
+  * @param  pima_instance: Pointer to the pima class instance.
+  * @param  storage_id: Storage id.
+  * @retval status
+  */
+UINT usbd_mtp_format_storage(struct UX_SLAVE_CLASS_PIMA_STRUCT *pima_instance,
+                            ULONG storage_id)
+{
+  UINT status = UX_SUCCESS;
+
+  UX_PARAMETER_NOT_USED(pima_instance);
+  UX_PARAMETER_NOT_USED(storage_id);
+
+  return status;
+}
+
+/**
+  * @brief  usbd_mtp_get_storage_info
+  *         This function is invoked when host requested to get storage
+  *         media information.
+  * @param  pima_instance: Pointer to the pima class instance.
+  * @param  storage_id: Storage id.
+  * @retval status
+  */
+UINT usbd_mtp_get_storage_info(struct UX_SLAVE_CLASS_PIMA_STRUCT *pima_instance,
+                             ULONG storage_id)
+{
+  UINT status = UX_SUCCESS;
+
+  UX_PARAMETER_NOT_USED(pima_instance);
+  UX_PARAMETER_NOT_USED(storage_id);
+
+  return status;
+}
+
+/**
+  * @brief  MTP_Get_ObjectNumber
+  *         This function is invoked when host requested to get object
+  *         number.
+  * @param  pima_instance: pima instance
+  * @param  object_format_code: Object format
+  * @param  object_association: Object association
+  * @param  object_number: Object number
+  * @retval status
+  */
+UINT usbd_mtp_get_object_number(struct UX_SLAVE_CLASS_PIMA_STRUCT *pima_instance,
+                              ULONG object_format_code,
+                              ULONG object_association,
+                              ULONG *object_number)
+{
+  UINT status = UX_SUCCESS;
+
+  UX_PARAMETER_NOT_USED(pima_instance);
+  UX_PARAMETER_NOT_USED(object_format_code);
+  UX_PARAMETER_NOT_USED(object_association);
+  UX_PARAMETER_NOT_USED(object_number);
+
+  return status;
+}
+
+/**
+  * @brief  usbd_mtp_get_object_handles
+  *         This function is invoked when host requested to get object
+  *         handles.
+  * @param  pima_instance: Pointer to the pima class instance.
+  * @param  object_handles_format_code: Format code for the handles.
+  * @param  object_handles_association: Object association code.
+  * @param  object_handles_array: Address where to store the handles.
+  * @param  object_handles_max_number: Maximum number of handles in the array.
+  * @retval status
+  */
+UINT usbd_mtp_get_object_handles(struct UX_SLAVE_CLASS_PIMA_STRUCT *pima_instance,
+                               ULONG object_handles_format_code,
+                               ULONG object_handles_association,
+                               ULONG *object_handles_array,
+                               ULONG object_handles_max_number)
+{
+  UINT status = UX_SUCCESS;
+
+  UX_PARAMETER_NOT_USED(pima_instance);
+  UX_PARAMETER_NOT_USED(object_handles_format_code);
+  UX_PARAMETER_NOT_USED(object_handles_association);
+  UX_PARAMETER_NOT_USED(object_handles_array);
+  UX_PARAMETER_NOT_USED(object_handles_max_number);
+
+  return status;
+}
+
+/**
+  * @brief  usbd_mtp_get_object_info
+  *         This function is invoked when host requested to get object
+  *         information.
+  * @param  pima_instance: Pointer to the pima class instance.
+  * @param  object_handle: Handle of the object (object index).
+  * @param  object: Object pointer address
+  * @retval status
+  */
+UINT usbd_mtp_get_object_info(struct UX_SLAVE_CLASS_PIMA_STRUCT *pima_instance,
+                            ULONG object_handle,
+                            UX_SLAVE_CLASS_PIMA_OBJECT **object)
+{
+  UINT status = UX_SUCCESS;
+
+  UX_PARAMETER_NOT_USED(pima_instance);
+  UX_PARAMETER_NOT_USED(object_handle);
+  UX_PARAMETER_NOT_USED(object);
+
+  return status;
+}
+
+/**
+  * @brief  usbd_mtp_get_object_data
+  *         This function is invoked when host requested to get object data.
+  * @param  pima_instance: Pointer to the pima class instance.
+  * @param  object_handle: Handle of the object (object index).
+  * @param  object_buffer: Object buffer address
+  * @param  object_length_requested: Object data length requested by
+  *                                  the client to the application.
+  * @param  object_actual_length: Object data length returned by the application.
+  * @retval status
+  */
+UINT usbd_mtp_get_object_data(struct UX_SLAVE_CLASS_PIMA_STRUCT *pima_instance,
+                            ULONG object_handle,
+                            UCHAR *object_buffer,
+                            ULONG object_offset,
+                            ULONG object_length_requested,
+                            ULONG *object_actual_length)
+{
+  UINT status = UX_SUCCESS;
+
+  UX_PARAMETER_NOT_USED(pima_instance);
+  UX_PARAMETER_NOT_USED(object_handle);
+  UX_PARAMETER_NOT_USED(object_buffer);
+  UX_PARAMETER_NOT_USED(object_offset);
+  UX_PARAMETER_NOT_USED(object_length_requested);
+  UX_PARAMETER_NOT_USED(object_actual_length);
+
+  return status;
+}
+
+/**
+  * @brief  usbd_mtp_send_object_info
+  *         This function is called when the PIMA class needs to receive
+  *         the object information in the local system for future storage.
+  * @param  pima_instance: Pointer to the pima class instance.
+  * @param  object: Pointer to the object.
+  * @param  storage_id: Storage id.
+  * @param  parent_object_handle: parent object handle.
+  * @param  object_handle: Handle of the object.
+  * @retval status
+  */
+UINT usbd_mtp_send_object_info(struct UX_SLAVE_CLASS_PIMA_STRUCT *pima_instance,
+                             UX_SLAVE_CLASS_PIMA_OBJECT *object,
+                             ULONG storage_id, ULONG parent_object_handle,
+                             ULONG *object_handle)
+{
+  UINT status = UX_SUCCESS;
+
+  UX_PARAMETER_NOT_USED(pima_instance);
+  UX_PARAMETER_NOT_USED(object);
+  UX_PARAMETER_NOT_USED(storage_id);
+  UX_PARAMETER_NOT_USED(parent_object_handle);
+  UX_PARAMETER_NOT_USED(object_handle);
+
+  return status;
+}
+
+/**
+  * @brief  usbd_mtp_send_object_data
+  *         This function is called when the PIMA class needs to receive
+  *         the object data in the local system for storage.
+  * @param  pima_instance: Pointer to the pima class instance.
+  * @param  object_handle: Handle of the object.
+  * @param  phase: phase of the transfer (active or complete).
+  * @param  object_buffer: Object buffer address.
+  * @param  object_offset: Address of data.
+  * @param  object_length: Object data length sent by application.
+  * @retval status
+  */
+UINT usbd_mtp_send_object_data(struct UX_SLAVE_CLASS_PIMA_STRUCT *pima_instance,
+                             ULONG object_handle, ULONG phase,
+                             UCHAR *object_buffer, ULONG object_offset,
+                             ULONG object_length)
+{
+  UINT status = UX_SUCCESS;
+
+  UX_PARAMETER_NOT_USED(pima_instance);
+  UX_PARAMETER_NOT_USED(object_handle);
+  UX_PARAMETER_NOT_USED(phase);
+  UX_PARAMETER_NOT_USED(object_buffer);
+  UX_PARAMETER_NOT_USED(object_offset);
+  UX_PARAMETER_NOT_USED(object_length);
+
+  return status;
+}
+
+/**
+  * @brief  usbd_mtp_delete_object
+  *         This function is called when the PIMA class needs to delete
+  *         an object on the local storage.
+  * @param  pima_instance: Pointer to the pima class instance.
+  * @param  object_handle: Handle of the object.
+  * @retval status
+  */
+UINT usbd_mtp_delete_object(struct UX_SLAVE_CLASS_PIMA_STRUCT *pima_instance,
+                           ULONG object_handle)
+{
+  UINT status = UX_SUCCESS;
+
+  UX_PARAMETER_NOT_USED(pima_instance);
+  UX_PARAMETER_NOT_USED(object_handle);
+
+  return status;
+}
+
+/**
+  * @brief  usbd_mtp_get_object_prop_desc
+  *         This function is invoked when host requested to get object
+  *         prop desc.
+  * @param  pima_instance: Pointer to the pima class instance.
+  * @param  object_property: object property.
+  * @param  object_format_code: object format code.
+  * @param  object_prop_dataset: object property dataset.
+  * @param  object_prop_dataset_length: object property dataset length.
+  * @retval status
+  */
+UINT usbd_mtp_get_object_prop_desc(struct UX_SLAVE_CLASS_PIMA_STRUCT *pima_instance,
+                                ULONG object_property,
+                                ULONG object_format_code,
+                                UCHAR **object_prop_dataset,
+                                ULONG *object_prop_dataset_length)
+{
+  UINT status = UX_SUCCESS;
+
+  UX_PARAMETER_NOT_USED(pima_instance);
+  UX_PARAMETER_NOT_USED(object_property);
+  UX_PARAMETER_NOT_USED(object_format_code);
+  UX_PARAMETER_NOT_USED(object_prop_dataset);
+  UX_PARAMETER_NOT_USED(object_prop_dataset_length);
+
+  return status;
+}
+
+/**
+  * @brief  usbd_mtp_get_object_prop_value
+  *         This function is invoked when host requested to get object
+  *         prop value.
+  * @param  pima_instance : Pointer to the pima class instance.
+  * @param  object_handle: Handle of the object.
+  * @param  object_prop_code: Object property code.
+  * @param  object_prop_value: Object property value.
+  * @param  object_prop_value_length: Object property value length.
+  * @retval status
+  */
+UINT usbd_mtp_get_object_prop_value(struct UX_SLAVE_CLASS_PIMA_STRUCT *pima_instance,
+                                 ULONG object_handle,
+                                 ULONG object_prop_code,
+                                 UCHAR **object_prop_value,
+                                 ULONG *object_prop_value_length)
+{
+  UINT status = UX_SUCCESS;
+
+  UX_PARAMETER_NOT_USED(pima_instance);
+  UX_PARAMETER_NOT_USED(object_handle);
+  UX_PARAMETER_NOT_USED(object_prop_code);
+  UX_PARAMETER_NOT_USED(object_prop_value);
+  UX_PARAMETER_NOT_USED(object_prop_value_length);
+
+  return status;
+}
+
+/**
+  * @brief  usbd_mtp_set_object_prop_value
+  *         This function is invoked when host requested to set object
+  *         prop value.
+  * @param  pima_instance : Pointer to the pima class instance.
+  * @param  object_handle : Handle of the object.
+  * @param  object_prop_code : Object property code.
+  * @param  object_prop_value: Object property value.
+  * @param  object_prop_value_length: Object property value length.
+  * @retval status
+  */
+UINT usbd_mtp_set_object_prop_value(struct UX_SLAVE_CLASS_PIMA_STRUCT *pima_instance,
+                                 ULONG object_handle,
+                                 ULONG object_prop_code,
+                                 UCHAR *object_prop_value,
+                                 ULONG object_prop_value_length)
+{
+  UINT status = UX_SUCCESS;
+
+  UX_PARAMETER_NOT_USED(pima_instance);
+  UX_PARAMETER_NOT_USED(object_handle);
+  UX_PARAMETER_NOT_USED(object_prop_code);
+  UX_PARAMETER_NOT_USED(object_prop_value);
+  UX_PARAMETER_NOT_USED(object_prop_value_length);
+
+  return status;
+}
+
+/**
+  * @brief  usbd_mtp_get_object_references
+  *         This function is invoked when host requested to get object
+  *         references.
+  * @param  pima_instance : Pointer to the pima class instance.
+  * @param  object_handle : Handle of the object.
+  * @param  object_handle_array: object handle array.
+  * @param  object_handle_array_length: length of object handle array.
+  * @retval status
+  */
+UINT usbd_mtp_get_object_references(struct UX_SLAVE_CLASS_PIMA_STRUCT *pima_instance,
+                                  ULONG object_handle,
+                                  UCHAR **object_handle_array,
+                                  ULONG *object_handle_array_length)
+{
+  UINT status = UX_SUCCESS;
+
+  UX_PARAMETER_NOT_USED(pima_instance);
+  UX_PARAMETER_NOT_USED(object_handle);
+  UX_PARAMETER_NOT_USED(object_handle_array);
+  UX_PARAMETER_NOT_USED(object_handle_array_length);
+
+  return status;
+}
+
+/**
+  * @brief  usbd_mtp_set_object_references
+  *         This function is invoked when host requested to set object
+  *         references.
+  * @param  pima_instance : Pointer to the pima class instance.
+  * @param  object_handle : Handle of the object.
+  * @param  object_handle_array: object handle array.
+  * @param  object_handle_array_length: length of object handle array.
+  * @retval status
+  */
+UINT usbd_mtp_set_object_references(struct UX_SLAVE_CLASS_PIMA_STRUCT *pima_instance,
+                                  ULONG object_handle,
+                                  UCHAR *object_handle_array,
+                                  ULONG object_handle_array_length)
+{
+  UINT status = UX_SUCCESS;
+
+  UX_PARAMETER_NOT_USED(pima_instance);
+  UX_PARAMETER_NOT_USED(object_handle);
+  UX_PARAMETER_NOT_USED(object_handle_array);
+  UX_PARAMETER_NOT_USED(object_handle_array_length);
+
+  return status;
+}
+
+/**
+  * @brief  usbd_mtp_StorageGetMaxCapabilityLow
+  *         This function is called to get storage max capability low.
+  * @param  none
+  * @retval max capability
+  */
+ULONG usbd_mtp_StorageGetMaxCapabilityLow(VOID)
+{
+  ULONG max_capability_low = 0U;
+
+  return max_capability_low;
+}
+
+/**
+  * @brief  usbd_mtp_StorageGetMaxCapabilityHigh
+  *         This function is called to get storage max capability high.
+  * @param  none
+  * @retval max capability high
+  */
+ULONG usbd_mtp_StorageGetMaxCapabilityHigh(VOID)
+{
+  ULONG max_capability_high = 0U;
+
+  return max_capability_high;
+}
+
+/**
+  * @brief  usbd_mtp_StorageGetFreeSpaceLow
+  *         This function is called to get storage free space low.
+  * @param  none
+  * @retval Free space low
+  */
+ULONG usbd_mtp_StorageGetFreeSpaceLow(VOID)
+{
+  ULONG free_space_low = 0U;
+
+  return free_space_low;
+}
+
+/**
+  * @brief  usbd_mtp_StorageGetFreeSpaceHigh
+  *         This function is called to get storage free space high.
+  * @param  none
+  * @retval Free space high
+  */
+ULONG usbd_mtp_StorageGetFreeSpaceHigh(VOID)
+{
+  ULONG free_space_high = 0U;
+
+  return free_space_high;
+}
+
+/**
+  * @brief  usbd_mtp_StorageGetFreeSpaceImage
+  *         This function is called to get storage free space image.
+  * @param  none
+  * @retval Free space image
+  */
+ULONG usbd_mtp_StorageGetFreeSpaceImage(VOID)
+{
+  ULONG free_space_image = 0U;
+
+  return free_space_image;
+}
+{{/with}}

@@ -1,0 +1,38 @@
+{{assign "usbxFilter" (JSONparse '{"cgroup": "STM32CubeMX2 Config", "csub": "USBX"}')~}}
+{{assign 'usbx_context' (@root.SWConfigurationAPI.getInstancesConfiguration @root.usbxFilter)~}}
+{{assign 'usbx_cxt' @root.usbx_context.[0].settings.parameters~}}
+{{assign 'USBX_Controllers_Driver' (@root.SWProjectAPI.getUsedComponents 'asObject' cgroup="USBX Controllers Driver")~}}
+{{assign 'USBX_host_class' (@root.SWProjectAPI.getUsedComponents 'asObject' cgroup="USBX Host Class")~}}
+{{!
+/**
+  ******************************************************************************
+  * @file    mx_usbx_host_hid_mouse_template.c.hbs
+  * @brief   USBX Host Mouse HID applicative source file
+  ******************************************************************************
+  * @attention
+  *
+  * Copyright (c) 2025-2026 STMicroelectronics.
+  * All rights reserved.
+  *
+  * This software is licensed under terms that can be found in the LICENSE file
+  * in the root directory of this software component.
+  * If no LICENSE file comes with this software, it is provided AS-IS.
+  *
+  ******************************************************************************
+~}}
+/**
+  ******************************************************************************
+  * @file    mx_usbx_host_hid_mouse.c
+  * @brief   USBX Host Mouse HID applicative source file
+{{> LICENSE}}
+
+{{#with @root.usbx_cxt~}}
+/* Includes ------------------------------------------------------------------*/
+#include "mx_usbx_host_hid_mouse.h"
+/* Private typedef -----------------------------------------------------------*/
+/* Private define ------------------------------------------------------------*/
+/* Private macro -------------------------------------------------------------*/
+/* Private variables ---------------------------------------------------------*/
+/* Private function prototypes -----------------------------------------------*/
+
+{{/with}}

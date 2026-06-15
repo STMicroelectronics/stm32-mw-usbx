@@ -6,6 +6,20 @@
     <environment name="STM32Cube">
       <stm32:pack type="MW" friendlyName="usbx" shortDesc="usbx middleware">
         <relocation-info parent="middleware" layer="" element=""/>
+        <compatibility>
+          <release version="2.1.0">
+            <applicable-schema schemaType="sw-configuration" schemaVersion="3.9.0"/>
+            <applicable-api-group apiType="codegen-getters">
+              <applicable-api apiType="SWProjectAPI" apiVersion="1.0.0"/>
+            </applicable-api-group>
+          </release>
+          <release version="2.0.0">
+            <applicable-schema schemaType="sw-configuration" schemaVersion="3.8.0"/>
+            <applicable-api-group apiType="codegen-getters">
+              <applicable-api apiType="SWProjectAPI" apiVersion="1.0.0"/>
+            </applicable-api-group>
+          </release>
+        </compatibility>
       </stm32:pack>
     </environment>
   </environments>
@@ -18,6 +32,13 @@
   <url>https://developer.st.com/st-pack-server/api/v1/pack/</url>
   <license>LICENSE.md</license>
   <releases>
+    <release date="2026-05-08" version="2.1.0">
+      USBX pack version based on the V6.5.0 Release
+      ## Main changes
+      * Official release of USBX aligned with HAL2.
+      * Update of USBX to V6.5.0 release.
+      * Miscellaneous update of .config files.
+    </release>
     <release date="2026-03-06" version="2.0.0">
       USBX pack version based on the V6.4.3 Release
       ## Main changes
@@ -165,7 +186,7 @@
   </generators>
   <components>
     <!-- USBX utilities Standalone files -->
-    <component Cclass="USB" Cgroup="USBX" Csub="No_OS" Cversion="6.4.3">
+    <component Cclass="USB" Cgroup="USBX" Csub="No_OS" Cversion="6.5.0">
       <description>USB Standalone Mode </description>
       <files>
         <!-- case of standalone mode -->
@@ -173,7 +194,7 @@
       </files>
     </component>
     <!-- STM32 USBX Core -->
-    <component Cclass="USB" Cgroup="USBX Core" Csub="Common" Cversion="6.4.3">
+    <component Cclass="USB" Cgroup="USBX Core" Csub="Common" Cversion="6.5.0">
       <description>USB Core</description>
       <files>
         <file category="doc" name="ST_Release_Notes.md"/>
@@ -254,7 +275,7 @@
       </files>
     </component>
     <!-- STM32 USBX Device Controllers Driver -->
-    <component Cclass="USB" Cgroup="USBX Controllers Driver" Csub="Device" Cversion="6.4.3" condition="Use Device Controllers">
+    <component Cclass="USB" Cgroup="USBX Controllers Driver" Csub="Device" Cversion="6.5.0" condition="Use Device Controllers">
       <description>USB Device Controllers Driver</description>
       <files>
         <file category="source" name="interfaces/usbx_stm32_device_controllers/ux_dcd_stm32_callback.c"/>
@@ -280,7 +301,7 @@
       </files>
     </component>
     <!-- STM32 USBX Device Descriptors Driver -->
-    <component Cclass="USB" Cgroup="USBX Device Descriptors Driver" Csub="Device" Cversion="2.0.0" condition="Use Device Core">
+    <component Cclass="USB" Cgroup="USBX Device Descriptors Driver" Csub="Device" Cversion="2.1.0" condition="Use Device Core">
       <description>STM32 USBX Device Descriptors Driver</description>
       <files>
         <file category="source" name="interfaces/usbx_stm32_device_descriptors/ux_stm32_device_descriptors.c"/>
@@ -289,7 +310,7 @@
       </files>
     </component>
     <!-- STM32 USBX Device Core -->
-    <component Cclass="USB" Cgroup="USBX Core" Csub="Device" Cversion="6.4.3" condition="Use Device Core">
+    <component Cclass="USB" Cgroup="USBX Core" Csub="Device" Cversion="6.5.0" condition="Use Device Core">
       <description>USB Core: Device</description>
       <files>
         <file category="source" name="common/core/src/ux_device_stack_alternate_setting_get.c"/>
@@ -325,7 +346,7 @@
       </files>
     </component>
     <!-- STM32 USBX Device Class HID -->
-    <component Cclass="USB" Cgroup="USBX Device Class" Csub="HID" Cversion="6.4.3" condition="Use HID Device Class">
+    <component Cclass="USB" Cgroup="USBX Device Class" Csub="HID" Cversion="6.5.0" condition="Use HID Device Class">
       <description>USB Device: Human Interface Device Class (HID)</description>
       <files>
         <file category="source" name="common/usbx_device_classes/src/ux_device_class_hid_activate.c"/>
@@ -356,7 +377,7 @@
       </files>
     </component>
     <!-- STM32 USBX Device Class CDC ACM -->
-    <component Cclass="USB" Cgroup="USBX Device Class" Csub="CDC ACM" Cversion="6.4.3" condition="Use CDC_ACM Device Class">
+    <component Cclass="USB" Cgroup="USBX Device Class" Csub="CDC ACM" Cversion="6.5.0" condition="Use CDC_ACM Device Class">
       <description>USB Device: Communication Device Class - Abstract Control Model (CDC-ACM)</description>
       <files>
         <file category="source" name="common/usbx_device_classes/src/ux_device_class_cdc_acm_activate.c"/>
@@ -381,7 +402,7 @@
       </files>
     </component>
     <!-- STM32 USBX Device Class MSC -->
-    <component Cclass="USB" Cgroup="USBX Device Class" Csub="MSC" Cversion="6.4.3" condition="Use MSC Device Class">
+    <component Cclass="USB" Cgroup="USBX Device Class" Csub="MSC" Cversion="6.5.0" condition="Use MSC Device Class">
       <description>USB Device: Mass Storage Class (MSC)</description>
       <files>
         <file category="source" name="common/usbx_device_classes/src/ux_device_class_storage_activate.c"/>
@@ -421,7 +442,7 @@
       </files>
     </component>
     <!-- STM32 USBX Device Class MTP -->
-    <component Cclass="USB" Cgroup="USBX Device Class" Csub="PIMA_MTP" Cversion="6.4.3" condition="Use PIMA_MTP Device Class">
+    <component Cclass="USB" Cgroup="USBX Device Class" Csub="PIMA_MTP" Cversion="6.5.0" condition="Use PIMA_MTP Device Class">
       <description>USB Device: Photographic and Imaging Manufacturers Association - Media Transfer Protocol (PIMA-MTP)</description>
       <files>
         <file category="source" name="common/usbx_device_classes/src/ux_device_class_pima_activate.c"/>
@@ -465,7 +486,7 @@
       </files>
     </component>
     <!-- STM32 USBX Device Class AUDIO -->
-    <component Cclass="USB" Cgroup="USBX Device Class" Csub="AUDIO" Cversion="6.4.3" condition="Use Audio Device Class">
+    <component Cclass="USB" Cgroup="USBX Device Class" Csub="AUDIO" Cversion="6.5.0" condition="Use Audio Device Class">
       <description>USB Device: AUDIO Class</description>
       <files>
         <file category="source" name="common/usbx_device_classes/src/ux_device_class_audio_write_task_function.c"/>
@@ -514,7 +535,7 @@
       </files>
     </component>
     <!-- STM32 USBX Device Class VIDEO -->
-    <component Cclass="USB" Cgroup="USBX Device Class" Csub="VIDEO" Cversion="6.4.3" condition="Use Video Device Class">
+    <component Cclass="USB" Cgroup="USBX Device Class" Csub="VIDEO" Cversion="6.5.0" condition="Use Video Device Class">
       <description>USB Device: VIDEO Class</description>
       <files>
         <file category="source" name="common/usbx_device_classes/src/ux_device_class_video_activate.c"/>
@@ -545,7 +566,7 @@
       </files>
     </component>
     <!-- STM32 USBX Device Class PRINTER -->
-    <component Cclass="USB" Cgroup="USBX Device Class" Csub="PRINTER" Cversion="6.4.3" condition="Use Printer Device Class">
+    <component Cclass="USB" Cgroup="USBX Device Class" Csub="PRINTER" Cversion="6.5.0" condition="Use Printer Device Class">
       <description>USB Device: PRINTER Class</description>
       <files>
         <file category="source" name="common/usbx_device_classes/src/ux_device_class_printer_initialize.c"/>
@@ -567,7 +588,7 @@
       </files>
     </component>
     <!-- STM32 USBX Device Class CCID -->
-    <component Cclass="USB" Cgroup="USBX Device Class" Csub="CCID" Cversion="6.4.3" condition="Use CCID Device Class">
+    <component Cclass="USB" Cgroup="USBX Device Class" Csub="CCID" Cversion="6.5.0" condition="Use CCID Device Class">
       <description>USB Device: CCID Class</description>
       <files>
         <file category="source" name="common/usbx_device_classes/src/ux_device_class_ccid_activate.c"/>
@@ -597,7 +618,7 @@
       </files>
     </component>
     <!-- STM32 USBX Device Class DFU -->
-    <component Cclass="USB" Cgroup="USBX Device Class" Csub="DFU" Cversion="6.4.3" condition="Use DFU Device Class">
+    <component Cclass="USB" Cgroup="USBX Device Class" Csub="DFU" Cversion="6.5.0" condition="Use DFU Device Class">
       <description>USB Device: Device Firmware Update Class (DFU)</description>
       <files>
         <file category="source" name="common/usbx_device_classes/src/ux_device_class_dfu_activate.c"/>
@@ -617,7 +638,7 @@
       </files>
     </component>
     <!-- STM32 USBX Host Core -->
-    <component Cclass="USB" Cgroup="USBX Core" Csub="Host" Cversion="6.4.3" condition="Use Host Core">
+    <component Cclass="USB" Cgroup="USBX Core" Csub="Host" Cversion="6.5.0" condition="Use Host Core">
       <description>USB Core: Host</description>
       <files>
         <file category="source" name="common/core/src/ux_host_stack_bandwidth_check.c"/>
@@ -690,7 +711,7 @@
       </files>
     </component>
     <!-- STM32 USBX Host Controllers Driver -->
-    <component Cclass="USB" Cgroup="USBX Controllers Driver" Csub="Host" Cversion="6.4.3" condition="Use Host Controllers">
+    <component Cclass="USB" Cgroup="USBX Controllers Driver" Csub="Host" Cversion="6.5.0" condition="Use Host Controllers">
       <description>USBX Host Controllers Driver</description>
       <files>
         <file category="source" name="interfaces/usbx_stm32_host_controllers/ux_hcd_stm32_callback.c"/>
@@ -726,7 +747,7 @@
       </files>
     </component>
     <!-- STM32 USBX Host Class HID -->
-    <component Cclass="USB" Cgroup="USBX Host Class" Csub="HID" Cversion="6.4.3" condition="Use HID Host Class">
+    <component Cclass="USB" Cgroup="USBX Host Class" Csub="HID" Cversion="6.5.0" condition="Use HID Host Class">
       <description>USB Host: Human Interface Host Class (HID)</description>
       <files>
         <file category="source" name="common/usbx_host_classes/src/ux_host_class_hid_activate.c"/>
@@ -767,7 +788,7 @@
       </files>
     </component>
     <!-- STM32 USBX Host Class HID Keyboard -->
-    <component Cclass="USB" Cgroup="USBX Host Class" Csub="HID Keyboard" Cversion="6.4.3" condition="Use HID Keyboard Host Class">
+    <component Cclass="USB" Cgroup="USBX Host Class" Csub="HID Keyboard" Cversion="6.5.0" condition="Use HID Keyboard Host Class">
       <description>USB Host: HID Keyboard</description>
       <files>
         <file category="source" name="common/usbx_host_classes/src/ux_host_class_hid_keyboard_activate.c"/>
@@ -785,7 +806,7 @@
       </files>
     </component>
     <!-- STM32 USBX Host Class HID Mouse -->
-    <component Cclass="USB" Cgroup="USBX Host Class" Csub="HID Mouse" Cversion="6.4.3" condition="Use HID Mouse Host Class">
+    <component Cclass="USB" Cgroup="USBX Host Class" Csub="HID Mouse" Cversion="6.5.0" condition="Use HID Mouse Host Class">
       <description>USB Host: HID Mouse</description>
       <files>
         <file category="source" name="common/usbx_host_classes/src/ux_host_class_hid_mouse_activate.c"/>
@@ -800,7 +821,7 @@
       </files>
     </component>
     <!-- STM32 USBX Host Class HID RCU -->
-    <component Cclass="USB" Cgroup="USBX Host Class" Csub="HID RCU" Cversion="6.4.3" condition="Use HID RCU Host Class">
+    <component Cclass="USB" Cgroup="USBX Host Class" Csub="HID RCU" Cversion="6.5.0" condition="Use HID RCU Host Class">
       <description>USB Host: HID RCU</description>
       <files>
         <file category="source" name="common/usbx_host_classes/src/ux_host_class_hid_remote_control_activate.c"/>
@@ -813,7 +834,7 @@
       </files>
     </component>
     <!-- STM32 USBX Host Class CDC ACM -->
-    <component Cclass="USB" Cgroup="USBX Host Class" Csub="CDC ACM" Cversion="6.4.3" condition="Use CDC_ACM Host Class">
+    <component Cclass="USB" Cgroup="USBX Host Class" Csub="CDC ACM" Cversion="6.5.0" condition="Use CDC_ACM Host Class">
       <description>USB Host: Communication Device Class - Abstract Control Model (CDC-ACM)</description>
       <files>
         <file category="source" name="common/usbx_host_classes/src/ux_host_class_cdc_acm_activate.c"/>
@@ -838,7 +859,7 @@
       </files>
     </component>
     <!-- STM32 USBX Host Class MSC -->
-    <component Cclass="USB" Cgroup="USBX Host Class" Csub="MSC" Cversion="6.4.3" condition="Use MSC Host Class">
+    <component Cclass="USB" Cgroup="USBX Host Class" Csub="MSC" Cversion="6.5.0" condition="Use MSC Host Class">
       <description>USB Host: Class Mass storage (MSC)</description>
       <files>
         <file category="source" name="common/usbx_host_classes/src/ux_host_class_storage_activate.c"/>
@@ -886,7 +907,7 @@
       </files>
     </component>
     <!-- STM32 USBX Host Class MTP -->
-    <component Cclass="USB" Cgroup="USBX Host Class" Csub="PIMA_MTP" Cversion="6.4.3" condition="Use PIMA_MTP Host Class">
+    <component Cclass="USB" Cgroup="USBX Host Class" Csub="PIMA_MTP" Cversion="6.5.0" condition="Use PIMA_MTP Host Class">
       <description>USB Host: MTP Class</description>
       <files>
         <file category="source" name="common/usbx_host_classes/src/ux_host_class_pima_activate.c"/>
@@ -923,7 +944,7 @@
       </files>
     </component>
     <!-- STM32 USBX Host Class AUDIO -->
-    <component Cclass="USB" Cgroup="USBX Host Class" Csub="AUDIO" Cversion="6.4.3" condition="Use Audio Host Class">
+    <component Cclass="USB" Cgroup="USBX Host Class" Csub="AUDIO" Cversion="6.5.0" condition="Use Audio Host Class">
       <description>USB Host: AUDIO Class</description>
       <files>
         <file category="source" name="common/usbx_host_classes/src/ux_host_class_audio_activate.c"/>
@@ -962,7 +983,7 @@
       </files>
     </component>
     <!-- STM32 USBX Host Class VIDEO -->
-    <component Cclass="USB" Cgroup="USBX Host Class" Csub="VIDEO" Cversion="6.4.3" condition="Use Video Host Class">
+    <component Cclass="USB" Cgroup="USBX Host Class" Csub="VIDEO" Cversion="6.5.0" condition="Use Video Host Class">
       <description>USB Host: VIDEO Class</description>
       <files>
         <file category="source" name="common/usbx_host_classes/src/ux_host_class_video_activate.c"/>
@@ -1001,7 +1022,7 @@
       </files>
     </component>
     <!-- STM32 USBX Host Class PRINTER -->
-    <component Cclass="USB" Cgroup="USBX Host Class" Csub="PRINTER" Cversion="6.4.3" condition="Use Printer Host Class">
+    <component Cclass="USB" Cgroup="USBX Host Class" Csub="PRINTER" Cversion="6.5.0" condition="Use Printer Host Class">
       <description>USB Host: PRINTER Class</description>
       <files>
         <file category="source" name="common/usbx_host_classes/src/ux_host_class_printer_activate.c"/>
@@ -1020,7 +1041,7 @@
       </files>
     </component>
     <!-- STM32 USBX Host Class GSER -->
-    <component Cclass="USB" Cgroup="USBX Host Class" Csub="GSER" Cversion="6.4.3" condition="Use GSER Host Class">
+    <component Cclass="USB" Cgroup="USBX Host Class" Csub="GSER" Cversion="6.5.0" condition="Use GSER Host Class">
       <description>USB Host: GSER Class</description>
       <files>
         <file category="source" name="common/usbx_host_classes/src/ux_host_class_gser_activate.c"/>
@@ -1040,7 +1061,7 @@
       </files>
     </component>
     <!-- STM32 USBX Host Class PROLIFIC -->
-    <component Cclass="USB" Cgroup="USBX Host Class" Csub="PROLIFIC" Cversion="6.4.3" condition="Use PROLIFIC Host Class">
+    <component Cclass="USB" Cgroup="USBX Host Class" Csub="PROLIFIC" Cversion="6.5.0" condition="Use PROLIFIC Host Class">
       <description>USB Host: PROLIFIC Class</description>
       <files>
         <file category="source" name="common/usbx_host_classes/src/ux_host_class_prolific_activate.c"/>
@@ -1062,7 +1083,7 @@
       </files>
     </component>
     <!-- STM32 USBX Host Class SWAR -->
-    <component Cclass="USB" Cgroup="USBX Host Class" Csub="SWAR" Cversion="6.4.3" condition="Use SWAR Host Class">
+    <component Cclass="USB" Cgroup="USBX Host Class" Csub="SWAR" Cversion="6.5.0" condition="Use SWAR Host Class">
       <description>USB Host: SWAR Class</description>
       <files>
         <file category="source" name="common/usbx_host_classes/src/ux_host_class_swar_activate.c"/>
@@ -1081,7 +1102,7 @@
       </files>
     </component>
     <!-- STM32 USBX Host Class HUB -->
-    <component Cclass="USB" Cgroup="USBX Host Class" Csub="HUB" Cversion="6.4.3" condition="Use HUB Host Class">
+    <component Cclass="USB" Cgroup="USBX Host Class" Csub="HUB" Cversion="6.5.0" condition="Use HUB Host Class">
       <description>USB Host: HUB Class</description>
       <files>
         <file category="source" name="common/usbx_host_classes/src/ux_host_class_hub_activate.c"/>
@@ -1111,7 +1132,7 @@
       </files>
     </component>
     <!-- mx_usbx_device_hid_mouse -->
-    <component generator="usbx_mx2codegen" Cclass="USB" Cgroup="STM32CubeMX2 Codegen" Csub="HID_Mouse_Device_Class" Cversion="2.0.0" condition="Use HID Mouse Device Class">
+    <component generator="usbx_mx2codegen" Cclass="USB" Cgroup="STM32CubeMX2 Codegen" Csub="HID_Mouse_Device_Class" Cversion="2.1.0" condition="Use HID Mouse Device Class">
       <description>Enables USB device to act as a mouse.</description>
       <files>
         <file category="genAsset" name=".config/template/mx_usbx_device_hid_mouse_template.c.hbs"/>
@@ -1122,7 +1143,7 @@
       </files>
     </component>
     <!-- mx_usbx_device_hid_keyboard -->
-    <component generator="usbx_mx2codegen" Cclass="USB" Cgroup="STM32CubeMX2 Codegen" Csub="HID_Keyboard_Device_Class" Cversion="2.0.0" condition="Use HID Keyboard Device Class">
+    <component generator="usbx_mx2codegen" Cclass="USB" Cgroup="STM32CubeMX2 Codegen" Csub="HID_Keyboard_Device_Class" Cversion="2.1.0" condition="Use HID Keyboard Device Class">
       <description>Enables USB device to act as a keyboard.</description>
       <files>
         <file category="genAsset" name=".config/template/mx_usbx_device_hid_keyboard_template.c.hbs"/>
@@ -1133,7 +1154,7 @@
       </files>
     </component>
     <!-- mx_usbx_device_hid_custom -->
-    <component generator="usbx_mx2codegen" Cclass="USB" Cgroup="STM32CubeMX2 Codegen" Csub="HID_Custom_Device_Class" Cversion="2.0.0" condition="Use HID Custom Device Class">
+    <component generator="usbx_mx2codegen" Cclass="USB" Cgroup="STM32CubeMX2 Codegen" Csub="HID_Custom_Device_Class" Cversion="2.1.0" condition="Use HID Custom Device Class">
       <description>Configures USB device for custom HID functions.</description>
       <files>
         <file category="genAsset" name=".config/template/mx_usbx_device_hid_custom_template.c.hbs"/>
@@ -1144,7 +1165,7 @@
       </files>
     </component>
     <!-- mx_usbx_device_CDC_ACM -->
-    <component generator="usbx_mx2codegen" Cclass="USB" Cgroup="STM32CubeMX2 Codegen" Csub="CDC_ACM_Device_Class" Cversion="2.0.0" condition="Use CDC_ACM Device Class">
+    <component generator="usbx_mx2codegen" Cclass="USB" Cgroup="STM32CubeMX2 Codegen" Csub="CDC_ACM_Device_Class" Cversion="2.1.0" condition="Use CDC_ACM Device Class">
       <description>Enables USB device for serial communication.</description>
       <files>
         <file category="genAsset" name=".config/template/mx_usbx_device_cdc_acm_template.c.hbs"/>
@@ -1155,7 +1176,7 @@
       </files>
     </component>
     <!-- mx_usbx_device_MSC -->
-    <component generator="usbx_mx2codegen" Cclass="USB" Cgroup="STM32CubeMX2 Codegen" Csub="MSC_Device_Class" Cversion="2.0.0" condition="Use MSC Device Class">
+    <component generator="usbx_mx2codegen" Cclass="USB" Cgroup="STM32CubeMX2 Codegen" Csub="MSC_Device_Class" Cversion="2.1.0" condition="Use MSC Device Class">
       <description>Configures USB device as a mass storage device.</description>
       <files>
         <file category="genAsset" name=".config/template/mx_usbx_device_msc_template.c.hbs"/>
@@ -1166,7 +1187,7 @@
       </files>
     </component>
     <!-- mx_usbx_device_PIMA_MTP -->
-    <component generator="usbx_mx2codegen" Cclass="USB" Cgroup="STM32CubeMX2 Codegen" Csub="PIMA_MTP_Device_Class" Cversion="2.0.0" condition="Use PIMA_MTP Device Class">
+    <component generator="usbx_mx2codegen" Cclass="USB" Cgroup="STM32CubeMX2 Codegen" Csub="PIMA_MTP_Device_Class" Cversion="2.1.0" condition="Use PIMA_MTP Device Class">
       <description>Enables USB device for media transfer.</description>
       <files>
         <file category="genAsset" name=".config/template/mx_usbx_device_pima_mtp_template.c.hbs"/>
@@ -1177,7 +1198,7 @@
       </files>
     </component>
     <!-- mx_usbx_device_audio -->
-    <component generator="usbx_mx2codegen" Cclass="USB" Cgroup="STM32CubeMX2 Codegen" Csub="Audio_Device_Class" Cversion="2.0.0" condition="Use Audio Device Class">
+    <component generator="usbx_mx2codegen" Cclass="USB" Cgroup="STM32CubeMX2 Codegen" Csub="Audio_Device_Class" Cversion="2.1.0" condition="Use Audio Device Class">
       <description>Configures USB device for audio streaming.</description>
       <files>
         <file category="genAsset" name=".config/template/mx_usbx_device_audio_template.c.hbs"/>
@@ -1188,7 +1209,7 @@
       </files>
     </component>
     <!-- mx_usbx_device_video -->
-    <component generator="usbx_mx2codegen" Cclass="USB" Cgroup="STM32CubeMX2 Codegen" Csub="Video_Device_Class" Cversion="2.0.0" condition="Use Video Device Class">
+    <component generator="usbx_mx2codegen" Cclass="USB" Cgroup="STM32CubeMX2 Codegen" Csub="Video_Device_Class" Cversion="2.1.0" condition="Use Video Device Class">
       <description>Enables USB device for video streaming.</description>
       <files>
         <file category="genAsset" name=".config/template/mx_usbx_device_video_template.c.hbs"/>
@@ -1199,7 +1220,7 @@
       </files>
     </component>
     <!-- mx_usbx_device_printer -->
-    <component generator="usbx_mx2codegen" Cclass="USB" Cgroup="STM32CubeMX2 Codegen" Csub="Printer_Device_Class" Cversion="2.0.0" condition="Use Printer Device Class">
+    <component generator="usbx_mx2codegen" Cclass="USB" Cgroup="STM32CubeMX2 Codegen" Csub="Printer_Device_Class" Cversion="2.1.0" condition="Use Printer Device Class">
       <description>Configures USB device as a printer.</description>
       <files>
         <file category="genAsset" name=".config/template/mx_usbx_device_printer_template.c.hbs"/>
@@ -1210,7 +1231,7 @@
       </files>
     </component>
     <!-- mx_usbx_device_ccid -->
-    <component generator="usbx_mx2codegen" Cclass="USB" Cgroup="STM32CubeMX2 Codegen" Csub="CCID_Device_Class" Cversion="2.0.0" condition="Use CCID Device Class">
+    <component generator="usbx_mx2codegen" Cclass="USB" Cgroup="STM32CubeMX2 Codegen" Csub="CCID_Device_Class" Cversion="2.1.0" condition="Use CCID Device Class">
       <description>Enables USB device for smart card interface.</description>
       <files>
         <file category="genAsset" name=".config/template/mx_usbx_device_ccid_template.c.hbs"/>
@@ -1221,7 +1242,7 @@
       </files>
     </component>
     <!-- mx_usbx_device_dfu -->
-    <component generator="usbx_mx2codegen" Cclass="USB" Cgroup="STM32CubeMX2 Codegen" Csub="DFU_Device_Class" Cversion="2.0.0" condition="Use DFU Device Class">
+    <component generator="usbx_mx2codegen" Cclass="USB" Cgroup="STM32CubeMX2 Codegen" Csub="DFU_Device_Class" Cversion="2.1.0" condition="Use DFU Device Class">
       <description>Configures USB device for firmware updates.</description>
       <files>
         <file category="genAsset" name=".config/template/mx_usbx_device_dfu_template.c.hbs"/>
@@ -1232,7 +1253,7 @@
       </files>
     </component>
     <!-- mx_usbx_host_hid_mouse -->
-    <component generator="usbx_mx2codegen" Cclass="USB" Cgroup="STM32CubeMX2 Codegen" Csub="HID_Mouse_Host_Class" Cversion="2.0.0" condition="Use HID Mouse Host Class">
+    <component generator="usbx_mx2codegen" Cclass="USB" Cgroup="STM32CubeMX2 Codegen" Csub="HID_Mouse_Host_Class" Cversion="2.1.0" condition="Use HID Mouse Host Class">
       <description>Enables USB host to support mouse devices.</description>
       <files>
         <file category="genAsset" name=".config/template/mx_usbx_host_hid_mouse_template.c.hbs"/>
@@ -1243,7 +1264,7 @@
       </files>
     </component>
     <!-- mx_usbx_host_hid_keyboard -->
-    <component generator="usbx_mx2codegen" Cclass="USB" Cgroup="STM32CubeMX2 Codegen" Csub="HID_Keyboard_Host_Class" Cversion="2.0.0" condition="Use HID Keyboard Host Class">
+    <component generator="usbx_mx2codegen" Cclass="USB" Cgroup="STM32CubeMX2 Codegen" Csub="HID_Keyboard_Host_Class" Cversion="2.1.0" condition="Use HID Keyboard Host Class">
       <description>Enables USB host to support keyboard devices.</description>
       <files>
         <file category="genAsset" name=".config/template/mx_usbx_host_hid_keyboard_template.c.hbs"/>
@@ -1254,7 +1275,7 @@
       </files>
     </component>
     <!-- mx_usbx_host_hid_RCU -->
-    <component generator="usbx_mx2codegen" Cclass="USB" Cgroup="STM32CubeMX2 Codegen" Csub="HID_RCU_Host_Class" Cversion="2.0.0" condition="Use HID RCU Host Class">
+    <component generator="usbx_mx2codegen" Cclass="USB" Cgroup="STM32CubeMX2 Codegen" Csub="HID_RCU_Host_Class" Cversion="2.1.0" condition="Use HID RCU Host Class">
       <description>Enables USB host to support remote control units.</description>
       <files>
         <file category="genAsset" name=".config/template/mx_usbx_host_hid_rcu_template.c.hbs"/>
@@ -1265,7 +1286,7 @@
       </files>
     </component>
     <!-- mx_usbx_host_cdc_acm -->
-    <component generator="usbx_mx2codegen" Cclass="USB" Cgroup="STM32CubeMX2 Codegen" Csub="CDC_ACM_Host_Class" Cversion="2.0.0" condition="Use CDC_ACM Host Class">
+    <component generator="usbx_mx2codegen" Cclass="USB" Cgroup="STM32CubeMX2 Codegen" Csub="CDC_ACM_Host_Class" Cversion="2.1.0" condition="Use CDC_ACM Host Class">
       <description>Enables USB host for serial communication devices.</description>
       <files>
         <file category="genAsset" name=".config/template/mx_usbx_host_cdc_acm_template.c.hbs"/>
@@ -1276,7 +1297,7 @@
       </files>
     </component>
     <!-- mx_usbx_host_msc -->
-    <component generator="usbx_mx2codegen" Cclass="USB" Cgroup="STM32CubeMX2 Codegen" Csub="MSC_Host_Class" Cversion="2.0.0" condition="Use MSC Host Class">
+    <component generator="usbx_mx2codegen" Cclass="USB" Cgroup="STM32CubeMX2 Codegen" Csub="MSC_Host_Class" Cversion="2.1.0" condition="Use MSC Host Class">
       <description>Enables USB host to support mass storage devices.</description>
       <files>
         <file category="genAsset" name=".config/template/mx_usbx_host_msc_template.c.hbs"/>
@@ -1287,7 +1308,7 @@
       </files>
     </component>
     <!-- mx_usbx_host_pima_mtp -->
-    <component generator="usbx_mx2codegen" Cclass="USB" Cgroup="STM32CubeMX2 Codegen" Csub="PIMA_MTP_Host_Class" Cversion="2.0.0" condition="Use PIMA_MTP Host Class">
+    <component generator="usbx_mx2codegen" Cclass="USB" Cgroup="STM32CubeMX2 Codegen" Csub="PIMA_MTP_Host_Class" Cversion="2.1.0" condition="Use PIMA_MTP Host Class">
       <description>Enables USB host for media transfer protocol.</description>
       <files>
         <file category="genAsset" name=".config/template/mx_usbx_host_pima_mtp_template.c.hbs"/>
@@ -1298,7 +1319,7 @@
       </files>
     </component>
     <!-- mx_usbx_host_audio -->
-    <component generator="usbx_mx2codegen" Cclass="USB" Cgroup="STM32CubeMX2 Codegen" Csub="Audio_Host_Class" Cversion="2.0.0" condition="Use Audio Host Class">
+    <component generator="usbx_mx2codegen" Cclass="USB" Cgroup="STM32CubeMX2 Codegen" Csub="Audio_Host_Class" Cversion="2.1.0" condition="Use Audio Host Class">
       <description>Enables USB host for audio devices.</description>
       <files>
         <file category="genAsset" name=".config/template/mx_usbx_host_audio_template.c.hbs"/>
@@ -1309,7 +1330,7 @@
       </files>
     </component>
     <!-- mx_usbx_host_video -->
-    <component generator="usbx_mx2codegen" Cclass="USB" Cgroup="STM32CubeMX2 Codegen" Csub="Video_Host_Class" Cversion="2.0.0" condition="Use Video Host Class">
+    <component generator="usbx_mx2codegen" Cclass="USB" Cgroup="STM32CubeMX2 Codegen" Csub="Video_Host_Class" Cversion="2.1.0" condition="Use Video Host Class">
       <description>Enables USB host for video devices.</description>
       <files>
         <file category="genAsset" name=".config/template/mx_usbx_host_video_template.c.hbs"/>
@@ -1320,7 +1341,7 @@
       </files>
     </component>
     <!-- mx_usbx_host_printer -->
-    <component generator="usbx_mx2codegen" Cclass="USB" Cgroup="STM32CubeMX2 Codegen" Csub="Printer_Host_Class" Cversion="2.0.0" condition="Use Printer Host Class">
+    <component generator="usbx_mx2codegen" Cclass="USB" Cgroup="STM32CubeMX2 Codegen" Csub="Printer_Host_Class" Cversion="2.1.0" condition="Use Printer Host Class">
       <description>Enables USB host to support printers.</description>
       <files>
         <file category="genAsset" name=".config/template/mx_usbx_host_printer_template.c.hbs"/>
@@ -1331,7 +1352,7 @@
       </files>
     </component>
     <!-- mx_usbx_host_gser -->
-    <component generator="usbx_mx2codegen" Cclass="USB" Cgroup="STM32CubeMX2 Codegen" Csub="GSER_Host_Class" Cversion="2.0.0" condition="Use GSER Host Class">
+    <component generator="usbx_mx2codegen" Cclass="USB" Cgroup="STM32CubeMX2 Codegen" Csub="GSER_Host_Class" Cversion="2.1.0" condition="Use GSER Host Class">
       <description>Enables USB host for generic serial devices.</description>
       <files>
         <file category="genAsset" name=".config/template/mx_usbx_host_gser_template.c.hbs"/>
@@ -1342,7 +1363,7 @@
       </files>
     </component>
     <!-- mx_usbx_host_prolific -->
-    <component generator="usbx_mx2codegen" Cclass="USB" Cgroup="STM32CubeMX2 Codegen" Csub="Prolific_Host_Class" Cversion="2.0.0" condition="Use PROLIFIC Host Class">
+    <component generator="usbx_mx2codegen" Cclass="USB" Cgroup="STM32CubeMX2 Codegen" Csub="Prolific_Host_Class" Cversion="2.1.0" condition="Use PROLIFIC Host Class">
       <description>Enables USB host for Prolific serial devices.</description>
       <files>
         <file category="genAsset" name=".config/template/mx_usbx_host_prolific_template.c.hbs"/>
@@ -1353,7 +1374,7 @@
       </files>
     </component>
     <!-- mx_usbx_host_swar -->
-    <component generator="usbx_mx2codegen" Cclass="USB" Cgroup="STM32CubeMX2 Codegen" Csub="SWAR_Host_Class" Cversion="2.0.0" condition="Use SWAR Host Class">
+    <component generator="usbx_mx2codegen" Cclass="USB" Cgroup="STM32CubeMX2 Codegen" Csub="SWAR_Host_Class" Cversion="2.1.0" condition="Use SWAR Host Class">
       <description>Enables USB host for SWAR devices.</description>
       <files>
         <file category="genAsset" name=".config/template/mx_usbx_host_swar_template.c.hbs"/>
@@ -1364,7 +1385,7 @@
       </files>
     </component>
     <!-- mx_usbx_host -->
-    <component generator="usbx_mx2codegen" Cclass="USB" Cgroup="STM32CubeMX2 Codegen" Csub="Host_Core" Cversion="2.0.0" condition="Use Host Core">
+    <component generator="usbx_mx2codegen" Cclass="USB" Cgroup="STM32CubeMX2 Codegen" Csub="Host_Core" Cversion="2.1.0" condition="Use Host Core">
       <description>Host USBX configuration.</description>
       <files>
         <!-- helper file -->
@@ -1377,7 +1398,7 @@
       </files>
     </component>
     <!-- mx_usbx_device -->
-    <component generator="usbx_mx2codegen" Cclass="USB" Cgroup="STM32CubeMX2 Codegen" Csub="Device_Core" Cversion="2.0.0" condition="Use Device Core">
+    <component generator="usbx_mx2codegen" Cclass="USB" Cgroup="STM32CubeMX2 Codegen" Csub="Device_Core" Cversion="2.1.0" condition="Use Device Core">
       <description>Device USBX configuration.</description>
       <files>
         <!-- helper file -->
@@ -1391,10 +1412,13 @@
       </files>
     </component>
     <!-- STM32 USBX MX2CodeGen -->
-    <component generator="usbx_mx2codegen" Cclass="USB" Cgroup="STM32CubeMX2 Config" Csub="USBX" Cversion="2.0.0" condition="usbx core condition">
+    <component generator="usbx_mx2codegen" Cclass="USB" Cgroup="STM32CubeMX2 Config" Csub="USBX" Cversion="2.1.0" condition="usbx core condition">
       <description>Temporary component that will store all the resulting generated code and initialize code generation for USBX MW</description>
       <environments>
         <environment name="STM32Cube">
+          <stm32:component>
+            <middleware-entry-point id="USBX" name="USBX" category="USB"/>
+          </stm32:component>
         </environment>
       </environments>
       <files>

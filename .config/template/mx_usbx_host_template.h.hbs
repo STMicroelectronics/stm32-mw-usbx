@@ -1,0 +1,101 @@
+{{assign "usbxFilter" (JSONparse '{"cgroup": "STM32CubeMX2 Config", "csub": "USBX"}')~}}
+{{assign 'usbx_context' (@root.SWConfigurationAPI.getInstancesConfiguration @root.usbxFilter)~}}
+{{assign 'usbx_cxt' @root.usbx_context.[0].settings.parameters~}}
+{{assign 'USBX_Class_Selected' (@root.SWProjectAPI.getUsedComponents 'asObject' cgroup="STM32CubeMX2 Codegen")~}}
+{{!
+/**
+  ******************************************************************************
+  * @file    mx_usbx_host_template.h.hbs
+  * @brief   USBX Host applicative header file
+  ******************************************************************************
+  * @attention
+  *
+  * Copyright (c) 2025-2026 STMicroelectronics.
+  * All rights reserved.
+  *
+  * This software is licensed under terms that can be found in the LICENSE file
+  * in the root directory of this software component.
+  * If no LICENSE file comes with this software, it is provided AS-IS.
+  *
+  ******************************************************************************
+~}}
+/**
+  ******************************************************************************
+  * @file    mx_usbx_host.h
+  * @brief   USBX Host applicative header file
+{{> LICENSE}}
+
+/* Define to prevent recursive inclusion -------------------------------------*/
+#ifndef MX_USBX_HOST_H
+#define MX_USBX_HOST_H
+
+#ifdef __cplusplus
+extern "C" {
+#endif /* __cplusplus */
+{{#with @root.usbx_cxt~}}
+{{#with core.basic.host_class~}}
+
+/* Includes ----------------------------------------------------------*/
+#include "ux_api.h"
+{{#if (helper_usbx_class_is_selected @root.USBX_Class_Selected 'HID_Mouse_Host_Class')}}
+#include "mx_usbx_host_hid_mouse.h"
+{{/if}}
+{{#if (helper_usbx_class_is_selected @root.USBX_Class_Selected 'HID_Keyboard_Host_Class')}}
+#include "mx_usbx_host_hid_keyboard.h"
+{{/if}}
+{{#if (helper_usbx_class_is_selected @root.USBX_Class_Selected 'HID_RCU_Host_Class')}}
+#include "mx_usbx_host_hid_rcu.h"
+{{/if}}
+{{#if (helper_usbx_class_is_selected @root.USBX_Class_Selected 'MSC_Host_Class')}}
+#include "mx_usbx_host_msc.h"
+{{/if}}
+{{#if (helper_usbx_class_is_selected @root.USBX_Class_Selected 'CDC_ACM_Host_Class')}}
+#include "mx_usbx_host_cdc_acm.h"
+{{/if}}
+{{#if (helper_usbx_class_is_selected @root.USBX_Class_Selected 'Audio_Host_Class')}}
+#include "mx_usbx_host_audio.h"
+{{/if}}
+{{#if (helper_usbx_class_is_selected @root.USBX_Class_Selected 'Video_Host_Class')}}
+#include "mx_usbx_host_video.h"
+{{/if}}
+{{#if (helper_usbx_class_is_selected @root.USBX_Class_Selected 'Printer_Host_Class')}}
+#include "mx_usbx_host_printer.h"
+{{/if}}
+{{#if (helper_usbx_class_is_selected @root.USBX_Class_Selected 'PIMA_MTP_Host_Class')}}
+#include "mx_usbx_host_pima_mtp.h"
+{{/if}}
+{{#if (helper_usbx_class_is_selected @root.USBX_Class_Selected 'GSER_Host_Class')}}
+#include "mx_usbx_host_gser.h"
+{{/if}}
+{{#if (helper_usbx_class_is_selected @root.USBX_Class_Selected 'Prolific_Host_Class')}}
+#include "mx_usbx_host_prolific.h"
+{{/if}}
+{{#if (helper_usbx_class_is_selected @root.USBX_Class_Selected 'SWAR_Host_Class')}}
+#include "mx_usbx_host_swar.h"
+{{/if}}
+{{#if hub_class}}
+#include "ux_host_class_hub.h"
+{{/if}}
+#include "mx_hal_def.h"
+#include "mx_usbx_app.h"
+{{/with}}
+/* Exported types ------------------------------------------------------------*/
+/* Exported constants --------------------------------------------------------*/
+/* Exported macro ------------------------------------------------------------*/
+/* Exported functions prototypes ---------------------------------------------*/
+UINT app_usbx_host_init(VOID);
+UINT app_usbx_host_deinit(VOID);
+{{#with core.basic.usb_core_system~}}
+{{!-- check if we are in STANDALONE mode --}}
+{{#if (eq ux_standalone 'No OS')~}}
+UINT app_usbx_host_process(VOID);
+{{/if}}
+{{/with}}
+/* Private defines -----------------------------------------------------------*/
+
+#ifdef __cplusplus
+}
+#endif
+
+#endif /* MX_USBX_HOST_H */
+{{/with}}

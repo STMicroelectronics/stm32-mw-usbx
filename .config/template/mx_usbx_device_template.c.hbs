@@ -1,0 +1,767 @@
+{{assign "usbxFilter" (JSONparse '{"cgroup": "STM32CubeMX2 Config", "csub": "USBX"}')~}}
+{{assign 'usbx_context' (@root.SWConfigurationAPI.getInstancesConfiguration @root.usbxFilter)~}}
+{{assign 'usbx_cxt' @root.usbx_context.[0].settings.parameters~}}
+{{assign 'USBX_Controllers_Driver' (@root.SWProjectAPI.getUsedComponents 'asObject' cgroup="USBX Controllers Driver")~}}
+{{assign 'USBX_device_class' (@root.SWProjectAPI.getUsedComponents 'asObject' cgroup="USBX Device Class")~}}
+{{assign 'USBX_Class_Selected' (@root.SWProjectAPI.getUsedComponents 'asObject' cgroup="STM32CubeMX2 Codegen")~}}
+{{!
+/**
+  ******************************************************************************
+  * @file    mx_usbx_device_template.c.hbs
+  * @brief   USBX Device applicative source file
+  ******************************************************************************
+  * @attention
+  *
+  * Copyright (c) 2025-2026 STMicroelectronics.
+  * All rights reserved.
+  *
+  * This software is licensed under terms that can be found in the LICENSE file
+  * in the root directory of this software component.
+  * If no LICENSE file comes with this software, it is provided AS-IS.
+  *
+  ******************************************************************************
+~}}
+/**
+  ******************************************************************************
+  * @file    mx_usbx_device.c
+  * @brief   USBX Device applicative source file
+{{> LICENSE}}
+
+{{#with @root.usbx_cxt~}}
+/* Includes ------------------------------------------------------------------*/
+#include "mx_usbx_device.h"
+{{#if (helper_usbx_controllers_is_enabled @root.USBX_Controllers_Driver 'Device')}}
+#include "ux_dcd_stm32.h"
+{{/if}}
+{{#if (helper_usbx_class_is_selected @root.USBX_Class_Selected 'HID_Mouse_Device_Class')}}
+#include "mx_usbx_device_hid_mouse.h"
+{{/if}}
+{{#if (helper_usbx_class_is_selected @root.USBX_Class_Selected 'HID_Keyboard_Device_Class')}}
+#include "mx_usbx_device_hid_keyboard.h"
+{{/if}}
+{{#if (helper_usbx_class_is_selected @root.USBX_Class_Selected 'HID_Custom_Device_Class')}}
+#include "mx_usbx_device_hid_custom.h"
+{{/if}}
+{{#if (helper_usbx_class_is_selected @root.USBX_Class_Selected 'CDC_ACM_Device_Class')}}
+#include "mx_usbx_device_cdc_acm.h"
+{{/if}}
+{{#if (helper_usbx_class_is_selected @root.USBX_Class_Selected 'PIMA_MTP_Device_Class')}}
+#include "mx_usbx_device_pima_mtp.h"
+{{/if}}
+{{#if (helper_usbx_class_is_selected @root.USBX_Class_Selected 'MSC_Device_Class')}}
+#include "mx_usbx_device_msc.h"
+{{/if}}
+{{#if (helper_usbx_class_is_selected @root.USBX_Class_Selected 'DFU_Device_Class')}}
+#include "mx_usbx_device_dfu.h"
+{{/if}}
+{{#if (helper_usbx_class_is_selected @root.USBX_Class_Selected 'Audio_Device_Class')}}
+#include "mx_usbx_device_audio.h"
+{{/if}}
+{{#if (helper_usbx_class_is_selected @root.USBX_Class_Selected 'Video_Device_Class')}}
+#include "mx_usbx_device_video.h"
+{{/if}}
+{{#if (helper_usbx_class_is_selected @root.USBX_Class_Selected 'Printer_Device_Class')}}
+#include "mx_usbx_device_printer.h"
+{{/if}}
+{{#if (helper_usbx_class_is_selected @root.USBX_Class_Selected 'CCID_Device_Class')}}
+#include "mx_usbx_device_ccid.h"
+{{/if}}
+/* Private typedef -----------------------------------------------------------*/
+/* Private define ------------------------------------------------------------*/
+/* Private macro -------------------------------------------------------------*/
+/* Private variables ---------------------------------------------------------*/
+{{#if (helper_usbx_controllers_is_enabled @root.USBX_Controllers_Driver 'Device')}}
+{{#if interfaces.logical_interface.device_controllers_enable}}
+{{#with interfaces.resources_allocation.select_the_device_instance}}
+{{#if selection}}
+{{#if @root.usbx_cxt.core.applicative.usbx_device_generate_init_code}}
+hal_pcd_handle_t *p_usb_device = UX_NULL;
+{{else}}
+{{#if (eq @root.usbx_cxt.core.basic.usb_core_system.ux_standalone 'No OS')}}
+hal_pcd_handle_t *p_usb_device = UX_NULL;
+{{/if}}
+{{/if}}
+{{/if}}
+{{/with}}
+{{/if}}
+{{/if}}
+{{#with core.basic.device_class~}}
+{{#if ccid_class}}
+extern UX_DEVICE_CLASS_CCID_HANDLES usbd_ccid_handles;
+extern ULONG usbd_ccid_clocks[];
+extern ULONG usbd_ccid_data_rates[];
+{{/if}}
+{{#if pima_mtp_class}}
+extern USHORT usbd_mtp_DevicePropSupported[];
+extern USHORT usbd_mtp_DeviceSupportedCaptureFormats[];
+extern USHORT usbd_mtp_DeviceSupportedImageFormats[];
+extern USHORT usbd_mtp_ObjectPropSupported[];
+{{/if}}
+{{/with}}
+{{#if (helper_usbx_is_freertos @root.usbx_cxt.core.basic.usb_core_system.ux_standalone)}}
+{{#with core.applicative~}}
+{{#if usbx_device_generate_init_code}}
+TaskHandle_t ux_device_app_thread;
+{{/if}}
+/* Private function prototypes -----------------------------------------------*/
+{{#if usbx_device_generate_init_code}}
+VOID {{usbx_device_application_thread_name}}(void *argument);
+{{/if}}
+{{/with}}
+{{/if}}
+{{#with core.basic.device_class~}}
+/**
+  * @brief  Application USBX Device Initialization.
+  */
+UINT app_usbx_device_init(VOID)
+{
+  UINT status = UX_SUCCESS;
+  USB_DESCRIPTOR                    usbd_desc;
+  ULONG                             report_desc_len;
+{{#if device_mouse}}
+  UX_SLAVE_CLASS_HID_PARAMETER      hid_mouse_parameter;
+{{/if}}
+{{#if device_keyboard}}
+  UX_SLAVE_CLASS_HID_PARAMETER      hid_keyboard_parameter;
+{{/if}}
+{{#if device_custom}}
+  UX_SLAVE_CLASS_HID_PARAMETER      custom_hid_parameter;
+{{/if}}
+{{#if cdc_acm_class}}
+  UX_SLAVE_CLASS_CDC_ACM_PARAMETER  cdc_acm_parameter;
+{{/if}}
+{{#if msc_class}}
+  UX_SLAVE_CLASS_STORAGE_PARAMETER  storage_parameter;
+{{/if}}
+{{#if dfu_class}}
+  UX_SLAVE_CLASS_DFU_PARAMETER      dfu_parameter;
+{{/if}}
+{{#if audio_class}}
+  UX_DEVICE_CLASS_AUDIO_PARAMETER   audio_parameter;
+  static UX_DEVICE_CLASS_AUDIO_STREAM_PARAMETER audio_stream_parameter[USBD_AUDIO_STREAM_NUMBER] = {0};
+{{/if}}
+{{#if video_class}}
+  UX_DEVICE_CLASS_VIDEO_PARAMETER   video_parameter;
+  static UX_DEVICE_CLASS_VIDEO_STREAM_PARAMETER video_stream_parameter[USBD_VIDEO_STREAM_NUMBER] = {0};
+{{/if}}
+{{#if printer_class}}
+  UX_DEVICE_CLASS_PRINTER_PARAMETER printer_parameter;
+{{/if}}
+{{#if ccid_class}}
+  UX_DEVICE_CLASS_CCID_PARAMETER    ccid_parameter;
+{{/if}}
+{{#if pima_mtp_class}}
+  UX_SLAVE_CLASS_PIMA_PARAMETER     pima_mtp_parameter;
+{{/if}}
+{{#if device_mouse}}
+  report_desc_len = usbd_hid_mouse_report_length();
+  usb_device_descriptor_register_class(USBD_CLASS_TYPE_HID, hid_mouse_interface, &report_desc_len);
+{{/if}}
+{{#if device_keyboard}}
+  report_desc_len = usbd_hid_keyboard_report_length();
+  usb_device_descriptor_register_class(USBD_CLASS_TYPE_HID, hid_keyboard_interface, &report_desc_len);
+{{/if}}
+{{#if device_custom}}
+  report_desc_len = usbd_custom_hid_report_length();
+  usb_device_descriptor_register_class(USBD_CLASS_TYPE_HID, hid_custom_interface, &report_desc_len);
+{{/if}}
+{{#if cdc_acm_class}}
+  report_desc_len = sizeof(cdc_acm_parameter);
+  usb_device_descriptor_register_class(USBD_CLASS_TYPE_CDC_ACM, cdc_acm_interface, &report_desc_len);
+{{/if}}
+{{#if msc_class}}
+  report_desc_len = sizeof(storage_parameter);
+  usb_device_descriptor_register_class(USBD_CLASS_TYPE_MSC, msc_interface, &report_desc_len);
+{{/if}}
+{{#if dfu_class}}
+  report_desc_len = sizeof(dfu_parameter);
+  usb_device_descriptor_register_class(USBD_CLASS_TYPE_DFU, dfu_interface, &report_desc_len);
+{{/if}}
+{{#if audio_class}}
+  report_desc_len = sizeof(audio_parameter);
+  usb_device_descriptor_register_class(USBD_CLASS_TYPE_AUDIO_20, audio_interface, &report_desc_len);
+{{/if}}
+{{#if video_class}}
+  report_desc_len = sizeof(video_parameter);
+  usb_device_descriptor_register_class(USBD_CLASS_TYPE_VIDEO, video_interface, &report_desc_len);
+{{/if}}
+{{#if printer_class}}
+  report_desc_len = sizeof(printer_parameter);
+  usb_device_descriptor_register_class(USBD_CLASS_TYPE_PRINTER, printer_interface, &report_desc_len);
+{{/if}}
+{{#if ccid_class}}
+  report_desc_len = sizeof(ccid_parameter);
+  usb_device_descriptor_register_class(USBD_CLASS_TYPE_CCID, ccid_interface, &report_desc_len);
+{{/if}}
+{{#if pima_mtp_class}}
+  report_desc_len = sizeof(pima_mtp_parameter);
+  usb_device_descriptor_register_class(USBD_CLASS_TYPE_PIMA_MTP, mtp_interface, &report_desc_len);
+{{/if}}
+
+  usb_device_descriptor_get_framework(&usbd_desc);
+
+  /* Install the device portion of USBX */
+  status = ux_device_stack_initialize(usbd_desc.device_high_speed.framework,
+                                      usbd_desc.device_high_speed.framework_length,
+                                      usbd_desc.device_full_speed.framework,
+                                      usbd_desc.device_full_speed.framework_length,
+                                      usbd_desc.string.framework,
+                                      usbd_desc.string.framework_length,
+                                      usbd_desc.languageid.framework,
+                                      usbd_desc.languageid.framework_length,
+                                      UX_NULL);
+
+  if (status != UX_SUCCESS)
+  {
+    return status;
+  }
+{{#if device_mouse}}
+  /* Initialize the hid mouse class parameters for the device */
+  hid_mouse_parameter.ux_slave_class_hid_instance_activate           = usbd_hid_mouse_activate;
+  hid_mouse_parameter.ux_slave_class_hid_instance_deactivate         = usbd_hid_mouse_deactivate;
+  hid_mouse_parameter.ux_device_class_hid_parameter_report_address   = usbd_hid_mouse_report_address();
+  hid_mouse_parameter.ux_device_class_hid_parameter_report_length    = usbd_hid_mouse_report_length();
+  hid_mouse_parameter.ux_device_class_hid_parameter_report_id        = usbd_hid_mouse_report_id();
+  hid_mouse_parameter.ux_device_class_hid_parameter_callback         = usbd_hid_mouse_set_report;
+  hid_mouse_parameter.ux_device_class_hid_parameter_get_callback     = usbd_hid_mouse_get_report;
+
+  /* Initialize the device HID mouse class */
+  status = ux_device_stack_class_register(_ux_system_slave_class_hid_name,
+                                          ux_device_class_hid_entry,
+                                          0x01,
+                                          hid_mouse_interface->interface_numbers,
+                                          &hid_mouse_parameter);
+
+  if (status != UX_SUCCESS)
+  {
+    return status;
+  }
+{{/if}}
+{{#if device_keyboard}}
+  /* Initialize the hid keyboard class parameters for the device */
+  hid_keyboard_parameter.ux_slave_class_hid_instance_activate         = usbd_hid_keyboard_activate;
+  hid_keyboard_parameter.ux_slave_class_hid_instance_deactivate       = usbd_hid_keyboard_deactivate;
+  hid_keyboard_parameter.ux_device_class_hid_parameter_report_address = usbd_hid_keyboard_report_address();
+  hid_keyboard_parameter.ux_device_class_hid_parameter_report_length  = usbd_hid_keyboard_report_length();
+  hid_keyboard_parameter.ux_device_class_hid_parameter_report_id      = usbd_hid_keyboard_report_id();
+  hid_keyboard_parameter.ux_device_class_hid_parameter_callback       = usbd_hid_keyboard_set_report;
+  hid_keyboard_parameter.ux_device_class_hid_parameter_get_callback   = usbd_hid_keyboard_get_report;
+
+  /* Initialize the device HID keyboard class */
+  status = ux_device_stack_class_register(_ux_system_slave_class_hid_name,
+                                          ux_device_class_hid_entry,
+                                          0x01,
+                                          hid_keyboard_interface->interface_numbers,
+                                          &hid_keyboard_parameter);
+
+  if (status != UX_SUCCESS)
+  {
+    return status;
+  }
+{{/if}}
+{{#if device_custom}}
+  /* Initialize the hid custom class parameters for the device */
+  custom_hid_parameter.ux_slave_class_hid_instance_activate                    = usbd_custom_hid_activate;
+  custom_hid_parameter.ux_slave_class_hid_instance_deactivate                  = usbd_custom_hid_deactivate;
+  custom_hid_parameter.ux_device_class_hid_parameter_report_address            = usbd_custom_hid_report_address();
+  custom_hid_parameter.ux_device_class_hid_parameter_report_length             = usbd_custom_hid_report_length();
+  custom_hid_parameter.ux_device_class_hid_parameter_report_id                 = usbd_custom_hid_report_id();
+  custom_hid_parameter.ux_device_class_hid_parameter_callback                  = usbd_custom_hid_set_feature;
+  custom_hid_parameter.ux_device_class_hid_parameter_get_callback              = usbd_custom_hid_get_report;
+#ifdef UX_DEVICE_CLASS_HID_INTERRUPT_OUT_SUPPORT
+  custom_hid_parameter.ux_device_class_hid_parameter_receiver_initialize       = ux_device_class_hid_receiver_initialize;
+  custom_hid_parameter.ux_device_class_hid_parameter_receiver_event_max_number = usbd_custom_hid_EventMaxNumber();
+  custom_hid_parameter.ux_device_class_hid_parameter_receiver_event_max_length = usbd_custom_hid_EventMaxLength();
+  custom_hid_parameter.ux_device_class_hid_parameter_receiver_event_callback   = usbd_custom_hid_set_report;
+#endif /* UX_DEVICE_CLASS_HID_INTERRUPT_OUT_SUPPORT */
+
+  /* Initialize the device hid custom class */
+  status = ux_device_stack_class_register(_ux_system_slave_class_hid_name,
+                                          ux_device_class_hid_entry,
+                                          0x01,
+                                          hid_custom_interface->interface_numbers,
+                                          &custom_hid_parameter);
+
+  if (status != UX_SUCCESS)
+  {
+    return status;
+  }
+{{/if}}
+{{#if cdc_acm_class}}
+  /* Initialize the cdc acm class parameters for the device */
+  cdc_acm_parameter.ux_slave_class_cdc_acm_instance_activate   = usbd_cdc_acm_activate;
+  cdc_acm_parameter.ux_slave_class_cdc_acm_instance_deactivate = usbd_cdc_acm_deactivate;
+  cdc_acm_parameter.ux_slave_class_cdc_acm_parameter_change    = usbd_cdc_acm_ParameterChange;
+
+  /* Initialize the device cdc acm class */
+  status = ux_device_stack_class_register(_ux_system_slave_class_cdc_acm_name,
+                                          ux_device_class_cdc_acm_entry,
+                                          0x01,
+                                          cdc_acm_interface->interface_numbers,
+                                          &cdc_acm_parameter);
+
+  if (status != UX_SUCCESS)
+  {
+    return status;
+  }
+{{/if}}
+{{#if msc_class}}
+  /* Initialize the storage class parameters for the device */
+  storage_parameter.ux_slave_class_storage_instance_activate                                            = usbd_storage_activate;
+  storage_parameter.ux_slave_class_storage_instance_deactivate                                          = usbd_storage_deactivate;
+  storage_parameter.ux_slave_class_storage_parameter_number_lun                                         = STORAGE_NUMBER_LUN;
+  storage_parameter.ux_slave_class_storage_parameter_lun[0].ux_slave_class_storage_media_last_lba       = usbd_storage_get_media_last_lba();
+  storage_parameter.ux_slave_class_storage_parameter_lun[0].ux_slave_class_storage_media_block_length   = usbd_storage_get_media_blocklength();
+  storage_parameter.ux_slave_class_storage_parameter_lun[0].ux_slave_class_storage_media_type           = 0;
+  storage_parameter.ux_slave_class_storage_parameter_lun[0].ux_slave_class_storage_media_removable_flag = STORAGE_REMOVABLE_FLAG;
+  storage_parameter.ux_slave_class_storage_parameter_lun[0].ux_slave_class_storage_media_read_only_flag = STORAGE_READ_ONLY;
+  storage_parameter.ux_slave_class_storage_parameter_lun[0].ux_slave_class_storage_media_read           = usbd_storage_read;
+  storage_parameter.ux_slave_class_storage_parameter_lun[0].ux_slave_class_storage_media_write          = usbd_storage_write;
+  storage_parameter.ux_slave_class_storage_parameter_lun[0].ux_slave_class_storage_media_flush          = usbd_storage_flush;
+  storage_parameter.ux_slave_class_storage_parameter_lun[0].ux_slave_class_storage_media_status         = usbd_storage_status;
+  storage_parameter.ux_slave_class_storage_parameter_lun[0].ux_slave_class_storage_media_notification   = usbd_storage_notification;
+
+  /* Initialize the device storage class */
+  status = ux_device_stack_class_register(_ux_system_slave_class_storage_name,
+                                          ux_device_class_storage_entry,
+                                          0x01,
+                                          msc_interface->interface_numbers,
+                                          &storage_parameter);
+
+  if (status != UX_SUCCESS)
+  {
+    return status;
+  }
+{{/if}}
+{{#if dfu_class}}
+  /* Initialize the dfu class parameters for the device */
+  dfu_parameter.ux_slave_class_dfu_parameter_instance_activate     = usbd_dfu_activate;
+  dfu_parameter.ux_slave_class_dfu_parameter_instance_deactivate   = usbd_dfu_deactivate;
+  dfu_parameter.ux_slave_class_dfu_parameter_get_status            = usbd_dfu_get_status;
+  dfu_parameter.ux_slave_class_dfu_parameter_read                  = usbd_dfu_read;
+  dfu_parameter.ux_slave_class_dfu_parameter_write                 = usbd_dfu_write;
+  dfu_parameter.ux_slave_class_dfu_parameter_notify                = usbd_dfu_notify;
+#ifdef UX_DEVICE_CLASS_DFU_CUSTOM_REQUEST_ENABLE
+  dfu_parameter.ux_device_class_dfu_parameter_custom_request       = usbd_dfu_custom_request;
+#endif /* UX_DEVICE_CLASS_DFU_CUSTOM_REQUEST_ENABLE */
+#if USBD_HIGH_SPEED_SUPPORTED == 0U
+  dfu_parameter.ux_slave_class_dfu_parameter_framework             = usbd_desc.device_full_speed.framework;
+  dfu_parameter.ux_slave_class_dfu_parameter_framework_length      = usbd_desc.device_full_speed.framework_length;
+#else
+  dfu_parameter.ux_slave_class_dfu_parameter_framework             = usbd_desc.device_high_speed.framework;
+  dfu_parameter.ux_slave_class_dfu_parameter_framework_length      = usbd_desc.device_high_speed.framework_length;
+#endif /* USBD_HIGH_SPEED_SUPPORTED */
+
+  /* Initialize the device dfu class */
+  status = ux_device_stack_class_register(_ux_system_slave_class_dfu_name,
+                                          ux_device_class_dfu_entry,
+                                          0x01,
+                                          dfu_interface->interface_numbers,
+                                          &dfu_parameter);
+
+  if (status != UX_SUCCESS)
+  {
+    return status;
+  }
+{{/if}}
+{{#if audio_class}}
+  /* Initialize the audio class parameters for the device */
+  audio_parameter.ux_device_class_audio_parameter_streams_nb                                         = USBD_AUDIO_STREAM_NUMBER;
+  audio_parameter.ux_device_class_audio_parameter_streams                                            = audio_stream_parameter;
+  audio_parameter.ux_device_class_audio_parameter_callbacks.ux_slave_class_audio_instance_activate   = usbd_audio_activate;
+  audio_parameter.ux_device_class_audio_parameter_callbacks.ux_slave_class_audio_instance_deactivate = usbd_audio_deactivate;
+  audio_parameter.ux_device_class_audio_parameter_callbacks.ux_device_class_audio_control_process    = usbd_audio_control_process;
+
+  /* Initialize the device audio class */
+  status = ux_device_stack_class_register(_ux_system_slave_class_audio_name,
+                                          ux_device_class_audio_entry,
+                                          0x01,
+                                          audio_interface->interface_numbers,
+                                          &audio_parameter);
+
+  if (status != UX_SUCCESS)
+  {
+    return status;
+  }
+{{/if}}
+{{#if video_class}}
+  /* Initialize the video class parameters for the device */
+  video_stream_parameter[0].ux_device_class_video_stream_parameter_callbacks.ux_device_class_video_stream_change       = usbd_video_stream_change;
+  video_stream_parameter[0].ux_device_class_video_stream_parameter_callbacks.ux_device_class_video_stream_payload_done = usbd_video_stream_payload_done;
+  video_stream_parameter[0].ux_device_class_video_stream_parameter_callbacks.ux_device_class_video_stream_request      = usbd_video_stream_request;
+  video_stream_parameter[0].ux_device_class_video_stream_parameter_max_payload_buffer_nb                               = USBD_VIDEO_PAYLOAD_BUFFER_NUMBER;
+  video_stream_parameter[0].ux_device_class_video_stream_parameter_max_payload_buffer_size                             = usbd_video_stream_get_max_payload_buffer_size();
+
+  /* Set the parameters for Video device */
+  video_parameter.ux_device_class_video_parameter_streams_nb                                                           = USBD_VIDEO_STREAM_NUMBER;
+  video_parameter.ux_device_class_video_parameter_streams                                                              = video_stream_parameter;
+  video_parameter.ux_device_class_video_parameter_callbacks.ux_slave_class_video_instance_activate                     = usbd_video_activate;
+  video_parameter.ux_device_class_video_parameter_callbacks.ux_slave_class_video_instance_deactivate                   = usbd_video_deactivate;
+
+{{#if (helper_usbx_is_freertos @root.usbx_cxt.core.basic.usb_core_system.ux_standalone)}}
+  video_stream_parameter[0].ux_device_class_video_stream_parameter_thread_entry      = ux_device_class_video_write_thread_entry;
+  video_stream_parameter[0].ux_device_class_video_stream_parameter_thread_stack_size = UX_DEVICE_CLASS_VIDEO_THREAD_STACK_SIZE;
+{{/if}}
+
+  /* Initialize the device video class */
+  status = ux_device_stack_class_register(_ux_system_device_class_video_name,
+                                          ux_device_class_video_entry,
+                                          0x01,
+                                          video_interface->interface_numbers,
+                                          &video_parameter);
+
+  if (status != UX_SUCCESS)
+  {
+    return status;
+  }
+{{/if}}
+{{#if printer_class}}
+  /* Initialize the printer class parameters for the device */
+  printer_parameter.ux_device_class_printer_device_id           = usbd_printer_get_deviceID();
+  printer_parameter.ux_device_class_printer_instance_activate   = usbd_printer_activate;
+  printer_parameter.ux_device_class_printer_instance_deactivate = usbd_printer_deactivate;
+  printer_parameter.ux_device_class_printer_soft_reset          = usbd_printer_soft_reset;
+  /* Initialize the device printer class */
+  status = ux_device_stack_class_register(_ux_system_device_class_printer_name,
+                                          ux_device_class_printer_entry,
+                                          0x01,
+                                          printer_interface->interface_numbers,
+                                          &printer_parameter);
+
+  if (status != UX_SUCCESS)
+  {
+    return status;
+  }
+{{/if}}
+{{#if ccid_class}}
+  /* Initialize the ccid class parameters for the device */
+  ccid_parameter.ux_device_class_ccid_instance_activate   = usbd_ccid_activate;
+  ccid_parameter.ux_device_class_ccid_instance_deactivate = usbd_ccid_deactivate;
+  ccid_parameter.ux_device_class_ccid_handles             = &usbd_ccid_handles;
+  ccid_parameter.ux_device_class_ccid_clocks              = usbd_ccid_clocks;
+  ccid_parameter.ux_device_class_ccid_data_rates          = usbd_ccid_data_rates;
+  ccid_parameter.ux_device_class_ccid_max_n_slots         = USBD_CCID_MAX_SLOT_INDEX;
+  ccid_parameter.ux_device_class_ccid_max_n_busy_slots    = USBD_CCID_MAX_BUSY_SLOTS;
+  ccid_parameter.ux_device_class_ccid_max_transfer_length = USBD_CCID_MAX_BLOCK_SIZE_HEADER;
+  ccid_parameter.ux_device_class_ccid_n_clocks            = USBD_CCID_N_CLOCKS;
+  ccid_parameter.ux_device_class_ccid_n_data_rates        = USBD_CCID_N_DATA_RATES;
+
+  /* Initialize the device ccid class */
+  status = ux_device_stack_class_register(_ux_system_device_class_ccid_name,
+                                          ux_device_class_ccid_entry,
+                                          0x01,
+                                          ccid_interface->interface_numbers,
+                                          &ccid_parameter);
+
+  if (status != UX_SUCCESS)
+  {
+    return status;
+  }
+{{/if}}
+{{#if pima_mtp_class}}
+  /* Initialize the pima class parameters for the device */
+  pima_mtp_parameter.ux_device_class_pima_instance_activate                        = usbd_pima_mtp_activate;
+  pima_mtp_parameter.ux_device_class_pima_instance_deactivate                      = usbd_pima_mtp_deactivate;
+  pima_mtp_parameter.ux_device_class_pima_parameter_storage_max_capacity_low       = usbd_mtp_StorageGetMaxCapabilityLow();
+  pima_mtp_parameter.ux_device_class_pima_parameter_storage_max_capacity_high      = usbd_mtp_StorageGetMaxCapabilityHigh();
+  pima_mtp_parameter.ux_device_class_pima_parameter_storage_free_space_low         = usbd_mtp_StorageGetFreeSpaceLow();
+  pima_mtp_parameter.ux_device_class_pima_parameter_storage_free_space_high        = usbd_mtp_StorageGetFreeSpaceHigh();
+  pima_mtp_parameter.ux_device_class_pima_parameter_storage_free_space_image       = usbd_mtp_StorageGetFreeSpaceImage();
+  pima_mtp_parameter.ux_device_class_pima_parameter_device_properties_list         = usbd_mtp_DevicePropSupported;
+  pima_mtp_parameter.ux_device_class_pima_parameter_supported_capture_formats_list = usbd_mtp_DeviceSupportedCaptureFormats;
+  pima_mtp_parameter.ux_device_class_pima_parameter_supported_image_formats_list   = usbd_mtp_DeviceSupportedImageFormats;
+  pima_mtp_parameter.ux_device_class_pima_parameter_object_properties_list         = usbd_mtp_ObjectPropSupported;
+  pima_mtp_parameter.ux_device_class_pima_parameter_manufacturer                   = (UCHAR *)USBD_MTP_INFO_MANUFACTURER;
+  pima_mtp_parameter.ux_device_class_pima_parameter_model                          = (UCHAR *)USBD_MTP_INFO_MODEL;
+  pima_mtp_parameter.ux_device_class_pima_parameter_device_version                 = (UCHAR *)USBD_MTP_INFO_VERSION;
+  pima_mtp_parameter.ux_device_class_pima_parameter_serial_number                  = (UCHAR *)USBD_MTP_INFO_SERIAL_NUMBER;
+  pima_mtp_parameter.ux_device_class_pima_parameter_storage_id                     = USBD_MTP_STORAGE_ID;
+  pima_mtp_parameter.ux_device_class_pima_parameter_storage_type                   = USBD_MTP_STORAGE_TYPE;
+  pima_mtp_parameter.ux_device_class_pima_parameter_storage_file_system_type       = USBD_MTP_STORAGE_FILE_SYSTEM_TYPE;
+  pima_mtp_parameter.ux_device_class_pima_parameter_storage_access_capability      = USBD_MTP_STORAGE_FILE_ACCESS_CAPABILITY;
+  pima_mtp_parameter.ux_device_class_pima_parameter_storage_description            = (UCHAR*)USBD_MTP_STORAGE_DESCRIPTION;
+  pima_mtp_parameter.ux_device_class_pima_parameter_storage_volume_label           = (UCHAR*)USBD_MTP_STORAGE_DESCRIPTION_IDENTIFIER;
+
+  /* Define the pima callbacks */
+  pima_mtp_parameter.ux_device_class_pima_parameter_cancel                         = usbd_mtp_cancel;
+  pima_mtp_parameter.ux_device_class_pima_parameter_device_reset                   = usbd_mtp_device_reset;
+  pima_mtp_parameter.ux_device_class_pima_parameter_device_prop_desc_get           = usbd_mtp_get_device_prop_desc;
+  pima_mtp_parameter.ux_device_class_pima_parameter_device_prop_value_get          = usbd_mtp_get_device_prop_value;
+  pima_mtp_parameter.ux_device_class_pima_parameter_device_prop_value_set          = usbd_mtp_set_device_prop_value;
+  pima_mtp_parameter.ux_device_class_pima_parameter_storage_format                 = usbd_mtp_format_storage;
+  pima_mtp_parameter.ux_device_class_pima_parameter_storage_info_get               = usbd_mtp_get_storage_info;
+  pima_mtp_parameter.ux_device_class_pima_parameter_object_number_get              = usbd_mtp_get_object_number;
+  pima_mtp_parameter.ux_device_class_pima_parameter_object_handles_get             = usbd_mtp_get_object_handles;
+  pima_mtp_parameter.ux_device_class_pima_parameter_object_info_get                = usbd_mtp_get_object_info;
+  pima_mtp_parameter.ux_device_class_pima_parameter_object_data_get                = usbd_mtp_get_object_data;
+  pima_mtp_parameter.ux_device_class_pima_parameter_object_info_send               = usbd_mtp_send_object_info;
+  pima_mtp_parameter.ux_device_class_pima_parameter_object_data_send               = usbd_mtp_send_object_data;
+  pima_mtp_parameter.ux_device_class_pima_parameter_object_delete                  = usbd_mtp_delete_object;
+  pima_mtp_parameter.ux_device_class_pima_parameter_object_prop_desc_get           = usbd_mtp_get_object_prop_desc;
+  pima_mtp_parameter.ux_device_class_pima_parameter_object_prop_value_get          = usbd_mtp_get_object_prop_value;
+  pima_mtp_parameter.ux_device_class_pima_parameter_object_prop_value_set          = usbd_mtp_set_object_prop_value;
+  pima_mtp_parameter.ux_device_class_pima_parameter_object_references_get          = usbd_mtp_get_object_references;
+  pima_mtp_parameter.ux_device_class_pima_parameter_object_references_set          = usbd_mtp_set_object_references;
+
+  /* Store the instance owner */
+  pima_mtp_parameter.ux_device_class_pima_parameter_application = NULL;
+
+  /* Initialize the device pima_mtp class */
+  status = ux_device_stack_class_register(_ux_system_slave_class_pima_name,
+                                          ux_device_class_pima_entry,
+                                          0x01,
+                                          mtp_interface->interface_numbers,
+                                          &pima_mtp_parameter);
+
+  if (status != UX_SUCCESS)
+  {
+    return status;
+  }
+{{/if}}
+{{/with}}
+{{#if (helper_usbx_is_freertos @root.usbx_cxt.core.basic.usb_core_system.ux_standalone)}}
+{{#with core.applicative~}}
+{{#if usbx_device_generate_init_code}}
+  /* Create the device application main thread */
+  if (xTaskCreate({{usbx_device_application_thread_name}},UX_DEVICE_APP_THREAD_NAME,
+                  UX_DEVICE_APP_THREAD_STACK_SIZE, NULL,
+                  UX_DEVICE_APP_THREAD_PRIO, &ux_device_app_thread) != pdPASS)
+  {
+    return UX_THREAD_ERROR;
+  }
+{{/if}}
+{{/with}}
+{{/if}}
+  return UX_SUCCESS;
+}
+
+/**
+  * @brief  Application USBX Device De-Initialization.
+  * @retval none
+  */
+UINT app_usbx_device_deinit(VOID)
+{
+  UINT status = UX_SUCCESS;
+
+{{#if (helper_usbx_controllers_is_enabled @root.USBX_Controllers_Driver 'Device')}}
+{{#if interfaces.logical_interface.device_controllers_enable}}
+{{#with interfaces.resources_allocation.select_the_device_instance}}
+{{#if selection}}
+{{#if @root.usbx_cxt.core.applicative.usbx_device_generate_init_code}}
+  if (p_usb_device != UX_NULL)
+  {
+  /* Unregister USB device controller. */
+  status = _ux_dcd_stm32_uninitialize(0, (ULONG)p_usb_device);
+
+  if (status != UX_SUCCESS)
+  {
+    return status;
+  }
+    p_usb_device = UX_NULL;
+  }
+{{else}}
+{{#if (eq @root.usbx_cxt.core.basic.usb_core_system.ux_standalone 'No OS')}}
+  if (p_usb_device != UX_NULL)
+  {
+  /* Unregister USB device controller. */
+  status = _ux_dcd_stm32_uninitialize(0, (ULONG)p_usb_device);
+
+  if (status != UX_SUCCESS)
+  {
+    return status;
+  }
+    p_usb_device = UX_NULL;
+  }
+{{/if}}
+{{/if}}
+{{/if}}
+{{/with}}
+{{/if}}
+{{/if}}
+
+{{#with core.basic.device_class~}}
+{{#if device_mouse}}
+  /* Unregister hid class. */
+  status = ux_device_stack_class_unregister(_ux_system_slave_class_hid_name, ux_device_class_hid_entry);
+  if (status != UX_SUCCESS)
+  {
+    return status;
+  }
+{{else}}
+  {{#if device_keyboard}}
+  /* Unregister hid class. */
+  status = ux_device_stack_class_unregister(_ux_system_slave_class_hid_name, ux_device_class_hid_entry);
+  if (status != UX_SUCCESS)
+  {
+    return status;
+  }
+  {{else}}
+    {{#if device_custom}}
+  /* Unregister hid class. */
+  status = ux_device_stack_class_unregister(_ux_system_slave_class_hid_name, ux_device_class_hid_entry);
+  if (status != UX_SUCCESS)
+  {
+    return status;
+  }
+    {{/if}}
+  {{/if}}
+{{/if}}
+{{#if cdc_acm_class}}
+  /* Unregister CDC ACM class. */
+  status = ux_device_stack_class_unregister(_ux_system_slave_class_cdc_acm_name, ux_device_class_cdc_acm_entry);
+  if (status != UX_SUCCESS)
+  {
+    return status;
+  }
+{{/if}}
+{{#if msc_class}}
+  /* Unregister storage class. */
+  status = ux_device_stack_class_unregister(_ux_system_slave_class_storage_name, ux_device_class_storage_entry);
+  if (status != UX_SUCCESS)
+  {
+    return status;
+  }
+{{/if}}
+{{#if dfu_class}}
+  /* Unregister dfu class. */
+  status = ux_device_stack_class_unregister(_ux_system_slave_class_dfu_name, ux_device_class_dfu_entry);
+  if (status != UX_SUCCESS)
+  {
+    return status;
+  }
+{{/if}}
+{{#if audio_class}}
+  /* Unregister audio class. */
+  status = ux_device_stack_class_unregister(_ux_system_slave_class_audio_name, ux_device_class_audio_entry);
+  if (status != UX_SUCCESS)
+  {
+    return status;
+  }
+{{/if}}
+{{#if video_class}}
+  /* Unregister video class. */
+  status = ux_device_stack_class_unregister(_ux_system_device_class_video_name, ux_device_class_video_entry);
+  if (status != UX_SUCCESS)
+  {
+    return status;
+  }
+{{/if}}
+{{#if printer_class}}
+  /* Unregister printer class. */
+  status = ux_device_stack_class_unregister(_ux_system_device_class_printer_name, ux_device_class_printer_entry);
+  if (status != UX_SUCCESS)
+  {
+    return status;
+  }
+{{/if}}
+{{#if ccid_class}}
+  /* Unregister ccid class. */
+  status = ux_device_stack_class_unregister(_ux_system_device_class_ccid_name, ux_device_class_ccid_entry);
+  if (status != UX_SUCCESS)
+  {
+    return status;
+  }
+{{/if}}
+{{#if pima_mtp_class}}
+  /* Unregister pima class. */
+  status = ux_device_stack_class_unregister(_ux_system_slave_class_pima_name, ux_device_class_pima_entry);
+  if (status != UX_SUCCESS)
+  {
+    return status;
+  }
+{{/if}}
+
+  /* The code below is required for uninstalling the device portion of USBX.  */
+  status = ux_device_stack_uninitialize();
+
+  if (status != UX_SUCCESS)
+  {
+    return status;
+  }
+  return UX_SUCCESS;
+}
+{{/with}}
+{{#if (helper_usbx_is_freertos @root.usbx_cxt.core.basic.usb_core_system.ux_standalone)}}
+{{#with core.applicative~}}
+{{#if usbx_device_generate_init_code}}
+/**
+  * @brief  Function implementing {{usbx_device_application_thread_name}}.
+  * @param  thread_input: User thread input parameter.
+  * @retval none
+  */
+VOID {{usbx_device_application_thread_name}}(void *argument)
+{
+{{#if (helper_usbx_controllers_is_enabled @root.USBX_Controllers_Driver 'Device')}}
+{{#if @root.usbx_cxt.interfaces.logical_interface.device_controllers_enable}}
+{{#with @root.usbx_cxt.interfaces.resources_allocation.select_the_device_instance}}
+{{#if selection}}
+  UINT status = UX_SUCCESS;
+
+  UX_PARAMETER_NOT_USED(argument);
+
+  /* Initialization of USB device */
+  if (p_usb_device == UX_NULL)
+  {
+    /* Initialization of USB device */
+    p_usb_device = mx_{{lowercase (helper_usbx_get_ip_name selection)}}_gethandle();
+
+    /* Initialize the device controller driver */
+    status = ux_dcd_stm32_initialize(0, (ULONG)p_usb_device);
+    if (status != UX_SUCCESS)
+    {
+      return;
+    }
+  }
+{{else}}
+  UX_PARAMETER_NOT_USED(argument);
+{{/if}}
+{{/with}}
+{{else}}
+  UX_PARAMETER_NOT_USED(argument);
+{{/if}}
+{{else}}
+  UX_PARAMETER_NOT_USED(argument);
+{{/if}}
+}
+{{/if}}
+{{/with}}
+{{/if}}
+{{#with core.basic.usb_core_system~}}
+{{!-- check if we are in STANDALONE mode --}}
+{{#if (eq ux_standalone 'No OS')~}}
+/**
+  * @brief  Application USBX Device Process.
+  * @retval none
+  */
+UINT app_usbx_device_process(VOID)
+{
+  UINT return_status = UX_SUCCESS;
+{{#if (helper_usbx_controllers_is_enabled @root.USBX_Controllers_Driver 'Device')}}
+{{#if @root.usbx_cxt.interfaces.logical_interface.device_controllers_enable}}
+{{#with @root.usbx_cxt.interfaces.resources_allocation.select_the_device_instance}}
+{{#if selection}}
+{{#if (eq @root.usbx_cxt.core.basic.usb_core_system.ux_standalone 'No OS')}}
+  /* Initialization of USB device */
+  if (p_usb_device == UX_NULL)
+  {
+    /* Initialization of USB device */
+    p_usb_device = mx_{{lowercase (helper_usbx_get_ip_name selection)}}_gethandle();
+
+    /* Initialize the device controller driver */
+    return_status = ux_dcd_stm32_initialize(0, (ULONG)p_usb_device);
+    if (return_status != UX_SUCCESS)
+    {
+      return return_status;
+    }
+  }
+{{/if}}
+{{/if}}
+{{/with}}
+{{/if}}
+{{/if}}
+  return_status = ux_device_stack_tasks_run();
+  return return_status;
+}
+{{/if}}
+{{/with}}
+{{/with}}

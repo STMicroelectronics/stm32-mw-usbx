@@ -45,6 +45,41 @@ static UINT usb_device_string_framework_builder(USBD_USER_STRING_DESC_HANDLE *p_
 static UINT usb_device_language_id_framework_builder(UCHAR* framework_pointer,
                                                      ULONG *framework_length);
 
+#if USBD_MSC_CLASS_ACTIVATED == 1U
+static UINT usb_device_msc_framework_builder(USB_DEVICE_INTERFACE_HANDLE *p_interface,
+                                             ULONG p_config_framework,
+                                             ULONG *config_framework_size,
+                                             UCHAR device_speed);
+#endif /* USBD_MSC_CLASS_ACTIVATED */
+
+#if USBD_DFU_CLASS_ACTIVATED == 1U
+static UINT usb_device_dfu_framework_builder(USB_DEVICE_INTERFACE_HANDLE *p_interface,
+                                             ULONG p_config_framework,
+                                             ULONG *config_framework_size,
+                                             UCHAR device_speed);
+#endif /* USBD_DFU_CLASS_ACTIVATED */
+
+#if USBD_AUDIO_CLASS_ACTIVATED == 1U
+static UINT usb_device_audio_framework_builder(USB_DEVICE_INTERFACE_HANDLE *p_interface,
+                                               ULONG p_config_framework,
+                                               ULONG *config_framework_size,
+                                               UCHAR device_speed);
+#endif /* USBD_AUDIO_CLASS_ACTIVATED */
+
+#if USBD_PRINTER_CLASS_ACTIVATED == 1U
+static UINT usb_device_printer_framework_builder(USB_DEVICE_INTERFACE_HANDLE *p_interface,
+                                                 ULONG p_config_framework,
+                                                 ULONG *config_framework_size,
+                                                 UCHAR device_speed);
+#endif /* USBD_PRINTER_CLASS_ACTIVATED */
+
+#if USBD_CCID_CLASS_ACTIVATED == 1U
+static UINT usb_device_ccid_framework_builder(USB_DEVICE_INTERFACE_HANDLE *p_interface,
+                                              ULONG p_config_framework,
+                                              ULONG *config_framework_size,
+                                              UCHAR device_speed);
+#endif /* USBD_CCID_CLASS_ACTIVATED */
+
 
 #if USBD_HID_CLASS_ACTIVATED == 1U
 static UINT usb_device_hid_framework_builder(USB_DEVICE_INTERFACE_HANDLE *p_interface,
@@ -68,6 +103,13 @@ static UINT usb_device_mtp_framework_builder(USB_DEVICE_INTERFACE_HANDLE *p_inte
 #endif /* USBD_MTP_CLASS_ACTIVATED */
 
 #if USBD_VIDEO_CLASS_ACTIVATED == 1U
+#if (USBD_UVC_USE_FRAME_BASE_H264 == 1U)
+static uint8_t usbd_uvc_guid[16] = {0x48, 0x32, 0x36, 0x34,
+                                    0x00, 0x00, 0x10, 0x00,
+                                    0x80, 0x00, 0x00, 0xAA,
+                                    0x00, 0x38, 0x9B, 0x71};
+#endif /* USBD_UVC_USE_FRAME_BASE_H264 */
+
 static UINT usb_device_video_framework_builder(USB_DEVICE_INTERFACE_HANDLE *p_interface,
                                                ULONG p_config_framework,
                                                ULONG *config_framework_size,
@@ -107,6 +149,11 @@ UINT usb_device_descriptor_register_class(USB_DEVICE_ClASS_TYPE class_type,
 #if USBD_HID_CLASS_ACTIVATED == 1U
       if (device_handle.device_class_list[class_index].device_class_type == USBD_CLASS_TYPE_HID)
       {
+        if (parameter == UX_NULL)
+        {
+          return USBD_DESCRIPTOR_ERROR;
+        }
+
         device_handle.device_class_list[class_index].interfaces->other_parameter = (ULONG) *parameter;
       }
 #endif /* USBD_HID_CLASS_ACTIVATED */
@@ -124,6 +171,15 @@ UINT usb_device_descriptor_register_class(USB_DEVICE_ClASS_TYPE class_type,
         class_interfaces->next_interface = &class_interfaces[1];
       }
 #endif /* USBD_VIDEO_CLASS_ACTIVATED */
+
+#if USBD_AUDIO_CLASS_ACTIVATED == 1U
+      if ((device_handle.device_class_list[class_index].device_class_type == USBD_CLASS_TYPE_AUDIO_10) ||
+          (device_handle.device_class_list[class_index].device_class_type == USBD_CLASS_TYPE_AUDIO_20))
+      {
+        class_interfaces->next_interface = &class_interfaces[1];
+        class_interfaces[1].next_interface = &class_interfaces[2];
+      }
+#endif /* USBD_AUDIO_CLASS_ACTIVATED */
 
       device_handle.device_class_list[class_index].device_class_id = class_index + 1;
       device_handle.device_class_numbers += 1U;
@@ -423,31 +479,73 @@ static UINT usb_device_framework_builder(USB_DEVICE_HANDLE *p_device, UCHAR *fra
 
 #if USBD_CDC_ACM_CLASS_ACTIVATED == 1
       case USBD_CLASS_TYPE_CDC_ACM:
-          /* Call USB CDC_ACM device class descriptor framework builder */
+        /* Call USB CDC_ACM device class descriptor framework builder */
         status = usb_device_cdc_acm_framework_builder(p_interface, (ULONG) config_framework_pointer,
                                                       &config_framework_size, device_speed);
         break;
 #endif /* USBD_CDC_ACM_CLASS_ACTIVATED */
 
+#if USBD_MSC_CLASS_ACTIVATED == 1U
+      case USBD_CLASS_TYPE_MSC:
+        status = usb_device_msc_framework_builder(p_interface, (ULONG) config_framework_pointer,
+                  &config_framework_size, device_speed);
+        break;
+#endif /* USBD_MSC_CLASS_ACTIVATED */
+
+#if USBD_DFU_CLASS_ACTIVATED == 1U
+      case USBD_CLASS_TYPE_DFU:
+        status = usb_device_dfu_framework_builder(p_interface, (ULONG) config_framework_pointer,
+                  &config_framework_size, device_speed);
+        break;
+#endif /* USBD_DFU_CLASS_ACTIVATED */
+
 #if USBD_MTP_CLASS_ACTIVATED == 1
       case USBD_CLASS_TYPE_PIMA_MTP:
-          /* Call USB MTP device class descriptor framework builder */
+        /* Call USB MTP device class descriptor framework builder */
         status = usb_device_mtp_framework_builder(p_interface, (ULONG) config_framework_pointer,
                                                   &config_framework_size, device_speed);
         break;
 #endif /* USBD_MTP_CLASS_ACTIVATED */
 
+#if USBD_AUDIO_CLASS_ACTIVATED == 1U
+      case USBD_CLASS_TYPE_AUDIO_10:
+      case USBD_CLASS_TYPE_AUDIO_20:
+        status = usb_device_audio_framework_builder(p_interface, (ULONG) config_framework_pointer,
+                    &config_framework_size, device_speed);
+        break;
+#endif /* USBD_AUDIO_CLASS_ACTIVATED */
+
 #if USBD_VIDEO_CLASS_ACTIVATED == 1
       case USBD_CLASS_TYPE_VIDEO:
-          /* Call USB VIDEO device class descriptor framework builder */
+        /* Call USB VIDEO device class descriptor framework builder */
         status = usb_device_video_framework_builder(p_interface, (ULONG) config_framework_pointer,
                                                     &config_framework_size, device_speed);
         break;
 #endif /* USBD_VIDEO_CLASS_ACTIVATED */
 
+#if USBD_PRINTER_CLASS_ACTIVATED == 1U
+      case USBD_CLASS_TYPE_PRINTER:
+        status = usb_device_printer_framework_builder(p_interface, (ULONG) config_framework_pointer,
+                  &config_framework_size, device_speed);
+        break;
+#endif /* USBD_PRINTER_CLASS_ACTIVATED */
+
+#if USBD_CCID_CLASS_ACTIVATED == 1U
+      case USBD_CLASS_TYPE_CCID:
+        status = usb_device_ccid_framework_builder(p_interface, (ULONG) config_framework_pointer,
+                   &config_framework_size, device_speed);
+        break;
+#endif /* USBD_CCID_CLASS_ACTIVATED */
+
       default:
         UX_PARAMETER_NOT_USED(p_interface);
+        status = USBD_DESCRIPTOR_CLASS_BUILDER_ERROR;
         break;
+    }
+
+    if (status != USBD_DESCRIPTOR_SUCCESS)
+    {
+      return status;
     }
   }
 
@@ -528,6 +626,27 @@ static UINT usb_device_string_framework_builder(USBD_USER_STRING_DESC_HANDLE *p_
                          p_serial_number_string_desc->string_length);
 
   *framework_length += (ULONG) p_serial_number_string_desc->string_length;
+
+#if USBD_DFU_CLASS_ACTIVATED == 1U
+#if defined(USBD_DFU_STRING_DESC_INDEX) && defined(USBD_DFU_STRING_DESC)
+  p_string_desc = (USB_STRING_DESC *) (p_string_framework + *framework_length);
+  p_string_desc->language_id    = USBD_LANG_ID_STRING;
+  p_string_desc->string_index   = USBD_DFU_STRING_DESC_INDEX;
+  p_string_desc->string_length  = ux_utility_string_length_get((UCHAR *)USBD_DFU_STRING_DESC);
+  *framework_length += (ULONG) sizeof(USB_STRING_DESC);
+
+  if ((*framework_length + p_string_desc->string_length) > USBD_STRING_FRAMEWORK_MAX_LENGTH)
+  {
+    return USBD_DESCRIPTOR_MEMORY_INSUFFICIENT;
+  }
+
+  ux_utility_memory_copy(p_string_framework + *framework_length,
+                         USBD_DFU_STRING_DESC,
+                         p_string_desc->string_length);
+
+  *framework_length += (ULONG) p_string_desc->string_length;
+#endif
+#endif /* USBD_DFU_CLASS_ACTIVATED */
 
   /* Parse user string descriptors */
   for (user_string_index = 0U; user_string_index < user_string_desc->user_string_desc_numbers; user_string_index++)
@@ -637,6 +756,567 @@ UINT usb_device_framework_set_endpoint(ULONG p_config_framework,
   return USBD_DESCRIPTOR_SUCCESS;
 }
 
+#if USBD_MSC_CLASS_ACTIVATED == 1U
+/**
+  * @brief  usb_device_msc_framework_builder
+  *         Configure and Append the MSC Descriptor
+  * @retval none
+  */
+static UINT usb_device_msc_framework_builder(USB_DEVICE_INTERFACE_HANDLE *p_interface,
+                                             ULONG p_config_framework,
+                                             ULONG *config_framework_size,
+                                             UCHAR device_speed)
+{
+  UCHAR                       interface_index = 0U;
+  USBD_INTERFACE_DESC         *p_msc_itf_desc = UX_NULL;
+  USBD_ENDPOINT_DESC          *p_msc_ep_desc = UX_NULL;
+  USB_DEVICE_INTERFACE_HANDLE *p_msc_interface = UX_NULL;
+  USB_DEVICE_ENDPOINT_HANDLE  *p_msc_in_endpoint = UX_NULL;
+  USB_DEVICE_ENDPOINT_HANDLE  *p_msc_out_endpoint = UX_NULL;
+
+  p_msc_interface = (USB_DEVICE_INTERFACE_HANDLE *)p_interface;
+
+  if (p_msc_interface == UX_NULL)
+  {
+    return USBD_DESCRIPTOR_CLASS_BUILDER_ERROR;
+  }
+
+  usb_device_framework_set_interface((ULONG) p_config_framework, config_framework_size,
+                                     p_msc_itf_desc, p_msc_interface);
+
+  interface_index++;
+
+  p_msc_in_endpoint = (USB_DEVICE_ENDPOINT_HANDLE *)p_msc_interface->device_endpoint;
+
+  if (p_msc_in_endpoint == UX_NULL)
+  {
+    return USBD_DESCRIPTOR_CLASS_BUILDER_ERROR;
+  }
+
+  usb_device_framework_set_endpoint((ULONG) p_config_framework, config_framework_size,
+                                    p_msc_ep_desc, p_msc_in_endpoint, device_speed);
+
+  if (p_msc_interface->endpoints_numbers > 1U)
+  {
+    p_msc_in_endpoint->next_endpoint = &p_msc_interface->device_endpoint[1];
+    p_msc_out_endpoint = (USB_DEVICE_ENDPOINT_HANDLE *)p_msc_in_endpoint->next_endpoint;
+
+    if (p_msc_out_endpoint == UX_NULL)
+    {
+      return USBD_DESCRIPTOR_CLASS_BUILDER_ERROR;
+    }
+
+    usb_device_framework_set_endpoint((ULONG) p_config_framework, config_framework_size,
+                                      p_msc_ep_desc, p_msc_out_endpoint, device_speed);
+  }
+
+  ((USBD_CONFIGURATION_DESC *)p_config_framework)->wTotalLength = *config_framework_size;
+  ((USBD_CONFIGURATION_DESC *)p_config_framework)->bNumInterfaces += interface_index;
+
+  return USBD_DESCRIPTOR_SUCCESS;
+}
+#endif /* USBD_MSC_CLASS_ACTIVATED */
+
+#if USBD_DFU_CLASS_ACTIVATED == 1U
+/**
+  * @brief  usb_device_dfu_framework_builder
+  *         Configure and Append the DFU Descriptor
+  * @retval none
+  */
+static UINT usb_device_dfu_framework_builder(USB_DEVICE_INTERFACE_HANDLE *p_interface,
+                                             ULONG p_config_framework,
+                                             ULONG *config_framework_size,
+                                             UCHAR device_speed)
+{
+  UCHAR interface_index = 0U;
+  USBD_INTERFACE_DESC *p_dfu_itf_desc = UX_NULL;
+  USBD_DFU_FUNCTIONAL_DESC *p_dfu_desc = UX_NULL;
+  USB_DEVICE_INTERFACE_HANDLE *p_dfu_interface = UX_NULL;
+
+  UX_PARAMETER_NOT_USED(device_speed);
+
+  p_dfu_interface = (USB_DEVICE_INTERFACE_HANDLE *) p_interface;
+
+  if (p_dfu_interface == UX_NULL)
+  {
+    return USBD_DESCRIPTOR_CLASS_BUILDER_ERROR;
+  }
+
+  usb_device_framework_set_interface((ULONG) p_config_framework, config_framework_size,
+                                     p_dfu_itf_desc, p_dfu_interface);
+
+  interface_index++;
+
+  p_dfu_desc = (USBD_DFU_FUNCTIONAL_DESC *) ((ULONG) p_config_framework + *config_framework_size);
+  p_dfu_desc->bLength = (UCHAR) sizeof(USBD_DFU_FUNCTIONAL_DESC);
+  p_dfu_desc->bDescriptorType = USBD_DFU_DESCRIPTOR_TYPE;
+  p_dfu_desc->bmAttributes = USBD_DFU_BM_ATTRIBUTES;
+  p_dfu_desc->wDetachTimeOut = USBD_DFU_DETACH_TIMEOUT;
+  p_dfu_desc->wTransferSize = USBD_DFU_XFER_SIZE;
+  p_dfu_desc->bcdDFUVersion = USBD_DFU_BCD_VERSION;
+  *config_framework_size += (ULONG) sizeof(USBD_DFU_FUNCTIONAL_DESC);
+
+  ((USBD_CONFIGURATION_DESC *)p_config_framework)->wTotalLength = *config_framework_size;
+  ((USBD_CONFIGURATION_DESC *)p_config_framework)->bNumInterfaces += interface_index;
+
+  return USBD_DESCRIPTOR_SUCCESS;
+}
+#endif /* USBD_DFU_CLASS_ACTIVATED */
+
+#if USBD_AUDIO_CLASS_ACTIVATED == 1U
+/**
+  * @brief  usb_device_audio_framework_builder
+  *         Configure and Append the AUDIO Descriptor
+  * @retval none
+  */
+static UINT usb_device_audio_framework_builder(USB_DEVICE_INTERFACE_HANDLE *p_interface,
+                                               ULONG p_config_framework,
+                                               ULONG *config_framework_size,
+                                               UCHAR device_speed)
+{
+  UCHAR interface_index = 0U;
+  UCHAR stream_interface_number = 0U;
+  USBD_INTERFACE_DESC *p_audio_itf_desc = UX_NULL;
+  USBD_ENDPOINT_DESC *p_audio_ep_desc = UX_NULL;
+  USBD_AUDIO_AC_CS_IF_DESC *p_audio_ac_desc = UX_NULL;
+  USBD_AUDIO_CLOCK_SOURCE_DESC *p_audio_clock_desc = UX_NULL;
+  USBD_AUDIO_INPUT_TERMINAL_DESC *p_audio_input_terminal_desc = UX_NULL;
+  USBD_AUDIO_FEATURE_UNIT_DESC *p_audio_feature_desc = UX_NULL;
+  USBD_AUDIO_OUTPUT_TERMINAL_DESC *p_audio_output_terminal_desc = UX_NULL;
+  USBD_AUDIO_AS_CS_IF_DESC *p_audio_as_desc = UX_NULL;
+  USBD_AUDIO_FORMAT_TYPE_DESC *p_audio_format_desc = UX_NULL;
+  USBD_AUDIO_CS_EP_DESC *p_audio_cs_ep_desc = UX_NULL;
+  USB_DEVICE_INTERFACE_HANDLE *p_audio_control_interface = UX_NULL;
+  USB_DEVICE_INTERFACE_HANDLE *p_audio_stream_in_interface = UX_NULL;
+  USB_DEVICE_INTERFACE_HANDLE *p_audio_stream_out_interface = UX_NULL;
+  USB_DEVICE_INTERFACE_HANDLE *p_audio_stream_interface_alt = UX_NULL;
+  USB_DEVICE_ENDPOINT_HANDLE *p_audio_control_endpoint = UX_NULL;
+  USB_DEVICE_ENDPOINT_HANDLE *p_audio_endpoint = UX_NULL;
+
+  UX_PARAMETER_NOT_USED(device_speed);
+
+  p_audio_control_interface = (USB_DEVICE_INTERFACE_HANDLE *) p_interface;
+
+  if ((p_audio_control_interface == UX_NULL) ||
+      (p_audio_control_interface->next_interface == UX_NULL) ||
+      (p_audio_control_interface->next_interface->next_interface == UX_NULL))
+  {
+    return USBD_DESCRIPTOR_CLASS_BUILDER_ERROR;
+  }
+
+  p_audio_stream_in_interface = p_audio_control_interface->next_interface;
+  p_audio_stream_out_interface = p_audio_stream_in_interface->next_interface;
+
+  usb_device_framework_set_interface((ULONG) p_config_framework, config_framework_size,
+                                     p_audio_itf_desc, p_audio_control_interface);
+
+  interface_index++;
+
+  p_audio_ac_desc = (USBD_AUDIO_AC_CS_IF_DESC *) ((ULONG) p_config_framework + *config_framework_size);
+  p_audio_ac_desc->bLength = (UCHAR) sizeof(USBD_AUDIO_AC_CS_IF_DESC);
+  p_audio_ac_desc->bDescriptorType = 0x24U;
+  p_audio_ac_desc->bDescriptorSubtype = 0x01U;
+  p_audio_ac_desc->bcdADC = 0x0200U;
+  p_audio_ac_desc->bCategory = USBD_AUDIO_CATEGORY;
+  p_audio_ac_desc->wTotalLength = USBD_AUDIO_CONTROL_INTERFACE_SIZE;
+  p_audio_ac_desc->bmControls = 0x00U;
+  *config_framework_size += (ULONG) sizeof(USBD_AUDIO_AC_CS_IF_DESC);
+
+  p_audio_clock_desc = (USBD_AUDIO_CLOCK_SOURCE_DESC *) ((ULONG) p_config_framework + *config_framework_size);
+  p_audio_clock_desc->bLength = (UCHAR) sizeof(USBD_AUDIO_CLOCK_SOURCE_DESC);
+  p_audio_clock_desc->bDescriptorType = 0x24U;
+  p_audio_clock_desc->bDescriptorSubtype = 0x0AU;
+  p_audio_clock_desc->bClockID = USBD_AUDIO_CLOCK_SOURCE_ID;
+  p_audio_clock_desc->bmAttributes = 0x01U;
+  p_audio_clock_desc->bmControls = 0x01U;
+  p_audio_clock_desc->bAssocTerminal = 0x00U;
+  p_audio_clock_desc->iClockSource = 0x00U;
+  *config_framework_size += (ULONG) sizeof(USBD_AUDIO_CLOCK_SOURCE_DESC);
+
+  p_audio_input_terminal_desc = (USBD_AUDIO_INPUT_TERMINAL_DESC *) ((ULONG) p_config_framework + *config_framework_size);
+  p_audio_input_terminal_desc->bLength = (UCHAR) sizeof(USBD_AUDIO_INPUT_TERMINAL_DESC);
+  p_audio_input_terminal_desc->bDescriptorType = 0x24U;
+  p_audio_input_terminal_desc->bDescriptorSubtype = 0x02U;
+  p_audio_input_terminal_desc->bTerminalID = USBD_AUDIO_CAPTURE_TERMINAL_INPUT_ID;
+  p_audio_input_terminal_desc->wTerminalType = 0x0201U;
+  p_audio_input_terminal_desc->bAssocTerminal = 0x00U;
+  p_audio_input_terminal_desc->bCSourceID = USBD_AUDIO_CLOCK_SOURCE_ID;
+  p_audio_input_terminal_desc->bNrChannels = USBD_AUDIO_CHANNEL_COUNT;
+  p_audio_input_terminal_desc->bmChannelConfig = USBD_AUDIO_CHANNEL_MAP;
+  p_audio_input_terminal_desc->iChannelNames = 0x00U;
+  p_audio_input_terminal_desc->bmControls = 0x0000U;
+  p_audio_input_terminal_desc->iTerminal = 0x00U;
+  *config_framework_size += (ULONG) sizeof(USBD_AUDIO_INPUT_TERMINAL_DESC);
+
+  p_audio_feature_desc = (USBD_AUDIO_FEATURE_UNIT_DESC *) ((ULONG) p_config_framework + *config_framework_size);
+  p_audio_feature_desc->bLength = (UCHAR) sizeof(USBD_AUDIO_FEATURE_UNIT_DESC);
+  p_audio_feature_desc->bDescriptorType = 0x24U;
+  p_audio_feature_desc->bDescriptorSubtype = 0x06U;
+  p_audio_feature_desc->bUnitID = USBD_AUDIO_CAPTURE_FEATURE_UNIT_ID;
+  p_audio_feature_desc->bSourceID = USBD_AUDIO_CAPTURE_TERMINAL_INPUT_ID;
+  p_audio_feature_desc->bmaControls[0] = (ULONG) (USBD_AUDIO_FU_CONTROL_MUTE | USBD_AUDIO_FU_CONTROL_VOLUME);
+  p_audio_feature_desc->bmaControls[1] = 0x00000000UL;
+  p_audio_feature_desc->bmaControls[2] = 0x00000000UL;
+  p_audio_feature_desc->iFeature = 0x00U;
+  *config_framework_size += (ULONG) sizeof(USBD_AUDIO_FEATURE_UNIT_DESC);
+
+  p_audio_output_terminal_desc = (USBD_AUDIO_OUTPUT_TERMINAL_DESC *) ((ULONG) p_config_framework + *config_framework_size);
+  p_audio_output_terminal_desc->bLength = (UCHAR) sizeof(USBD_AUDIO_OUTPUT_TERMINAL_DESC);
+  p_audio_output_terminal_desc->bDescriptorType = 0x24U;
+  p_audio_output_terminal_desc->bDescriptorSubtype = 0x03U;
+  p_audio_output_terminal_desc->bTerminalID = USBD_AUDIO_CAPTURE_TERMINAL_OUTPUT_ID;
+  p_audio_output_terminal_desc->wTerminalType = 0x0101U;
+  p_audio_output_terminal_desc->bAssocTerminal = 0x00U;
+  p_audio_output_terminal_desc->bSourceID = USBD_AUDIO_CAPTURE_FEATURE_UNIT_ID;
+  p_audio_output_terminal_desc->bCSourceID = USBD_AUDIO_CLOCK_SOURCE_ID;
+  p_audio_output_terminal_desc->bmaControls = 0x0000U;
+  p_audio_output_terminal_desc->iTerminal = 0x00U;
+  *config_framework_size += (ULONG) sizeof(USBD_AUDIO_OUTPUT_TERMINAL_DESC);
+
+  p_audio_input_terminal_desc = (USBD_AUDIO_INPUT_TERMINAL_DESC *) ((ULONG) p_config_framework + *config_framework_size);
+  p_audio_input_terminal_desc->bLength = (UCHAR) sizeof(USBD_AUDIO_INPUT_TERMINAL_DESC);
+  p_audio_input_terminal_desc->bDescriptorType = 0x24U;
+  p_audio_input_terminal_desc->bDescriptorSubtype = 0x02U;
+  p_audio_input_terminal_desc->bTerminalID = USBD_AUDIO_PLAY_TERMINAL_INPUT_ID;
+  p_audio_input_terminal_desc->wTerminalType = 0x0101U;
+  p_audio_input_terminal_desc->bAssocTerminal = 0x00U;
+  p_audio_input_terminal_desc->bCSourceID = USBD_AUDIO_CLOCK_SOURCE_ID;
+  p_audio_input_terminal_desc->bNrChannels = USBD_AUDIO_CHANNEL_COUNT;
+  p_audio_input_terminal_desc->bmChannelConfig = USBD_AUDIO_CHANNEL_MAP;
+  p_audio_input_terminal_desc->iChannelNames = 0x00U;
+  p_audio_input_terminal_desc->bmControls = 0x0000U;
+  p_audio_input_terminal_desc->iTerminal = 0x00U;
+  *config_framework_size += (ULONG) sizeof(USBD_AUDIO_INPUT_TERMINAL_DESC);
+
+  p_audio_feature_desc = (USBD_AUDIO_FEATURE_UNIT_DESC *) ((ULONG) p_config_framework + *config_framework_size);
+  p_audio_feature_desc->bLength = (UCHAR) sizeof(USBD_AUDIO_FEATURE_UNIT_DESC);
+  p_audio_feature_desc->bDescriptorType = 0x24U;
+  p_audio_feature_desc->bDescriptorSubtype = 0x06U;
+  p_audio_feature_desc->bUnitID = USBD_AUDIO_PLAY_FEATURE_UNIT_ID;
+  p_audio_feature_desc->bSourceID = USBD_AUDIO_PLAY_TERMINAL_INPUT_ID;
+  p_audio_feature_desc->bmaControls[0] = (ULONG) (USBD_AUDIO_FU_CONTROL_MUTE | USBD_AUDIO_FU_CONTROL_VOLUME);
+  p_audio_feature_desc->bmaControls[1] = 0x00000000UL;
+  p_audio_feature_desc->bmaControls[2] = 0x00000000UL;
+  p_audio_feature_desc->iFeature = 0x00U;
+  *config_framework_size += (ULONG) sizeof(USBD_AUDIO_FEATURE_UNIT_DESC);
+
+  p_audio_output_terminal_desc = (USBD_AUDIO_OUTPUT_TERMINAL_DESC *) ((ULONG) p_config_framework + *config_framework_size);
+  p_audio_output_terminal_desc->bLength = (UCHAR) sizeof(USBD_AUDIO_OUTPUT_TERMINAL_DESC);
+  p_audio_output_terminal_desc->bDescriptorType = 0x24U;
+  p_audio_output_terminal_desc->bDescriptorSubtype = 0x03U;
+  p_audio_output_terminal_desc->bTerminalID = USBD_AUDIO_PLAY_TERMINAL_OUTPUT_ID;
+  p_audio_output_terminal_desc->wTerminalType = 0x0301U;
+  p_audio_output_terminal_desc->bAssocTerminal = 0x00U;
+  p_audio_output_terminal_desc->bSourceID = USBD_AUDIO_PLAY_FEATURE_UNIT_ID;
+  p_audio_output_terminal_desc->bCSourceID = USBD_AUDIO_CLOCK_SOURCE_ID;
+  p_audio_output_terminal_desc->bmaControls = 0x0000U;
+  p_audio_output_terminal_desc->iTerminal = 0x00U;
+  *config_framework_size += (ULONG) sizeof(USBD_AUDIO_OUTPUT_TERMINAL_DESC);
+
+  if (p_audio_control_interface->endpoints_numbers > 0U)
+  {
+    p_audio_control_endpoint = p_audio_control_interface->device_endpoint;
+
+    if (p_audio_control_endpoint == UX_NULL)
+    {
+      return USBD_DESCRIPTOR_CLASS_BUILDER_ERROR;
+    }
+
+    usb_device_framework_set_endpoint((ULONG) p_config_framework, config_framework_size,
+                                      p_audio_ep_desc, p_audio_control_endpoint, device_speed);
+  }
+
+  usb_device_framework_set_interface((ULONG) p_config_framework, config_framework_size,
+                                     p_audio_itf_desc, p_audio_stream_in_interface);
+
+  stream_interface_number = p_audio_stream_in_interface->interface_numbers;
+  p_audio_stream_interface_alt = p_audio_stream_in_interface->next_alt_setting;
+  if (p_audio_stream_interface_alt == UX_NULL)
+  {
+    return USBD_DESCRIPTOR_CLASS_BUILDER_ERROR;
+  }
+
+  p_audio_stream_interface_alt->interface_numbers = stream_interface_number;
+
+  usb_device_framework_set_interface((ULONG) p_config_framework, config_framework_size,
+                                     p_audio_itf_desc, p_audio_stream_interface_alt);
+  interface_index++;
+
+  p_audio_as_desc = (USBD_AUDIO_AS_CS_IF_DESC *) ((ULONG) p_config_framework + *config_framework_size);
+  p_audio_as_desc->bLength = (UCHAR) sizeof(USBD_AUDIO_AS_CS_IF_DESC);
+  p_audio_as_desc->bDescriptorType = 0x24U;
+  p_audio_as_desc->bDescriptorSubtype = 0x01U;
+  p_audio_as_desc->bTerminalLink = USBD_AUDIO_CAPTURE_TERMINAL_OUTPUT_ID;
+  p_audio_as_desc->bmControls = 0x00U;
+  p_audio_as_desc->bFormatType = 0x01U;
+  p_audio_as_desc->bmFormats = 0x00000001UL;
+  p_audio_as_desc->bNrChannels = USBD_AUDIO_CHANNEL_COUNT;
+  p_audio_as_desc->bmChannelConfig = USBD_AUDIO_CHANNEL_MAP;
+  p_audio_as_desc->iChannelNames = 0x00U;
+  *config_framework_size += (ULONG) sizeof(USBD_AUDIO_AS_CS_IF_DESC);
+
+  p_audio_format_desc = (USBD_AUDIO_FORMAT_TYPE_DESC *) ((ULONG) p_config_framework + *config_framework_size);
+  p_audio_format_desc->bLength = (UCHAR) sizeof(USBD_AUDIO_FORMAT_TYPE_DESC);
+  p_audio_format_desc->bDescriptorType = 0x24U;
+  p_audio_format_desc->bDescriptorSubtype = 0x02U;
+  p_audio_format_desc->bFormatType = 0x01U;
+  p_audio_format_desc->bSubslotSize = USBD_AUDIO_RES_BYTE;
+  p_audio_format_desc->bBitResolution = USBD_AUDIO_RES_BIT;
+  *config_framework_size += (ULONG) sizeof(USBD_AUDIO_FORMAT_TYPE_DESC);
+
+  p_audio_endpoint = (USB_DEVICE_ENDPOINT_HANDLE *) p_audio_stream_interface_alt->device_endpoint;
+  if (p_audio_endpoint == UX_NULL)
+  {
+    return USBD_DESCRIPTOR_CLASS_BUILDER_ERROR;
+  }
+
+  usb_device_framework_set_endpoint((ULONG) p_config_framework, config_framework_size,
+                                    p_audio_ep_desc, p_audio_endpoint, device_speed);
+
+  p_audio_cs_ep_desc = (USBD_AUDIO_CS_EP_DESC *) ((ULONG) p_config_framework + *config_framework_size);
+  p_audio_cs_ep_desc->bLength = (UCHAR) sizeof(USBD_AUDIO_CS_EP_DESC);
+  p_audio_cs_ep_desc->bDescriptorType = 0x25U;
+  p_audio_cs_ep_desc->bDescriptorSubtype = 0x01U;
+  p_audio_cs_ep_desc->bmAttributes = 0x00U;
+  p_audio_cs_ep_desc->bmControls = 0x00U;
+  p_audio_cs_ep_desc->bLockDelayUnits = 0x00U;
+  p_audio_cs_ep_desc->wLockDelay = 0x0000U;
+  *config_framework_size += (ULONG) sizeof(USBD_AUDIO_CS_EP_DESC);
+
+  usb_device_framework_set_interface((ULONG) p_config_framework, config_framework_size,
+                                     p_audio_itf_desc, p_audio_stream_out_interface);
+
+  stream_interface_number = p_audio_stream_out_interface->interface_numbers;
+  p_audio_stream_interface_alt = p_audio_stream_out_interface->next_alt_setting;
+  if (p_audio_stream_interface_alt == UX_NULL)
+  {
+    return USBD_DESCRIPTOR_CLASS_BUILDER_ERROR;
+  }
+
+  p_audio_stream_interface_alt->interface_numbers = stream_interface_number;
+
+  usb_device_framework_set_interface((ULONG) p_config_framework, config_framework_size,
+                                     p_audio_itf_desc, p_audio_stream_interface_alt);
+  interface_index++;
+
+  p_audio_as_desc = (USBD_AUDIO_AS_CS_IF_DESC *) ((ULONG) p_config_framework + *config_framework_size);
+  p_audio_as_desc->bLength = (UCHAR) sizeof(USBD_AUDIO_AS_CS_IF_DESC);
+  p_audio_as_desc->bDescriptorType = 0x24U;
+  p_audio_as_desc->bDescriptorSubtype = 0x01U;
+  p_audio_as_desc->bTerminalLink = USBD_AUDIO_PLAY_TERMINAL_INPUT_ID;
+  p_audio_as_desc->bmControls = 0x00U;
+  p_audio_as_desc->bFormatType = 0x01U;
+  p_audio_as_desc->bmFormats = 0x00000001UL;
+  p_audio_as_desc->bNrChannels = USBD_AUDIO_CHANNEL_COUNT;
+  p_audio_as_desc->bmChannelConfig = USBD_AUDIO_CHANNEL_MAP;
+  p_audio_as_desc->iChannelNames = 0x00U;
+  *config_framework_size += (ULONG) sizeof(USBD_AUDIO_AS_CS_IF_DESC);
+
+  p_audio_format_desc = (USBD_AUDIO_FORMAT_TYPE_DESC *) ((ULONG) p_config_framework + *config_framework_size);
+  p_audio_format_desc->bLength = (UCHAR) sizeof(USBD_AUDIO_FORMAT_TYPE_DESC);
+  p_audio_format_desc->bDescriptorType = 0x24U;
+  p_audio_format_desc->bDescriptorSubtype = 0x02U;
+  p_audio_format_desc->bFormatType = 0x01U;
+  p_audio_format_desc->bSubslotSize = USBD_AUDIO_RES_BYTE;
+  p_audio_format_desc->bBitResolution = USBD_AUDIO_RES_BIT;
+  *config_framework_size += (ULONG) sizeof(USBD_AUDIO_FORMAT_TYPE_DESC);
+
+  p_audio_endpoint = (USB_DEVICE_ENDPOINT_HANDLE *) p_audio_stream_interface_alt->device_endpoint;
+  if (p_audio_endpoint == UX_NULL)
+  {
+    return USBD_DESCRIPTOR_CLASS_BUILDER_ERROR;
+  }
+
+  usb_device_framework_set_endpoint((ULONG) p_config_framework, config_framework_size,
+                                    p_audio_ep_desc, p_audio_endpoint, device_speed);
+
+  p_audio_cs_ep_desc = (USBD_AUDIO_CS_EP_DESC *) ((ULONG) p_config_framework + *config_framework_size);
+  p_audio_cs_ep_desc->bLength = (UCHAR) sizeof(USBD_AUDIO_CS_EP_DESC);
+  p_audio_cs_ep_desc->bDescriptorType = 0x25U;
+  p_audio_cs_ep_desc->bDescriptorSubtype = 0x01U;
+  p_audio_cs_ep_desc->bmAttributes = 0x00U;
+  p_audio_cs_ep_desc->bmControls = 0x00U;
+  p_audio_cs_ep_desc->bLockDelayUnits = 0x00U;
+  p_audio_cs_ep_desc->wLockDelay = 0x0000U;
+  *config_framework_size += (ULONG) sizeof(USBD_AUDIO_CS_EP_DESC);
+
+  if (p_audio_stream_interface_alt->endpoints_numbers > 1U)
+  {
+    p_audio_endpoint = &p_audio_stream_interface_alt->device_endpoint[1];
+    usb_device_framework_set_endpoint((ULONG) p_config_framework, config_framework_size,
+                                      p_audio_ep_desc, p_audio_endpoint, device_speed);
+
+  }
+
+  ((USBD_CONFIGURATION_DESC *)p_config_framework)->wTotalLength = *config_framework_size;
+  ((USBD_CONFIGURATION_DESC *)p_config_framework)->bNumInterfaces += interface_index;
+
+  return USBD_DESCRIPTOR_SUCCESS;
+}
+#endif /* USBD_AUDIO_CLASS_ACTIVATED */
+
+#if USBD_PRINTER_CLASS_ACTIVATED == 1U
+/**
+  * @brief  usb_device_printer_framework_builder
+  *         Configure and Append the PRINTER Descriptor
+  * @retval none
+  */
+static UINT usb_device_printer_framework_builder(USB_DEVICE_INTERFACE_HANDLE *p_interface,
+                                                 ULONG p_config_framework,
+                                                 ULONG *config_framework_size,
+                                                 UCHAR device_speed)
+{
+  UCHAR                       interface_index = 0U;
+  USBD_INTERFACE_DESC         *p_printer_itf_desc = UX_NULL;
+  USBD_ENDPOINT_DESC          *p_printer_ep_desc = UX_NULL;
+  USB_DEVICE_INTERFACE_HANDLE *p_printer_interface = UX_NULL;
+  USB_DEVICE_ENDPOINT_HANDLE  *p_printer_in_endpoint = UX_NULL;
+  USB_DEVICE_ENDPOINT_HANDLE  *p_printer_out_endpoint = UX_NULL;
+
+  p_printer_interface = (USB_DEVICE_INTERFACE_HANDLE *)p_interface;
+
+  if (p_printer_interface == UX_NULL)
+  {
+    return USBD_DESCRIPTOR_CLASS_BUILDER_ERROR;
+  }
+
+  usb_device_framework_set_interface((ULONG) p_config_framework, config_framework_size,
+                                     p_printer_itf_desc, p_printer_interface);
+
+  interface_index++;
+
+  p_printer_in_endpoint = (USB_DEVICE_ENDPOINT_HANDLE *)p_printer_interface->device_endpoint;
+
+  if (p_printer_in_endpoint == UX_NULL)
+  {
+    return USBD_DESCRIPTOR_CLASS_BUILDER_ERROR;
+  }
+
+  usb_device_framework_set_endpoint((ULONG) p_config_framework, config_framework_size,
+                                    p_printer_ep_desc, p_printer_in_endpoint, device_speed);
+
+  if (p_printer_interface->endpoints_numbers > 1U)
+  {
+    p_printer_in_endpoint->next_endpoint = &p_printer_interface->device_endpoint[1];
+    p_printer_out_endpoint = (USB_DEVICE_ENDPOINT_HANDLE *)p_printer_in_endpoint->next_endpoint;
+
+    if (p_printer_out_endpoint == UX_NULL)
+    {
+      return USBD_DESCRIPTOR_CLASS_BUILDER_ERROR;
+    }
+
+    usb_device_framework_set_endpoint((ULONG) p_config_framework, config_framework_size,
+                                      p_printer_ep_desc, p_printer_out_endpoint, device_speed);
+  }
+
+  ((USBD_CONFIGURATION_DESC *)p_config_framework)->wTotalLength = *config_framework_size;
+  ((USBD_CONFIGURATION_DESC *)p_config_framework)->bNumInterfaces += interface_index;
+
+  return USBD_DESCRIPTOR_SUCCESS;
+}
+#endif /* USBD_PRINTER_CLASS_ACTIVATED */
+
+#if USBD_CCID_CLASS_ACTIVATED == 1U
+/**
+  * @brief  usb_device_ccid_framework_builder
+  *         Configure and Append the CCID Descriptor
+  * @retval none
+  */
+static UINT usb_device_ccid_framework_builder(USB_DEVICE_INTERFACE_HANDLE *p_interface,
+                                              ULONG p_config_framework,
+                                              ULONG *config_framework_size,
+                                              UCHAR device_speed)
+{
+  UCHAR interface_index = 0U;
+  USBD_INTERFACE_DESC *p_ccid_itf_desc = UX_NULL;
+  USBD_ENDPOINT_DESC *p_ccid_ep_desc = UX_NULL;
+  USBD_CCID_DESC *p_ccid_desc = UX_NULL;
+  USB_DEVICE_INTERFACE_HANDLE *p_ccid_interface = UX_NULL;
+  USB_DEVICE_ENDPOINT_HANDLE *p_ccid_in_endpoint = UX_NULL;
+  USB_DEVICE_ENDPOINT_HANDLE *p_ccid_out_endpoint = UX_NULL;
+  USB_DEVICE_ENDPOINT_HANDLE *p_ccid_ctl_endpoint = UX_NULL;
+
+  p_ccid_interface = (USB_DEVICE_INTERFACE_HANDLE *) p_interface;
+
+  if (p_ccid_interface == UX_NULL)
+  {
+    return USBD_DESCRIPTOR_CLASS_BUILDER_ERROR;
+  }
+
+  usb_device_framework_set_interface((ULONG) p_config_framework, config_framework_size,
+                                     p_ccid_itf_desc, p_ccid_interface);
+
+  interface_index++;
+
+  p_ccid_desc = (USBD_CCID_DESC *) ((ULONG) p_config_framework + *config_framework_size);
+  p_ccid_desc->bLength = (UCHAR) sizeof(USBD_CCID_DESC);
+  p_ccid_desc->bDescriptorType = 0x21U;
+  p_ccid_desc->bcdCCID = UX_DEVICE_CLASS_CCID_BCD_CCID_1_10;
+  p_ccid_desc->bMaxSlotIndex = USBD_CCID_MAX_SLOT_INDEX;
+  p_ccid_desc->bVoltageSupport = USBD_CCID_VOLTAGE_SUPPLY;
+  p_ccid_desc->dwProtocols = USBD_CCID_PROTOCOL;
+  p_ccid_desc->dwDefaultClock = USBD_CCID_DEFAULT_CLOCK_FREQ;
+  p_ccid_desc->dwMaximumClock = USBD_CCID_MAX_CLOCK_FREQ;
+  p_ccid_desc->bNumClockSupported = USBD_CCID_N_CLOCKS;
+  p_ccid_desc->dwDataRate = USBD_CCID_DEFAULT_DATA_RATE;
+  p_ccid_desc->dwMaxDataRate = USBD_CCID_MAX_DATA_RATE;
+  p_ccid_desc->bNumDataRatesSupported = USBD_CCID_N_DATA_RATES;
+  p_ccid_desc->dwMaxIFSD = USBD_CCID_MAX_IFSD;
+  p_ccid_desc->dwSynchProtocols = USBD_CCID_SYNCH_PROTOCOLS;
+  p_ccid_desc->dwMechanical = USBD_CCID_MECHANICAL;
+  p_ccid_desc->dwFeatures = USBD_CCID_FEATURES;
+  p_ccid_desc->dwMaxCCIDMessageLength = USBD_CCID_MAX_MESSAGE_LENGTH;
+  p_ccid_desc->bClassGetResponse = USBD_CCID_CLASS_GET_RESPONSE;
+  p_ccid_desc->bClassEnvelope = USBD_CCID_CLASS_ENVELOPE;
+  p_ccid_desc->wLcdLayout = USBD_CCID_LCD_LAYOUT;
+  p_ccid_desc->bPINSupport = USBD_CCID_PIN_SUPPORT;
+  p_ccid_desc->bMaxCCIDBusySlots = USBD_CCID_MAX_BUSY_SLOTS;
+  *config_framework_size += (ULONG) sizeof(USBD_CCID_DESC);
+
+  p_ccid_in_endpoint = (USB_DEVICE_ENDPOINT_HANDLE *)p_ccid_interface->device_endpoint;
+
+  if (p_ccid_in_endpoint == UX_NULL)
+  {
+    return USBD_DESCRIPTOR_CLASS_BUILDER_ERROR;
+  }
+
+    if (p_ccid_interface->endpoints_numbers < 3U)
+    {
+      return USBD_DESCRIPTOR_CLASS_BUILDER_ERROR;
+    }
+
+  usb_device_framework_set_endpoint((ULONG) p_config_framework, config_framework_size,
+                                    p_ccid_ep_desc, p_ccid_in_endpoint, device_speed);
+
+  p_ccid_in_endpoint->next_endpoint = &p_ccid_interface->device_endpoint[1];
+  p_ccid_out_endpoint = (USB_DEVICE_ENDPOINT_HANDLE *) p_ccid_in_endpoint->next_endpoint;
+
+  if (p_ccid_out_endpoint == UX_NULL)
+  {
+    return USBD_DESCRIPTOR_CLASS_BUILDER_ERROR;
+  }
+
+  usb_device_framework_set_endpoint((ULONG) p_config_framework, config_framework_size,
+                                    p_ccid_ep_desc, p_ccid_out_endpoint, device_speed);
+
+  p_ccid_out_endpoint->next_endpoint = &p_ccid_interface->device_endpoint[2];
+  p_ccid_ctl_endpoint = (USB_DEVICE_ENDPOINT_HANDLE *) p_ccid_out_endpoint->next_endpoint;
+
+  if (p_ccid_ctl_endpoint == UX_NULL)
+  {
+    return USBD_DESCRIPTOR_CLASS_BUILDER_ERROR;
+  }
+
+  usb_device_framework_set_endpoint((ULONG) p_config_framework, config_framework_size,
+                                    p_ccid_ep_desc, p_ccid_ctl_endpoint, device_speed);
+
+  ((USBD_CONFIGURATION_DESC *)p_config_framework)->wTotalLength = *config_framework_size;
+  ((USBD_CONFIGURATION_DESC *)p_config_framework)->bNumInterfaces += interface_index;
+
+  return USBD_DESCRIPTOR_SUCCESS;
+}
+#endif /* USBD_CCID_CLASS_ACTIVATED */
+
 #if USBD_HID_CLASS_ACTIVATED == 1U
 /**
   * @brief  usb_device_hid_framework_builder
@@ -720,7 +1400,7 @@ static UINT usb_device_hid_framework_builder(USB_DEVICE_INTERFACE_HANDLE *p_inte
 #if USBD_CDC_ACM_CLASS_ACTIVATED == 1U
 /**
   * @brief  usb_device_cdc_acm_framework_builder
-  *         Configure and Append the HID Descriptor
+  *         Configure and Append the CDC Descriptor
   * @retval none
   */
 static UINT usb_device_cdc_acm_framework_builder(USB_DEVICE_INTERFACE_HANDLE *p_interface,
@@ -749,6 +1429,7 @@ static UINT usb_device_cdc_acm_framework_builder(USB_DEVICE_INTERFACE_HANDLE *p_
   pIadDesc = (USBD_IAD_DESC *)((ULONG)p_config_framework + *config_framework_size);
   pIadDesc->bLength = (uint8_t)sizeof(USBD_IAD_DESC);
   pIadDesc->bDescriptorType = USB_DESC_TYPE_IAD; /* IAD descriptor */
+  pIadDesc->bFirstInterface = p_interface->interface_numbers;
   pIadDesc->bInterfaceCount = 2U;    /* 2 interfaces */
   pIadDesc->bFunctionClass = 0x02U;
   pIadDesc->bFunctionSubClass = 0x02U;
@@ -787,7 +1468,7 @@ static UINT usb_device_cdc_acm_framework_builder(USB_DEVICE_INTERFACE_HANDLE *p_
   pCallMgmDesc->bDescriptorType = 0x24U;
   pCallMgmDesc->bDescriptorSubtype = 0x01U;
   pCallMgmDesc->bmCapabilities = 0x00U;
-  pCallMgmDesc->bDataInterface = 0x02U;
+  pCallMgmDesc->bDataInterface = 0x00U;
   *config_framework_size += (uint32_t)sizeof(USBD_CDC_CALL_MANAGEMENT_DESC);
 
   /* ACM Functional Descriptor*/
@@ -803,7 +1484,8 @@ static UINT usb_device_cdc_acm_framework_builder(USB_DEVICE_INTERFACE_HANDLE *p_
   pUnionDesc->bLength = 0x05U;
   pUnionDesc->bDescriptorType = 0x24U;
   pUnionDesc->bDescriptorSubtype = 0x06U;
-  pUnionDesc->bSlaveInterface = 0x01U;
+  pUnionDesc->bMasterInterface = cdc_ctl_interface->interface_numbers;
+  pUnionDesc->bSlaveInterface = 0x00U;
   *config_framework_size += (uint32_t)sizeof(USBD_CDC_UNION_DESC);
 
      /* Get CDC Notification Endpoint */
@@ -824,6 +1506,9 @@ static UINT usb_device_cdc_acm_framework_builder(USB_DEVICE_INTERFACE_HANDLE *p_
     return USBD_DESCRIPTOR_CLASS_BUILDER_ERROR;
   }
 
+  pCallMgmDesc->bDataInterface = cdc_data_interface->interface_numbers;
+  pUnionDesc->bSlaveInterface = cdc_data_interface->interface_numbers;
+
   /* Append CDC Interface descriptor to Configuration descriptor */
   usb_device_framework_set_interface((ULONG) p_config_framework, config_framework_size,
                                      p_cdc_itf_desc, cdc_data_interface);
@@ -834,24 +1519,28 @@ static UINT usb_device_cdc_acm_framework_builder(USB_DEVICE_INTERFACE_HANDLE *p_
   /* Get CDC IN Endpoint */
   p_cdc_in_endpoint = (USB_DEVICE_ENDPOINT_HANDLE *)cdc_data_interface->device_endpoint;
 
-  if (p_cdc_in_endpoint != UX_NULL)
+  if (p_cdc_in_endpoint == UX_NULL)
   {
-    /* Append Endpoint IN descriptor to Configuration descriptor */
-    usb_device_framework_set_endpoint((ULONG) p_config_framework, config_framework_size,
-                                      p_cdc_ep_desc, p_cdc_in_endpoint, device_speed);
+    return USBD_DESCRIPTOR_CLASS_BUILDER_ERROR;
   }
+
+  /* Append Endpoint IN descriptor to Configuration descriptor */
+  usb_device_framework_set_endpoint((ULONG) p_config_framework, config_framework_size,
+                                    p_cdc_ep_desc, p_cdc_in_endpoint, device_speed);
 
   p_cdc_in_endpoint->next_endpoint = &cdc_data_interface->device_endpoint[1];
 
   /* Get CDC OUT Endpoint */
   p_cdc_out_endpoint = (USB_DEVICE_ENDPOINT_HANDLE *)p_cdc_in_endpoint->next_endpoint;
 
-  if (p_cdc_out_endpoint != UX_NULL)
+  if (p_cdc_out_endpoint == UX_NULL)
   {
-    /* Append Endpoint Data OUT descriptor to Configuration descriptor */
-    usb_device_framework_set_endpoint((ULONG) p_config_framework, config_framework_size,
-                                      p_cdc_ep_desc, p_cdc_out_endpoint, device_speed);
+    return USBD_DESCRIPTOR_CLASS_BUILDER_ERROR;
   }
+
+  /* Append Endpoint Data OUT descriptor to Configuration descriptor */
+  usb_device_framework_set_endpoint((ULONG) p_config_framework, config_framework_size,
+                                    p_cdc_ep_desc, p_cdc_out_endpoint, device_speed);
 
   /* Update Config Descriptor */
   ((USBD_CONFIGURATION_DESC *)p_config_framework)->wTotalLength = *config_framework_size;
@@ -895,6 +1584,11 @@ static UINT usb_device_mtp_framework_builder(USB_DEVICE_INTERFACE_HANDLE *p_inte
   /* Increment interface index */
   interface_index++;
 
+  if (p_mtp_interface->device_endpoint == UX_NULL)
+  {
+    return USBD_DESCRIPTOR_CLASS_BUILDER_ERROR;
+  }
+
   /* Get MTP IN Endpoint */
   p_mtp_in_endpoint = (USB_DEVICE_ENDPOINT_HANDLE *)p_mtp_interface->device_endpoint;
 
@@ -910,24 +1604,29 @@ static UINT usb_device_mtp_framework_builder(USB_DEVICE_INTERFACE_HANDLE *p_inte
   /* Get MTP OUT Endpoint */
   p_mtp_out_endpoint = (USB_DEVICE_ENDPOINT_HANDLE *)p_mtp_in_endpoint->next_endpoint;
 
-  if (p_mtp_out_endpoint != UX_NULL)
+  if (p_mtp_out_endpoint == UX_NULL)
   {
-    /* Append Endpoint OUT descriptor to Configuration descriptor */
-    usb_device_framework_set_endpoint((ULONG) p_config_framework, config_framework_size,
-                                      p_mtp_ep_desc, p_mtp_out_endpoint, device_speed);
+    return USBD_DESCRIPTOR_CLASS_BUILDER_ERROR;
   }
+
+  /* Append Endpoint OUT descriptor to Configuration descriptor */
+  usb_device_framework_set_endpoint((ULONG) p_config_framework, config_framework_size,
+                                    p_mtp_ep_desc, p_mtp_out_endpoint, device_speed);
 
   p_mtp_out_endpoint->next_endpoint = &p_mtp_interface->device_endpoint[2];
 
   /* Get MTP CTL Endpoint */
   p_mtp_ctl_endpoint = (USB_DEVICE_ENDPOINT_HANDLE *)p_mtp_out_endpoint->next_endpoint;
 
-  if (p_mtp_ctl_endpoint != UX_NULL)
+  if (p_mtp_ctl_endpoint == UX_NULL)
   {
-    /* Append Endpoint CTL descriptor to Configuration descriptor */
-    usb_device_framework_set_endpoint((ULONG) p_config_framework, config_framework_size,
-                                      p_mtp_ep_desc, p_mtp_ctl_endpoint, device_speed);
+    return USBD_DESCRIPTOR_CLASS_BUILDER_ERROR;
   }
+
+  /* Append Endpoint CTL descriptor to Configuration descriptor */
+  usb_device_framework_set_endpoint((ULONG) p_config_framework, config_framework_size,
+                                    p_mtp_ep_desc, p_mtp_ctl_endpoint, device_speed);
+
   /* Update Config Descriptor */
   ((USBD_CONFIGURATION_DESC *)p_config_framework)->wTotalLength = *config_framework_size;
   ((USBD_CONFIGURATION_DESC *)p_config_framework)->bNumInterfaces += interface_index;
@@ -947,6 +1646,7 @@ static UINT usb_device_video_framework_builder(USB_DEVICE_INTERFACE_HANDLE *p_in
                                              ULONG *config_framework_size, UCHAR device_speed)
 {
   UCHAR                                 interface_index = 0U;
+  UCHAR                                 vs_interface_number = 0U;
   USBD_INTERFACE_DESC                   *p_video_itf_desc = UX_NULL;
   USBD_ENDPOINT_DESC                    *p_video_ep_desc = UX_NULL;
 
@@ -956,6 +1656,7 @@ static UINT usb_device_video_framework_builder(USB_DEVICE_INTERFACE_HANDLE *p_in
   USBD_VIDEO_VS_HEADER_DESC             *pVideoVSHeaderDesc = UX_NULL;
   USBD_VIDEO_PAYLOAD_FORMAT_DESC        *pVideoPayloadFormatDesc = UX_NULL;
   USBD_VIDEO_FRAME_DESC                 *pVideoFrameDesc = UX_NULL;
+  USBD_VIDEO_PROCESSING_UNIT_DESCRIPTOR *pVideoPUDesc = UX_NULL;
 
   USB_DEVICE_INTERFACE_HANDLE           *p_video_interface = UX_NULL;
   USB_DEVICE_INTERFACE_HANDLE           *p_video_streaming_interface = UX_NULL;
@@ -969,10 +1670,14 @@ static UINT usb_device_video_framework_builder(USB_DEVICE_INTERFACE_HANDLE *p_in
   pIadDesc = (USBD_IAD_DESC *)((ULONG)p_config_framework + *config_framework_size);
   pIadDesc->bLength = (uint8_t)sizeof(USBD_IAD_DESC);
   pIadDesc->bDescriptorType = USB_DESC_TYPE_IAD; /* IAD descriptor */
+  pIadDesc->bFirstInterface = p_interface->interface_numbers;
   pIadDesc->bInterfaceCount = 2U;    /* 2 interfaces */
   pIadDesc->bFunctionClass = UX_DEVICE_CLASS_VIDEO_CC_VIDEO;
   pIadDesc->bFunctionSubClass = UX_DEVICE_CLASS_VIDEO_SC_INTERFACE_COLLECTION;
   pIadDesc->bFunctionProtocol = UX_DEVICE_CLASS_VIDEO_PC_PROTOCOL_UNDEFINED;
+#if USBD_UVC_USE_FRAME_BASE_H264 ==1
+  pIadDesc->bFunctionProtocol = UX_DEVICE_CLASS_VIDEO_PC_PROTOCOL_15;
+#endif  /* USBD_UVC_USE_FRAME_BASE_H264 == 1 */
   pIadDesc->iFunction = 0U; /* String Index */
   *config_framework_size += (uint32_t)sizeof(USBD_IAD_DESC);
 #endif /* USBD_COMPOSITE_USE_IAD == 1 */
@@ -998,10 +1703,26 @@ static UINT usb_device_video_framework_builder(USB_DEVICE_INTERFACE_HANDLE *p_in
   p_video_desc->bDescriptorType = UX_DEVICE_CLASS_VIDEO_CS_INTERFACE;
   p_video_desc->bDescriptorSubtype = 0x01U;
   p_video_desc->bcdUVC = 0x0110U;
-  p_video_desc->wTotalLength = 0x001EU;
+  p_video_desc->wTotalLength = VC_HEADER_SIZE;
+
+#if (USBD_UVC_USE_FRAME_BASE_H264 == 1U)
+  p_video_desc->dwClockFrequency = 0U;
+#else
   p_video_desc->dwClockFrequency = 0x02DC6C00U;
+#endif /* USBD_UVC_USE_FRAME_BASE_H264 */
+
   p_video_desc->bInCollection = 0x01U;
-  p_video_desc->aInterfaceNr = 0x01U;
+
+  /* Standard VS (Video Streaming) Interface Descriptor */
+  /* Interface 1, Alternate Setting 0 = Zero Bandwidth */
+  p_video_streaming_interface = (USB_DEVICE_INTERFACE_HANDLE *)p_video_interface->next_interface;
+
+  if (p_video_streaming_interface == UX_NULL)
+  {
+    return USBD_DESCRIPTOR_CLASS_BUILDER_ERROR;
+  }
+
+  p_video_desc->aInterfaceNr = p_video_streaming_interface->interface_numbers;
   *config_framework_size += (uint32_t)sizeof(USBD_VIDEO_DESC);
 
   /* Append Input Terminal Descriptor to Configuration descriptor */
@@ -1011,8 +1732,23 @@ static UINT usb_device_video_framework_builder(USB_DEVICE_INTERFACE_HANDLE *p_in
   pVideoITDesc->bDescriptorSubtype = 0x02U;
   pVideoITDesc->bTerminalID = 0x01U;
   pVideoITDesc->wTerminalType = 0x0200U;
+#if (USBD_UVC_USE_CAMERA == 1U)
+  pVideoITDesc->wTerminalType = 0x0201U; /* CAMERA */
   pVideoITDesc->bAssocTerminal = 0x00U;
   pVideoITDesc->iTerminal =  0x00U;
+  pVideoITDesc->wObjectiveFocalLengthMin = 0x0000; /* wObjectiveFocalLengthMin */
+  pVideoITDesc->wObjectiveFocalLengthMax = 0x0000; /* wObjectiveFocalLengthMax */
+  pVideoITDesc->wOcularFocalLength = 0x0000;       /* wOcularFocalLength       */
+  pVideoITDesc->bControlSize = 0x03;               /* bControlSize             */
+  pVideoITDesc->bmControls[0] = 0x00U;             /* bmControls               */
+  pVideoITDesc->bmControls[1] = 0x00U;
+  pVideoITDesc->bmControls[2] = 0x00U;
+#else
+  pVideoITDesc->wTerminalType = 0x0200U;  /* Custom */
+  pVideoITDesc->bAssocTerminal = 0x00U;
+  pVideoITDesc->iTerminal = 0x00U;
+#endif /* USBD_UVC_USE_CAMERA */
+
   *config_framework_size += (uint32_t)sizeof(USBD_VIDEO_INPUT_TERMINAL_DESC);
 
   /* Append Output Terminal Descriptor to Configuration descriptor */
@@ -1026,6 +1762,22 @@ static UINT usb_device_video_framework_builder(USB_DEVICE_INTERFACE_HANDLE *p_in
   pVideoOTDesc->bSourceID = 0x01U;
   pVideoOTDesc->iTerminal = 0x00U;
   *config_framework_size += (uint32_t)sizeof(USBD_VIDEO_OUTPUT_TERMINAL_DESC);
+
+/* Append Processing Unit Descriptor to Configuration descriptor */
+  pVideoPUDesc = ((USBD_VIDEO_PROCESSING_UNIT_DESCRIPTOR *)((ULONG)p_config_framework + *config_framework_size));
+  pVideoPUDesc->bLength = 0x0DU;
+  pVideoPUDesc->bDescriptorType = 0x24U;
+  pVideoPUDesc->bDescriptorSubtype = 0x05U;
+  pVideoPUDesc->bUnitID = 0x02U;
+  pVideoPUDesc->bSourceID = 0x01U;
+  pVideoPUDesc->wMaxMultiplier = 0x0400U;
+  pVideoPUDesc->bControlSize =0x03U;
+  pVideoPUDesc->bmControls[0] = 0x03U;
+  pVideoPUDesc->bmControls[1] = 0x00U;
+  pVideoPUDesc->bmControls[2] = 0x00U;
+  pVideoPUDesc->iProcessing = 0x00U;
+  pVideoPUDesc->bmVideoStandards = 0x1FU;
+  *config_framework_size += (uint32_t)sizeof(USBD_VIDEO_PROCESSING_UNIT_DESCRIPTOR);
 
   /* Standard VS (Video Streaming) Interface Descriptor */
   /* Interface 1, Alternate Setting 0 = Zero Bandwidth */
@@ -1049,7 +1801,7 @@ static UINT usb_device_video_framework_builder(USB_DEVICE_INTERFACE_HANDLE *p_in
   pVideoVSHeaderDesc->bDescriptorType = UX_DEVICE_CLASS_VIDEO_CS_INTERFACE;
   pVideoVSHeaderDesc->bDescriptorSubtype = UX_DEVICE_CLASS_VIDEO_VC_HEADER;
   pVideoVSHeaderDesc->bNumFormats = 0x01U;
-  pVideoVSHeaderDesc->wTotalLength = 0x37U;
+  pVideoVSHeaderDesc->wTotalLength = VS_HEADER_SIZE;
   pVideoVSHeaderDesc->bEndpointAddress = USBD_VIDEO_EPIN_ADDR;
   pVideoVSHeaderDesc->bmInfo = 0x00U;
   pVideoVSHeaderDesc->bTerminalLink = 0x02U;
@@ -1064,6 +1816,54 @@ static UINT usb_device_video_framework_builder(USB_DEVICE_INTERFACE_HANDLE *p_in
   pVideoPayloadFormatDesc = (USBD_VIDEO_PAYLOAD_FORMAT_DESC *)((ULONG)p_config_framework + *config_framework_size);
   pVideoPayloadFormatDesc->bLength = (uint8_t)sizeof(USBD_VIDEO_PAYLOAD_FORMAT_DESC);
   pVideoPayloadFormatDesc->bDescriptorType = UX_DEVICE_CLASS_VIDEO_CS_INTERFACE;
+
+#if (USBD_UVC_USE_H264 == 1U)
+  pVideoPayloadFormatDesc->bDescriptorSubType = UX_DEVICE_CLASS_VIDEO_VS_FORMAT_H264;
+  pVideoPayloadFormatDesc->bFormatIndex = 0x1U;
+  pVideoPayloadFormatDesc->bNumFrameDescriptors = 0x1U;
+  pVideoPayloadFormatDesc->bDefaultFrameIndex = 0x1U;
+  pVideoPayloadFormatDesc->bMaxCodecConfigDelay = 0x0U;
+  pVideoPayloadFormatDesc->bmSupportedSliceModes = 0x0U;
+  pVideoPayloadFormatDesc->bmSupportedSyncFrameTypes = 0x0U;
+  pVideoPayloadFormatDesc->bResolutionScaling = 0x0U;
+  pVideoPayloadFormatDesc->Reserved = 0x0U;
+  pVideoPayloadFormatDesc->bmSupportedRateControlModes = 0x0U;
+  pVideoPayloadFormatDesc->wMaxMBperSecOneResNoScal = ((UVC_FRAME_WIDTH / 16) * (UVC_FRAME_HEIGHT / 16) * UVC_CAM_FPS_HS) / 1000U;
+  pVideoPayloadFormatDesc->wMaxMBperSecTwoResNoScal = 0x0000;
+  pVideoPayloadFormatDesc->wMaxMBperSecThreeResNoScal = 0x0000;
+  pVideoPayloadFormatDesc->wMaxMBperSecFourResNoScal = 0x0000;
+  pVideoPayloadFormatDesc->wMaxMBperSecOneResTemporalScal = 0x0000;
+  pVideoPayloadFormatDesc->wMaxMBperSecTwoResTemporalScal = 0x0000;
+  pVideoPayloadFormatDesc->wMaxMBperSecThreeResTemporalScal = 0x0000;
+  pVideoPayloadFormatDesc->wMaxMBperSecFourResTemporalScal = 0x0000;
+  pVideoPayloadFormatDesc->wMaxMBperSecOneResTemporalQualityScal = 0x0000;
+  pVideoPayloadFormatDesc->wMaxMBperSecTwoResTemporalQualityScal = 0x0000;
+  pVideoPayloadFormatDesc->wMaxMBperSecThreeResTemporalQualityScal = 0x0000;
+  pVideoPayloadFormatDesc->wMaxMBperSecFourResTemporalQualityScal = 0x0000;
+  pVideoPayloadFormatDesc->wMaxMBperSecOneResTemporalSpatialScal = 0x0000;
+  pVideoPayloadFormatDesc->wMaxMBperSecTwoResTemporalSpatialScal = 0x0000;
+  pVideoPayloadFormatDesc->wMaxMBperSecThreeResTemporalSpatialScal = 0x0000;
+  pVideoPayloadFormatDesc->wMaxMBperSecFourResTemporalSpatialScal = 0x0000;
+  pVideoPayloadFormatDesc->wMaxMBperSecOneResFullScal = 0x0000;
+  pVideoPayloadFormatDesc->wMaxMBperSecTwoResFullScal = 0x0000;
+  pVideoPayloadFormatDesc->wMaxMBperSecThreeResFullScal = 0x0000;
+  pVideoPayloadFormatDesc->wMaxMBperSecFourResFullScal = 0x0000;
+
+#elif (USBD_UVC_USE_FRAME_BASE_H264 == 1U)
+  pVideoPayloadFormatDesc->bDescriptorSubType = UX_DEVICE_CLASS_VIDEO_VS_FORMAT_FRAME_BASED;
+  pVideoPayloadFormatDesc->bFormatIndex = 0x01U;
+  pVideoPayloadFormatDesc->bNumFrameDescriptors = 0x01U;
+
+  ux_utility_memory_copy(pVideoPayloadFormatDesc->pGuidFormat, usbd_uvc_guid, 16);
+
+  pVideoPayloadFormatDesc->bBitsPerPixel = 16;
+  pVideoPayloadFormatDesc->bDefaultFrameIndex = 0x01U;
+  pVideoPayloadFormatDesc->bAspectRatioX = 0x00U;
+  pVideoPayloadFormatDesc->bAspectRatioY = 0x00U;
+  pVideoPayloadFormatDesc->bmInterlaceFlag = 0x00U;
+  pVideoPayloadFormatDesc->bCopyProtect = 0x00U;
+  pVideoPayloadFormatDesc->bVariableSize = 0x01U;
+#else
   pVideoPayloadFormatDesc->bDescriptorSubType = UX_DEVICE_CLASS_VIDEO_VS_FORMAT_MJPEG;
   pVideoPayloadFormatDesc->bFormatIndex = 0x01U;
   pVideoPayloadFormatDesc->bNumFrameDescriptors = 0x01U;
@@ -1073,6 +1873,8 @@ static UINT usb_device_video_framework_builder(USB_DEVICE_INTERFACE_HANDLE *p_in
   pVideoPayloadFormatDesc->bAspectRatioY = 0x00U;
   pVideoPayloadFormatDesc->bmInterfaceFlag = 0x00U;
   pVideoPayloadFormatDesc->bCopyProtect = 0x00U;
+#endif /* USBD_UVC_USE_H264 */
+
   *config_framework_size += (uint32_t)sizeof(USBD_VIDEO_PAYLOAD_FORMAT_DESC);
 
   /* Append Class-specific VS (Video Streaming) Frame Descriptor to
@@ -1080,36 +1882,94 @@ static UINT usb_device_video_framework_builder(USB_DEVICE_INTERFACE_HANDLE *p_in
   pVideoFrameDesc = (USBD_VIDEO_FRAME_DESC *)((ULONG)p_config_framework + *config_framework_size);
   pVideoFrameDesc->bLength = (uint8_t)sizeof(USBD_VIDEO_FRAME_DESC);
   pVideoFrameDesc->bDescriptorType = UX_DEVICE_CLASS_VIDEO_CS_INTERFACE;
-  pVideoFrameDesc->bDescriptorSubType = UX_DEVICE_CLASS_VIDEO_VS_FRAME_MJPEG;
 
+#if (USBD_UVC_USE_H264 == 1U)
+  pVideoFrameDesc->bDescriptorSubType = UX_DEVICE_CLASS_VIDEO_VS_FRAME_H264;
+  pVideoFrameDesc->bFrameIndex = 0x01U;
+  pVideoFrameDesc->wWidth = UVC_FRAME_WIDTH;
+  pVideoFrameDesc->wHeight = UVC_FRAME_HEIGHT;
+  pVideoFrameDesc->wSARwidth = 0x0001U;
+  pVideoFrameDesc->wSARheight = 0x0001U;
+  pVideoFrameDesc->wProfile = 0x4240U;
+  pVideoFrameDesc->bLevelIDC = 0x1EU;
+  pVideoFrameDesc->wConstrainedToolset = 0x0000U;
+  pVideoFrameDesc->bmSupportedUsages = 0x00000001U;
+  pVideoFrameDesc->bmCapabilities = (1 << 0) |  /* Support for slice-based encoding*/
+                                    (1 << 1);   /*Support for frame-based encoding*/
+  pVideoFrameDesc->bmSVCCapabilities = 0x00000000U;
+  pVideoFrameDesc->bmMVCCapabilities = 0x00000000U;
+  pVideoFrameDesc->bNumFrameIntervals = 0x01U;
+
+#if (USBD_HIGH_SPEED_SUPPORTED == 1U)
+    pVideoFrameDesc->dwMinBitRate = UVC_MIN_BIT_RATE(UVC_CAM_FPS_HS);
+    pVideoFrameDesc->dwMaxBitRate = UVC_MAX_BIT_RATE(UVC_CAM_FPS_HS);
+    pVideoFrameDesc->dwDefaultFrameInterval = UVC_INTERVAL(UVC_CAM_FPS_HS);
+    pVideoFrameDesc->dwFrameInterval = UVC_INTERVAL(UVC_CAM_FPS_HS);
+#else
+    pVideoFrameDesc->dwMinBitRate = UVC_MIN_BIT_RATE(UVC_CAM_FPS_FS);
+    pVideoFrameDesc->dwMaxBitRate = UVC_MAX_BIT_RATE(UVC_CAM_FPS_FS);
+    pVideoFrameDesc->dwDefaultFrameInterval = UVC_INTERVAL(UVC_CAM_FPS_FS);
+    pVideoFrameDesc->dwFrameInterval = UVC_INTERVAL(UVC_CAM_FPS_FS);
+#endif /*USBD_HIGH_SPEED_SUPPORTED*/
+
+#elif (USBD_UVC_USE_FRAME_BASE_H264 == 1U)
+  pVideoFrameDesc->bDescriptorSubType = UX_DEVICE_CLASS_VIDEO_VS_FRAME_FRAME_BASED;
+  pVideoFrameDesc->bFrameIndex = 0x01U;
+  pVideoFrameDesc->bmCapabilities = 0x00U;
+  pVideoFrameDesc->wWidth = UVC_FRAME_WIDTH;
+  pVideoFrameDesc->wHeight = UVC_FRAME_HEIGHT;
+
+#if (USBD_HIGH_SPEED_SUPPORTED == 1U)
+    pVideoFrameDesc->dwMinBitRate = UVC_MIN_BIT_RATE(UVC_CAM_FPS_HS);
+    pVideoFrameDesc->dwMaxBitRate = UVC_MAX_BIT_RATE(UVC_CAM_FPS_HS);
+    pVideoFrameDesc->dwDefaultFrameInterval = UVC_INTERVAL(UVC_CAM_FPS_HS);
+    pVideoFrameDesc->dwFrameInterval = UVC_INTERVAL(UVC_CAM_FPS_HS);
+#else
+    pVideoFrameDesc->dwMinBitRate = UVC_MIN_BIT_RATE(UVC_CAM_FPS_FS);
+    pVideoFrameDesc->dwMaxBitRate = UVC_MAX_BIT_RATE(UVC_CAM_FPS_FS);
+    pVideoFrameDesc->dwDefaultFrameInterval = UVC_INTERVAL(UVC_CAM_FPS_FS);
+    pVideoFrameDesc->dwFrameInterval = UVC_INTERVAL(UVC_CAM_FPS_FS);
+#endif /* USBD_HIGH_SPEED_SUPPORTED */
+
+  pVideoFrameDesc->dwBytesPerLine = 0x0U;
+  pVideoFrameDesc->bFrameIntervalType = 0x01U;
+#else
+  pVideoFrameDesc->bDescriptorSubType = UX_DEVICE_CLASS_VIDEO_VS_FRAME_MJPEG;
   pVideoFrameDesc->bFrameIndex = 0x01U;
   pVideoFrameDesc->bmCapabilities = 0x02U;
   pVideoFrameDesc->wWidth = UVC_FRAME_WIDTH;
   pVideoFrameDesc->wHeight = UVC_FRAME_HEIGHT;
 
+#if (USBD_HIGH_SPEED_SUPPORTED == 1U)
   pVideoFrameDesc->dwMinBitRate = UVC_MIN_BIT_RATE(UVC_CAM_FPS_HS);
   pVideoFrameDesc->dwMaxBitRate = UVC_MAX_BIT_RATE(UVC_CAM_FPS_HS);
   pVideoFrameDesc->dwDefaultFrameInterval = UVC_INTERVAL(UVC_CAM_FPS_HS);
   pVideoFrameDesc->dwFrameInterval = UVC_INTERVAL(UVC_CAM_FPS_HS);
-
+#else
   pVideoFrameDesc->dwMinBitRate = UVC_MIN_BIT_RATE(UVC_CAM_FPS_FS);
   pVideoFrameDesc->dwMaxBitRate = UVC_MAX_BIT_RATE(UVC_CAM_FPS_FS);
   pVideoFrameDesc->dwDefaultFrameInterval = UVC_INTERVAL(UVC_CAM_FPS_FS);
   pVideoFrameDesc->dwFrameInterval = UVC_INTERVAL(UVC_CAM_FPS_FS);
+#endif /* USBD_HIGH_SPEED_SUPPORTED */
 
   pVideoFrameDesc->dwMaxVideoFrameBufferSize = UVC_MAX_FRAME_SIZE;
   pVideoFrameDesc->bFrameIntervalType = 0x01U;
+#endif /* USBD_UVC_USE_H264 */
 
   *config_framework_size += (uint32_t)sizeof(USBD_VIDEO_FRAME_DESC);
 
   /* USB Standard VS Interface  Descriptor - data transfer mode */
-  /* Interface 1, Alternate Setting 1*/
+  /* Interface 1, Alternate Setting 1 */
+  vs_interface_number = p_video_streaming_interface->interface_numbers;
   p_video_streaming_interface = (USB_DEVICE_INTERFACE_HANDLE *)p_video_streaming_interface->next_alt_setting;
 
   if (p_video_streaming_interface == UX_NULL)
   {
     return USBD_DESCRIPTOR_CLASS_BUILDER_ERROR;
   }
+
+  /* Propagate the dynamically assigned interface number to the alternate setting */
+  p_video_streaming_interface->interface_numbers = vs_interface_number;
 
   /* Append Video Streaming Interface descriptor to Configuration descriptor */
   usb_device_framework_set_interface((ULONG)p_config_framework, config_framework_size,
@@ -1133,7 +1993,7 @@ static UINT usb_device_video_framework_builder(USB_DEVICE_INTERFACE_HANDLE *p_in
 }
 #endif /* USBD_VIDEO_CLASS_ACTIVATED */
 
-#if USBD_HID_MOUSE_ACTIVATED == 1U
+#if (USBD_HID_MOUSE_ACTIVATED == 1U)
 USB_DEVICE_ENDPOINT_HANDLE hid_mouse_endpoint[] =
 {
   {
@@ -1141,7 +2001,7 @@ USB_DEVICE_ENDPOINT_HANDLE hid_mouse_endpoint[] =
     USBD_HID_MOUSE_EPIN_TYPE,
     USBD_HID_MOUSE_EPIN_FS_MPS,
     USBD_HID_MOUSE_EPIN_FS_BINTERVAL,
-#if USBD_HIGH_SPEED_SUPPORTED == 1U
+#if (USBD_HIGH_SPEED_SUPPORTED == 1U)
     USBD_HID_MOUSE_EPIN_HS_MPS,
     USBD_HID_MOUSE_EPIN_HS_BINTERVAL,
 #endif /* USBD_HIGH_SPEED_SUPPORTED */
@@ -1165,7 +2025,7 @@ USB_DEVICE_INTERFACE_HANDLE hid_mouse_interface[] =
 };
 #endif /* USBD_HID_MOUSE_ACTIVATED */
 
-#if USBD_HID_KEYBOARD_ACTIVATED == 1U
+#if (USBD_HID_KEYBOARD_ACTIVATED == 1U)
 USB_DEVICE_ENDPOINT_HANDLE hid_keyboard_endpoint[] =
 {
   {
@@ -1173,7 +2033,7 @@ USB_DEVICE_ENDPOINT_HANDLE hid_keyboard_endpoint[] =
     USBD_HID_KEYBOARD_EPIN_TYPE,
     USBD_HID_KEYBOARD_EPIN_FS_MPS,
     USBD_HID_KEYBOARD_EPIN_FS_BINTERVAL,
-#if USBD_HIGH_SPEED_SUPPORTED == 1U
+#if (USBD_HIGH_SPEED_SUPPORTED == 1U)
     USBD_HID_KEYBOARD_EPIN_HS_MPS,
     USBD_HID_KEYBOARD_EPIN_HS_BINTERVAL,
 #endif /* USBD_HIGH_SPEED_SUPPORTED */
@@ -1197,7 +2057,7 @@ USB_DEVICE_INTERFACE_HANDLE hid_keyboard_interface[] =
 };
 #endif /* USBD_HID_KEYBOARD_ACTIVATED */
 
-#if USBD_HID_CUSTOM_ACTIVATED == 1U
+#if (USBD_HID_CUSTOM_ACTIVATED == 1U)
 USB_DEVICE_ENDPOINT_HANDLE hid_custom_endpoint[] =
 {
   {
@@ -1205,7 +2065,7 @@ USB_DEVICE_ENDPOINT_HANDLE hid_custom_endpoint[] =
     USBD_HID_CUSTOM_EPIN_TYPE,
     USBD_HID_CUSTOM_EPIN_FS_MPS,
     USBD_HID_CUSTOM_EPIN_FS_BINTERVAL,
-#if USBD_HIGH_SPEED_SUPPORTED == 1U
+#if (USBD_HIGH_SPEED_SUPPORTED == 1U)
     USBD_HID_CUSTOM_EPIN_HS_MPS,
     USBD_HID_CUSTOM_EPIN_HS_BINTERVAL,
 #endif /* USBD_HIGH_SPEED_SUPPORTED */
@@ -1215,7 +2075,7 @@ USB_DEVICE_ENDPOINT_HANDLE hid_custom_endpoint[] =
     USBD_HID_CUSTOM_EPOUT_TYPE,
     USBD_HID_CUSTOM_EPOUT_FS_MPS,
     USBD_HID_CUSTOM_EPOUT_FS_BINTERVAL,
-#if USBD_HIGH_SPEED_SUPPORTED == 1U
+#if (USBD_HIGH_SPEED_SUPPORTED == 1U)
     USBD_HID_CUSTOM_EPOUT_HS_MPS,
     USBD_HID_CUSTOM_EPOUT_HS_BINTERVAL,
 #endif /* USBD_HIGH_SPEED_SUPPORTED */
@@ -1239,7 +2099,7 @@ USB_DEVICE_INTERFACE_HANDLE hid_custom_interface[] =
 };
 #endif /* USBD_HID_CUSTOM_ACTIVATED */
 
-#if USBD_CDC_ACM_CLASS_ACTIVATED == 1U
+#if (USBD_CDC_ACM_CLASS_ACTIVATED == 1U)
 /* Endpoint handles CONTROL for CDC_ACM */
 USB_DEVICE_ENDPOINT_HANDLE cdc_acm_ctl_endpoints[] =
 {
@@ -1248,7 +2108,7 @@ USB_DEVICE_ENDPOINT_HANDLE cdc_acm_ctl_endpoints[] =
     USBD_CDC_ACM_EPNTF_TYPE,
     USBD_CDC_ACM_EPNTF_FS_MPS,
     USBD_CDC_ACM_EPNTF_FS_BINTERVAL,
-#if USBD_HIGH_SPEED_SUPPORTED == 1U
+#if (USBD_HIGH_SPEED_SUPPORTED == 1U)
     USBD_CDC_ACM_EPNTF_HS_MPS,
     USBD_CDC_ACM_EPNTF_HS_BINTERVAL,
 #endif /* USBD_HIGH_SPEED_SUPPORTED */
@@ -1263,7 +2123,7 @@ USB_DEVICE_ENDPOINT_HANDLE cdc_acm_data_endpoints[] =
     USBD_CDC_ACM_EPIN_TYPE,
     USBD_CDC_ACM_EPIN_FS_MPS,
     USBD_CDC_ACM_EPIN_FS_BINTERVAL,
-#if USBD_HIGH_SPEED_SUPPORTED == 1U
+#if (USBD_HIGH_SPEED_SUPPORTED == 1U)
     USBD_CDC_ACM_EPIN_HS_MPS,
     USBD_CDC_ACM_EPIN_HS_BINTERVAL,
 #endif /* USBD_HIGH_SPEED_SUPPORTED */
@@ -1273,7 +2133,7 @@ USB_DEVICE_ENDPOINT_HANDLE cdc_acm_data_endpoints[] =
     USBD_CDC_ACM_EPOUT_TYPE,
     USBD_CDC_ACM_EPOUT_FS_MPS,
     USBD_CDC_ACM_EPOUT_FS_BINTERVAL,
-#if USBD_HIGH_SPEED_SUPPORTED == 1U
+#if (USBD_HIGH_SPEED_SUPPORTED == 1U)
     USBD_CDC_ACM_EPOUT_HS_MPS,
     USBD_CDC_ACM_EPOUT_HS_BINTERVAL,
 #endif /* USBD_HIGH_SPEED_SUPPORTED */
@@ -1310,7 +2170,7 @@ USB_DEVICE_INTERFACE_HANDLE cdc_acm_interface[] =
 };
 #endif /* USBD_CDC_ACM_CLASS_ACTIVATED */
 
-#if USBD_MTP_CLASS_ACTIVATED == 1U
+#if (USBD_MTP_CLASS_ACTIVATED == 1U)
 /* Endpoint handles for MTP */
 USB_DEVICE_ENDPOINT_HANDLE mtp_endpoints[] =
 {
@@ -1319,7 +2179,7 @@ USB_DEVICE_ENDPOINT_HANDLE mtp_endpoints[] =
     USBD_MTP_EPIN_TYPE,
     USBD_MTP_EPIN_FS_MPS,
     USBD_MTP_EPIN_FS_BINTERVAL,
-#if USBD_HIGH_SPEED_SUPPORTED == 1U
+#if (USBD_HIGH_SPEED_SUPPORTED == 1U)
     USBD_MTP_EPIN_HS_MPS,
     USBD_MTP_EPIN_HS_BINTERVAL,
 #endif /* USBD_HIGH_SPEED_SUPPORTED */
@@ -1329,7 +2189,7 @@ USB_DEVICE_ENDPOINT_HANDLE mtp_endpoints[] =
     USBD_MTP_EPOUT_TYPE,
     USBD_MTP_EPOUT_FS_MPS,
     USBD_MTP_EPOUT_FS_BINTERVAL,
-#if USBD_HIGH_SPEED_SUPPORTED == 1U
+#if (USBD_HIGH_SPEED_SUPPORTED == 1U)
     USBD_MTP_EPOUT_HS_MPS,
     USBD_MTP_EPOUT_HS_BINTERVAL,
 #endif /* USBD_HIGH_SPEED_SUPPORTED */
@@ -1339,7 +2199,7 @@ USB_DEVICE_ENDPOINT_HANDLE mtp_endpoints[] =
     USBD_MTP_EPCTL_TYPE,
     USBD_MTP_EPCTL_FS_MPS,
     USBD_MTP_EPCTL_FS_BINTERVAL,
-#if USBD_HIGH_SPEED_SUPPORTED == 1U
+#if (USBD_HIGH_SPEED_SUPPORTED == 1U)
     USBD_MTP_EPCTL_HS_MPS,
     USBD_MTP_EPCTL_HS_BINTERVAL,
 #endif /* USBD_HIGH_SPEED_SUPPORTED */
@@ -1364,7 +2224,7 @@ USB_DEVICE_INTERFACE_HANDLE mtp_interface[] =
 };
 #endif /* USBD_MTP_CLASS_ACTIVATED */
 
-#if USBD_VIDEO_CLASS_ACTIVATED == 1U
+#if (USBD_VIDEO_CLASS_ACTIVATED == 1U)
 
 /* Endpoint handles for VIDEO */
 USB_DEVICE_ENDPOINT_HANDLE video_endpoints[] =
@@ -1374,7 +2234,7 @@ USB_DEVICE_ENDPOINT_HANDLE video_endpoints[] =
     USBD_VIDEO_EPIN_TYPE,
     USBD_VIDEO_EPIN_FS_MPS,
     USBD_VIDEO_EPIN_FS_BINTERVAL,
-#if USBD_HIGH_SPEED_SUPPORTED == 1U
+#if (USBD_HIGH_SPEED_SUPPORTED == 1U)
     USBD_VIDEO_EPIN_HS_MPS,
     USBD_VIDEO_EPIN_HS_BINTERVAL,
 #endif /* USBD_HIGH_SPEED_SUPPORTED */
@@ -1471,20 +2331,6 @@ USB_DEVICE_INTERFACE_HANDLE msc_interface[] =
 #endif /* USBD_MSC_CLASS_ACTIVATED */
 
 #if USBD_DFU_CLASS_ACTIVATED == 1U
-USB_DEVICE_ENDPOINT_HANDLE dfu_endpoints[] =
-{
-  {
-    USBD_DFU_EP_ADDR,
-    USBD_DFU_EP_TYPE,
-    USBD_DFU_EP_FS_MPS,
-    USBD_DFU_EP_FS_BINTERVAL,
-#if USBD_HIGH_SPEED_SUPPORTED == 1U
-    USBD_DFU_EP_HS_MPS,
-    USBD_DFU_EP_HS_BINTERVAL,
-#endif /* USBD_HIGH_SPEED_SUPPORTED */
-  }
-};
-
 USB_DEVICE_INTERFACE_HANDLE dfu_interface[] =
 {
   {
@@ -1496,18 +2342,34 @@ USB_DEVICE_INTERFACE_HANDLE dfu_interface[] =
     USBD_DFU_ITF_PROTOCOL,
     USBD_DFU_ITF_STR_DESC_IDX,
     0x00U,
-    dfu_endpoints,
+    0x00U,
     0x00U,
   }
 };
 #endif /* USBD_DFU_CLASS_ACTIVATED */
 
 #if USBD_AUDIO_CLASS_ACTIVATED == 1U
-USB_DEVICE_ENDPOINT_HANDLE audio_endpoints[] =
+#ifdef USBD_AUDIO_EPINTERRUPT_SUPPORTED
+USB_DEVICE_ENDPOINT_HANDLE audio_control_endpoints[] =
+{
+  {
+    USBD_AUDIO_EPINTERRUPT_ADDR,
+    USBD_AUDIO_EPINTERRUPT_TYPE,
+    USBD_AUDIO_EPINTERRUPT_FS_MPS,
+    USBD_AUDIO_EPINTERRUPT_FS_BINTERVAL,
+#if USBD_HIGH_SPEED_SUPPORTED == 1U
+    USBD_AUDIO_EPINTERRUPT_HS_MPS,
+    USBD_AUDIO_EPINTERRUPT_HS_BINTERVAL,
+#endif /* USBD_HIGH_SPEED_SUPPORTED */
+  }
+};
+#endif /* USBD_AUDIO_EPINTERRUPT_SUPPORTED */
+
+USB_DEVICE_ENDPOINT_HANDLE audio_stream_in_endpoints[] =
 {
   {
     USBD_AUDIO_EPIN_ADDR,
-    USBD_AUDIO_EPIN_TYPE,
+    USBD_AUDIO_DATA_EP_TYPE,
     USBD_AUDIO_EPIN_FS_MPS,
     USBD_AUDIO_EPIN_FS_BINTERVAL,
 #if USBD_HIGH_SPEED_SUPPORTED == 1U
@@ -1517,24 +2379,110 @@ USB_DEVICE_ENDPOINT_HANDLE audio_endpoints[] =
   }
 };
 
-USB_DEVICE_INTERFACE_HANDLE audio_interface[] =
+USB_DEVICE_ENDPOINT_HANDLE audio_stream_out_endpoints[] =
 {
   {
-    USBD_AUDIO_ITF_NUMBERS,
-    USBD_AUDIO_ITF_ATL_SETTING,
-    USBD_AUDIO_ITF_EP_NUMBERS,
-    USBD_AUDIO_ITF_CLASS,
-    USBD_AUDIO_ITF_SUBCLASS,
-    USBD_AUDIO_ITF_PROTOCOL,
+    USBD_AUDIO_EPOUT_ADDR,
+    USBD_AUDIO_DATA_EP_TYPE,
+    USBD_AUDIO_EPOUT_FS_MPS,
+    USBD_AUDIO_EPOUT_FS_BINTERVAL,
+#if USBD_HIGH_SPEED_SUPPORTED == 1U
+    USBD_AUDIO_EPOUT_HS_MPS,
+    USBD_AUDIO_EPOUT_HS_BINTERVAL,
+#endif /* USBD_HIGH_SPEED_SUPPORTED */
+  },
+#ifdef USBD_AUDIO_EPFEEDBACK_SUPPORTED
+  {
+    USBD_AUDIO_EPFEEDBACK_ADDR,
+    USBD_AUDIO_EPFEEDBACK_TYPE,
+    USBD_AUDIO_EPFEEDBACK_FS_MPS,
+    USBD_AUDIO_EPFEEDBACK_FS_BINTERVAL,
+#if USBD_HIGH_SPEED_SUPPORTED == 1U
+    USBD_AUDIO_EPFEEDBACK_HS_MPS,
+    USBD_AUDIO_EPFEEDBACK_HS_BINTERVAL,
+#endif /* USBD_HIGH_SPEED_SUPPORTED */
+  }
+#endif /* USBD_AUDIO_EPFEEDBACK_SUPPORTED */
+};
+
+USB_DEVICE_INTERFACE_HANDLE audio_stream_in_alt_setting[] =
+{
+  {
+    USBD_AUDIO_STREAM_IN_ITF_NUMBERS,
+    USBD_AUDIO_STREAM_ALT_ITF_ATL_SETTING,
+    USBD_AUDIO_STREAM_IN_ALT_EP_NUMBERS,
+    USBD_AUDIO_STREAM_IN_ITF_CLASS,
+    USBD_AUDIO_STREAM_IN_ITF_SUBCLASS,
+    USBD_AUDIO_STREAM_IN_ITF_PROTOCOL,
     USBD_AUDIO_ITF_STR_DESC_IDX,
     0x00U,
-    audio_endpoints,
+    audio_stream_in_endpoints,
     0x00U,
   }
 };
+
+USB_DEVICE_INTERFACE_HANDLE audio_stream_out_alt_setting[] =
+{
+  {
+    USBD_AUDIO_STREAM_OUT_ITF_NUMBERS,
+    USBD_AUDIO_STREAM_ALT_ITF_ATL_SETTING,
+    USBD_AUDIO_STREAM_OUT_ALT_EP_NUMBERS,
+    USBD_AUDIO_STREAM_OUT_ITF_CLASS,
+    USBD_AUDIO_STREAM_OUT_ITF_SUBCLASS,
+    USBD_AUDIO_STREAM_OUT_ITF_PROTOCOL,
+    USBD_AUDIO_ITF_STR_DESC_IDX,
+    0x00U,
+    audio_stream_out_endpoints,
+    0x00U,
+  }
+};
+
+USB_DEVICE_INTERFACE_HANDLE audio_interface[] =
+{
+  {
+    USBD_AUDIO_CONTROL_ITF_NUMBERS,
+    USBD_AUDIO_CONTROL_ITF_ATL_SETTING,
+    USBD_AUDIO_CONTROL_ITF_EP_NUMBERS,
+    USBD_AUDIO_CONTROL_ITF_CLASS,
+    USBD_AUDIO_CONTROL_ITF_SUBCLASS,
+    USBD_AUDIO_CONTROL_ITF_PROTOCOL,
+    USBD_AUDIO_ITF_STR_DESC_IDX,
+    0x00U,
+#ifdef USBD_AUDIO_EPINTERRUPT_SUPPORTED
+    audio_control_endpoints,
+#else
+    0x00U,
+#endif
+    0x00U,
+  },
+  {
+    USBD_AUDIO_STREAM_IN_ITF_NUMBERS,
+    USBD_AUDIO_STREAM_IN_ITF_ATL_SETTING,
+    USBD_AUDIO_STREAM_IN_ITF_EP_NUMBERS,
+    USBD_AUDIO_STREAM_IN_ITF_CLASS,
+    USBD_AUDIO_STREAM_IN_ITF_SUBCLASS,
+    USBD_AUDIO_STREAM_IN_ITF_PROTOCOL,
+    USBD_AUDIO_ITF_STR_DESC_IDX,
+    0x00U,
+    0x00U,
+    0x00U,
+    audio_stream_in_alt_setting,
+  },
+  {
+    USBD_AUDIO_STREAM_OUT_ITF_NUMBERS,
+    USBD_AUDIO_STREAM_OUT_ITF_ATL_SETTING,
+    USBD_AUDIO_STREAM_OUT_ITF_EP_NUMBERS,
+    USBD_AUDIO_STREAM_OUT_ITF_CLASS,
+    USBD_AUDIO_STREAM_OUT_ITF_SUBCLASS,
+    USBD_AUDIO_STREAM_OUT_ITF_PROTOCOL,
+    USBD_AUDIO_ITF_STR_DESC_IDX,
+    0x00U,
+    0x00U,
+    0x00U,
+    audio_stream_out_alt_setting,
+  }
+};
 #endif /* USBD_AUDIO_CLASS_ACTIVATED */
-
-
 
 #if USBD_PRINTER_CLASS_ACTIVATED == 1U
 USB_DEVICE_ENDPOINT_HANDLE printer_endpoints[] =
@@ -1599,6 +2547,16 @@ USB_DEVICE_ENDPOINT_HANDLE ccid_endpoints[] =
 #if USBD_HIGH_SPEED_SUPPORTED == 1U
     USBD_CCID_EPOUT_HS_MPS,
     USBD_CCID_EPOUT_HS_BINTERVAL,
+#endif /* USBD_HIGH_SPEED_SUPPORTED */
+  },
+  {
+    USBD_CCID_EPCTL_ADDR,
+    USBD_CCID_EPCTL_TYPE,
+    USBD_CCID_EPCTL_FS_MPS,
+    USBD_CCID_EPCTL_FS_BINTERVAL,
+#if USBD_HIGH_SPEED_SUPPORTED == 1U
+    USBD_CCID_EPCTL_HS_MPS,
+    USBD_CCID_EPCTL_HS_BINTERVAL,
 #endif /* USBD_HIGH_SPEED_SUPPORTED */
   }
 };

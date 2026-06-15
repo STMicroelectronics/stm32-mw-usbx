@@ -15,7 +15,44 @@ More documentation is available at [**USBX SW Pack online documentation**](https
 
 # Update history
 
-<label for="collapse-section-2.0.0" aria-hidden="true">__2.0.0 / 13-March-2026__</label>
+<label for="collapse-section-2.1.0" aria-hidden="true">__2.1.0 / 12-June-2026__</label>
+<div>
+
+## Main changes
+- Official release of **USBX SW Pack**.\
+- Miscellaneous update of .config files.
+- This pack is based on [**USBX V6.5.0 version**](https://github.com/eclipse-threadx/usbx/releases/tag/v6.5.0.202601_rel)\
+
+## Contents
+- USBX full stack support (device and host classes), for both bare‑metal and RTOS, with STM32 PCD/HCD integration and USB device descriptor management.
+
+## Known limitations
+
+- None
+
+## Development toolchains and compilers
+
+- IAR Embedded Workbench for ARM (EWARM) toolchain V9.60.3 + ST-LINK
+- MDK-ARM Keil uVision V5.42
+- STM32CubeIDE for Visual Studio Code (GCC13 compiler)
+
+## Supported devices and boards
+
+- STM32C5 series.
+
+## Backward compatibility
+
+- None
+
+## Dependencies
+
+- STM32C5xx HAL Drivers V2.0.0
+- FreeRTOS SW Pack V2.0.0 (required when selecting RTOS mode)
+- FileX SW Pack V2.0.0 (required when selecting MSC Host class)
+
+</div>
+
+<label for="collapse-section-2.0.0" aria-hidden="true">__2.0.0 / 06-March-2026__</label>
 <div>
 
 ## Main changes

@@ -1,0 +1,93 @@
+{{assign "usbxFilter" (JSONparse '{"cgroup": "STM32CubeMX2 Config", "csub": "USBX"}')~}}
+{{assign 'usbx_context' (@root.SWConfigurationAPI.getInstancesConfiguration @root.usbxFilter)~}}
+{{assign 'usbx_cxt' @root.usbx_context.[0].settings.parameters~}}
+{{!
+/**
+  ******************************************************************************
+  * @file    mx_usbx_app_template.h.hbs
+  * @brief   USBX applicative header file
+  ******************************************************************************
+  * @attention
+  *
+  * Copyright (c) 2025-2026 STMicroelectronics.
+  * All rights reserved.
+  *
+  * This software is licensed under terms that can be found in the LICENSE file
+  * in the root directory of this software component.
+  * If no LICENSE file comes with this software, it is provided AS-IS.
+  *
+  ******************************************************************************
+~}}
+/**
+  ******************************************************************************
+  * @file    mx_usbx_app.h
+  * @brief   USBX applicative header file
+{{> LICENSE}}
+
+/* Define to prevent recursive inclusion -------------------------------------*/
+#ifndef MX_USBX_APP_H
+#define MX_USBX_APP_H
+
+#ifdef __cplusplus
+extern "C" {
+#endif /* __cplusplus */
+
+{{#with @root.usbx_cxt~}}
+/* Includes ------------------------------------------------------------------*/
+#include "ux_api.h"
+#include "stm32_hal.h"
+{{#with core.applicative~}}
+/* Exported types ------------------------------------------------------------*/
+/* Exported constants --------------------------------------------------------*/
+#define APP_DEFAULT_STACK_SIZE              {{usbx_system_stack_size}}
+{{#if (helper_usbx_is_freertos @root.usbx_cxt.core.basic.usb_core_system.ux_standalone)}}
+{{#if usbx_device_generate_init_code}}
+{{#if (helper_usbx_has_device_class_selected @root.usbx_cxt.core.basic.device_class)}}
+#define UX_DEVICE_APP_THREAD_STACK_SIZE     {{usbx_device_application_thread_size}}
+#define UX_DEVICE_APP_THREAD_PRIO           {{usbx_device_application_thread_priority}}
+#define UX_DEVICE_APP_THREAD_NAME           "{{usbx_device_application_thread_name}}"
+
+#define UX_DEVICE_APP_THREAD_PREEMPTION_THRESHOLD  UX_DEVICE_APP_THREAD_PRIO
+#ifndef UX_DEVICE_APP_THREAD_TIME_SLICE
+#define UX_DEVICE_APP_THREAD_TIME_SLICE     ux_no_time_slice
+#endif
+#ifndef UX_DEVICE_APP_THREAD_START_OPTION
+#define UX_DEVICE_APP_THREAD_START_OPTION   UX_AUTO_START
+#endif
+{{/if}}
+{{/if}}
+{{#if usbx_host_generate_init_code}}
+{{#if (helper_usbx_has_host_class_selected @root.usbx_cxt.core.basic.host_class)}}
+#define UX_HOST_APP_THREAD_STACK_SIZE       {{usbx_host_application_thread_size}}
+#define UX_HOST_APP_THREAD_PRIO             {{usbx_host_application_thread_priority}}
+#define UX_HOST_APP_THREAD_NAME             "{{usbx_host_application_thread_name}}"
+
+#define UX_HOST_APP_THREAD_PREEMPTION_THRESHOLD  UX_HOST_APP_THREAD_PRIO
+#ifndef UX_HOST_APP_THREAD_TIME_SLICE
+#define UX_HOST_APP_THREAD_TIME_SLICE  ux_no_time_slice
+#endif
+#ifndef UX_HOST_APP_THREAD_START_OPTION
+#define UX_HOST_APP_THREAD_START_OPTION  UX_AUTO_START
+#endif
+{{/if}}
+{{/if}}
+{{/if}}
+{{/with}}
+/* Exported macro ------------------------------------------------------------*/
+/* Exported functions prototypes ---------------------------------------------*/
+UINT app_usbx_init(VOID);
+UINT app_usbx_deinit(VOID);
+{{#with core.basic.usb_core_system~}}
+{{!-- check if we are in STANDALONE mode --}}
+{{#if (eq ux_standalone 'No OS')~}}
+VOID app_usbx_process(VOID);
+{{/if}}
+{{/with}}
+/* Exported defines -----------------------------------------------------------*/
+
+#ifdef __cplusplus
+}
+#endif /* __cplusplus */
+
+#endif /* MX_USBX_APP_H */
+{{~/with~}}

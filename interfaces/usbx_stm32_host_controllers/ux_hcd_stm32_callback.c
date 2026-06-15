@@ -73,11 +73,19 @@
 /**************************************************************************/
 void HAL_HCD_PortConnectCallback(hal_hcd_handle_t *hhcd)
 {
-  UX_HCD              *hcd;
+  UX_HCD              *hcd = UX_NULL;
   UX_HCD_STM32        *hcd_stm32;
 
+#if defined (USE_HAL_HCD_USER_DATA) && (USE_HAL_HCD_USER_DATA == 1)
   /* Get the pointer to the HCD & HCD_STM32.  */
   hcd = (UX_HCD*)HAL_HCD_GetUserData(hhcd);
+#endif
+
+  if (hcd == UX_NULL)
+  {
+    return;
+  }
+
   hcd_stm32 = (UX_HCD_STM32*)hcd -> ux_hcd_controller_hardware;
 
   /* Something happened on the root hub port. Signal it to the root hub     thread.  */
@@ -134,11 +142,19 @@ void HAL_HCD_PortConnectCallback(hal_hcd_handle_t *hhcd)
 /**************************************************************************/
 void HAL_HCD_PortDisconnectCallback(hal_hcd_handle_t *hhcd)
 {
-  UX_HCD              *hcd;
+  UX_HCD              *hcd = UX_NULL;
   UX_HCD_STM32        *hcd_stm32;
 
+#if defined (USE_HAL_HCD_USER_DATA) && (USE_HAL_HCD_USER_DATA == 1)
   /* Get the pointer to the HCD & HCD_STM32.  */
   hcd = (UX_HCD*)HAL_HCD_GetUserData(hhcd);
+#endif
+
+  if (hcd == UX_NULL)
+  {
+    return;
+  }
+
   hcd_stm32 = (UX_HCD_STM32*)hcd -> ux_hcd_controller_hardware;
 
   /* Something happened on the root hub port. Signal it to the root hub     thread.  */
@@ -202,7 +218,7 @@ void HAL_HCD_PortDisconnectCallback(hal_hcd_handle_t *hhcd)
 void HAL_HCD_ChannelNotifyURBChangeCallback(hal_hcd_handle_t *hhcd, hal_hcd_channel_t ch_num,
                                             hal_hcd_channel_urb_state_t urb_state)
 {
-  UX_HCD              *hcd;
+  UX_HCD              *hcd = UX_NULL;
   UX_HCD_STM32        *hcd_stm32;
   UX_HCD_STM32_ED     *ed;
   UX_TRANSFER         *transfer_request;
@@ -213,8 +229,17 @@ void HAL_HCD_ChannelNotifyURBChangeCallback(hal_hcd_handle_t *hhcd, hal_hcd_chan
       urb_state == HAL_HCD_CHANNEL_URB_STATE_ERROR || urb_state == HAL_HCD_CHANNEL_URB_STATE_NOTREADY)
   {
 
+
+#if defined (USE_HAL_HCD_USER_DATA) && (USE_HAL_HCD_USER_DATA == 1)
     /* Get the pointer to the HCD & HCD_STM32.  */
     hcd = (UX_HCD*)HAL_HCD_GetUserData(hhcd);
+#endif
+
+    if (hcd == UX_NULL)
+    {
+      return;
+    }
+
     hcd_stm32 = (UX_HCD_STM32*)hcd -> ux_hcd_controller_hardware;
 
     /* Check if driver is still valid.  */
@@ -441,7 +466,6 @@ void HAL_HCD_ChannelNotifyURBChangeCallback(hal_hcd_handle_t *hhcd, hal_hcd_chan
           ed->ux_stm32_ch_transfer_request.transfer_length = ed->ux_stm32_ed_packet_length;
           ed->ux_stm32_ch_transfer_request.p_buffer = ed->ux_stm32_ed_data + transfer_request->ux_transfer_request_actual_length;
           ed->ux_stm32_ch_transfer_request.token_type = ed->ux_stm32_ed_status == UX_HCD_STM32_ED_STATUS_CONTROL_SETUP ? USBH_PID_SETUP : USBH_PID_DATA;
-          ed->ux_stm32_ch_transfer_request.do_ping = 0U;
 
           HAL_HCD_RequestChannelTransfer(hcd_stm32 -> hcd_handle, ed -> ux_stm32_ed_channel, &ed->ux_stm32_ch_transfer_request);
       }
@@ -492,11 +516,18 @@ void HAL_HCD_ChannelNotifyURBChangeCallback(hal_hcd_handle_t *hhcd, hal_hcd_chan
 /**************************************************************************/
 void HAL_HCD_SofCallback(hal_hcd_handle_t *hhcd)
 {
-  UX_HCD              *hcd;
+  UX_HCD              *hcd = UX_NULL;
   UX_HCD_STM32        *hcd_stm32;
-
+#if defined (USE_HAL_HCD_USER_DATA) && (USE_HAL_HCD_USER_DATA == 1)
   /* Get the pointer to the HCD & HCD_STM32.  */
   hcd = (UX_HCD*)HAL_HCD_GetUserData(hhcd);
+#endif
+
+  if (hcd == UX_NULL)
+  {
+    return;
+  }
+
   hcd_stm32 = (UX_HCD_STM32*)hcd -> ux_hcd_controller_hardware;
 
   if ((hcd_stm32 -> ux_hcd_stm32_controller_flag & UX_HCD_STM32_CONTROLLER_FLAG_SOF) == 0)

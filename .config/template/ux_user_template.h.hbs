@@ -1,0 +1,856 @@
+{{assign "usbxFilter" (JSONparse '{"cgroup": "STM32CubeMX2 Config", "csub": "USBX"}')~}}
+{{assign 'usbx_context' (@root.SWConfigurationAPI.getInstancesConfiguration @root.usbxFilter)~}}
+{{assign 'usbx_cxt' @root.usbx_context.[0].settings.parameters~}}
+/***************************************************************************
+  * Copyright (c) 2025 Microsoft Corporation
+  *
+  * This program and the accompanying materials are made available under the
+  * terms of the MIT License which is available at
+  * https://opensource.org/licenses/MIT.
+  *
+  * SPDX-License-Identifier: MIT
+{{> LICENSE}}
+
+/**************************************************************************/
+/**************************************************************************/
+/**                                                                       */
+/** USBX Component                                                        */
+/**                                                                       */
+/**   User Specific                                                       */
+/**                                                                       */
+/**************************************************************************/
+/**************************************************************************/
+
+
+/**************************************************************************/
+/*                                                                        */
+/*  PORT SPECIFIC C INFORMATION                            RELEASE        */
+/*                                                                        */
+/*    ux_user.h                                           PORTABLE C      */
+/*                                                           6.5.0        */
+/*                                                                        */
+/*  AUTHOR                                                                */
+/*                                                                        */
+/*    Chaoqiong Xiao, Microsoft Corporation                               */
+/*                                                                        */
+/*  DESCRIPTION                                                           */
+/*                                                                        */
+/*    This file contains user defines for configuring USBX in specific    */
+/*    ways. This file will have an effect only if the application and     */
+/*    USBX library are built with UX_INCLUDE_USER_DEFINE_FILE defined.    */
+/*    Note that all the defines in this file may also be made on the      */
+/*    command line when building USBX library and application objects.    */
+/*                                                                        */
+/**************************************************************************/
+
+#ifndef UX_USER_H
+#define UX_USER_H
+
+#ifdef __cplusplus
+extern "C" {
+#endif /* __cplusplus */
+
+/* Define various build options for the USBX port.  The application should either make changes
+   here by commenting or un-commenting the conditional compilation defined OR supply the defines
+   though the compiler's equivalent of the -D option.  */
+{{#with @root.usbx_cxt~}}
+{{#with core.basic~}}
+{{!-- START of usb_core_system config --}}
+{{#with usb_core_system~}}
+{{!-- check if we are in RTOS mode --}}
+/* Defined, this macro will enable the standalone mode of usbx.  */
+{{#if (eq ux_standalone 'No OS')~}}
+#define UX_STANDALONE
+{{else}}
+/* #define UX_STANDALONE */
+{{/if}}
+/* This is the thread priority value for the USBX enumeration threads that monitor
+   the bus topology.  */
+{{#if (eq ux_thread_priority_enum 5)}}
+/* #define UX_THREAD_PRIORITY_ENUM 5 */
+{{else}}
+#define UX_THREAD_PRIORITY_ENUM {{ux_thread_priority_enum}}
+{{/if}}
+
+/* This is the thread priority value for the USBX class threads that monitor
+   the bus topology.  */
+{{#if (eq ux_thread_priority_class 5)}}
+/* #define UX_THREAD_PRIORITY_CLASS 5 */
+{{else}}
+#define UX_THREAD_PRIORITY_CLASS {{ux_thread_priority_class}}
+{{/if}}
+
+/* Define USBX Generic Thread Stack Size.  */
+{{#if (eq ux_thread_stack_size 2048)}}
+/* #define UX_THREAD_STACK_SIZE (2 * 1024) */
+{{else}}
+#define UX_THREAD_STACK_SIZE {{ux_thread_stack_size}}
+{{/if}}
+
+/* Defined, this option enables the basic USBX error checking. This define is typically used
+   when the application is debugging and removed after the application is fully debugged.  */
+{{#if more.ux_enable_error_checking }}
+#define UX_ENABLE_ERROR_CHECKING
+{{else}}
+/* #define UX_ENABLE_ERROR_CHECKING */
+{{/if}}
+
+/* Defined, this enables function parameters checking. This define is typically used
+   when the application is debugging and removed after the application is fully debugged.  */
+{{#if more.ux_enable_param_checking }}
+#define UX_ENABLE_PARAM_CHECKING
+{{else}}
+/* #define UX_ENABLE_PARAM_CHECKING */
+{{/if}}
+
+/* This value actually defines the time slice that will be used for threads. */
+{{#if (eq more.ux_no_time_slice 0)}}
+/* #define UX_NO_TIME_SLICE (0ul) */
+{{else}}
+#define UX_NO_TIME_SLICE {{more.ux_no_time_slice}}
+{{/if}}
+
+/* Defined, this value represents how many ticks per seconds for a specific hardware platform.
+   The default is 1000 indicating 1 tick per millisecond.  */
+{{#if (eq more.ux_periodic_rate 100)}}
+/* #define UX_PERIODIC_RATE 100 */
+{{else}}
+#define UX_PERIODIC_RATE {{more.ux_periodic_rate}}
+{{/if}}
+
+/* Define control transfer timeout value in millisecond.
+   The default is 10000 milliseconds.  */
+{{#if (eq more.ux_control_transfer_timeout 10000)}}
+/* #define UX_CONTROL_TRANSFER_TIMEOUT 10000 */
+{{else}}
+#define UX_CONTROL_TRANSFER_TIMEOUT {{more.ux_control_transfer_timeout}}
+{{/if}}
+
+/* Define non control transfer timeout value in millisecond.
+   The default is 50000 milliseconds.  */
+{{#if (eq more.ux_non_control_transfer_timeout 50000)}}
+/* #define UX_NON_CONTROL_TRANSFER_TIMEOUT 50000 */
+{{else}}
+#define UX_NON_CONTROL_TRANSFER_TIMEOUT {{more.ux_non_control_transfer_timeout}}
+{{/if}}
+
+/* Defined, this value forces the memory allocation scheme to enforce alignment
+   of memory with the UX_SAFE_ALIGN field.
+*/
+{{#if more.ux_enforce_safe_alignment}}
+#define UX_ENFORCE_SAFE_ALIGNMENT
+{{else}}
+/* #define UX_ENFORCE_SAFE_ALIGNMENT */
+{{/if}}
+
+/* Defined, this value represents the size of the log pool.
+*/
+{{#if (eq more.ux_debug_log_size 16384)}}
+/* #define UX_DEBUG_LOG_SIZE (16 * 1024) */
+{{else}}
+#define UX_DEBUG_LOG_SIZE {{more.ux_debug_log_size}}
+{{/if}}
+/* Defined, this value represents minimal allocated memory alignment in number of bytes.
+   The default is UX_ALIGN_8 (0x07) to align allocated memory to 8 bytes.  */
+{{#if (eq more.ux_align_min 8)}}
+/* #define UX_ALIGN_MIN UX_ALIGN_8 */
+{{else}}
+#define UX_ALIGN_MIN {{more.ux_align_min}}
+{{/if}}
+
+/* Defined, the _name in structs are referenced by pointer instead of by contents.
+   By default the _name is an array of string that saves characters, the contents are compared to confirm match.
+   If referenced by pointer the address pointer to const string is saved, the pointers are compared to confirm match.
+ */
+{{#if more.ux_name_referenced_by_pointer}}
+#define UX_NAME_REFERENCED_BY_POINTER
+{{else}}
+/* #define UX_NAME_REFERENCED_BY_POINTER */
+{{/if}}
+{{!-- END of usb_core_system config --}}
+{{/with}}
+{{!-- START of device_class --}}
+{{#with device_class~}}
+{{!-- START of device_core --}}
+{{#with device_core~}}
+
+/* Defined, this value is the maximum number of classes in the device stack that can be loaded by
+   USBX. */
+{{#if (eq ux_max_slave_class_driver 2)}}
+/* #define UX_MAX_SLAVE_CLASS_DRIVER 2 */
+{{else}}
+#define UX_MAX_SLAVE_CLASS_DRIVER {{ux_max_slave_class_driver}}
+{{/if}}
+
+/* Defined, this value is the maximum number of interfaces in the device framework.  */
+{{#if (eq ux_max_slave_interfaces 16)}}
+/* #define UX_MAX_SLAVE_INTERFACES 16 */
+{{else}}
+#define UX_MAX_SLAVE_INTERFACES {{ux_max_slave_interfaces}}
+{{/if}}
+
+/* Defined, this value represents the current number of SCSI logical units represented in the device
+   storage class driver.  */
+{{#if (eq more.ux_max_slave_lun 1)}}
+/* #define UX_MAX_SLAVE_LUN 1 */
+{{else}}
+#define UX_MAX_SLAVE_LUN {{more.ux_max_slave_lun}}
+{{/if}}
+
+/* Defined, this value represents the maximum number of bytes received on a control endpoint in
+   the device stack. The default is 256 bytes but can be reduced in memory constrained environments.  */
+{{#if (eq more.ux_slave_request_control_max_length 256)}}
+/* #define UX_SLAVE_REQUEST_CONTROL_MAX_LENGTH 256 */
+{{else}}
+#define UX_SLAVE_REQUEST_CONTROL_MAX_LENGTH {{more.ux_slave_request_control_max_length}}
+{{/if}}
+
+/* Defined, this value represents the maximum number of bytes that can be received or transmitted
+   on any endpoint. This value cannot be less than the maximum packet size of any endpoint. The default
+   is 4096 bytes but can be reduced in memory constrained environments. For cd-rom support in the storage
+   class, this value cannot be less than 2048.  */
+{{#if (eq more.ux_slave_request_data_max_length 2048)}}
+/* #define UX_SLAVE_REQUEST_DATA_MAX_LENGTH 2048 */
+{{else}}
+#define UX_SLAVE_REQUEST_DATA_MAX_LENGTH {{more.ux_slave_request_data_max_length}}
+{{/if}}
+
+/* Defined, this value will only enable the device side of usbx.  */
+{{#if (eq more.ux_device_side_only true)}}
+#define UX_DEVICE_SIDE_ONLY
+{{else}}
+/* #define UX_DEVICE_SIDE_ONLY */
+{{/if}}
+
+/* This is the ThreadX priority value for the device controller thread.  */
+{{#if (eq @root.usbx_cxt.interfaces.logical_interface.device_controllers.ux_thread_priority_dcd 20)}}
+/* #define UX_THREAD_PRIORITY_DCD 20 */
+{{else}}
+#define UX_THREAD_PRIORITY_DCD {{@root.usbx_cxt.interfaces.logical_interface.device_controllers.ux_thread_priority_dcd}}
+{{/if}}
+
+/* Works if ux_device_initialize_framework_scan_disable is defined.
+   This value represents max number of endpoints (except EP0) activated at the same time.
+ */
+{{#if (eq more.ux_max_device_endpoints 6)}}
+/* #define UX_MAX_DEVICE_ENDPOINTS 6 */
+{{else}}
+#define UX_MAX_DEVICE_ENDPOINTS {{more.ux_max_device_endpoints}}
+{{/if}}
+
+/* Works if ux_device_initialize_framework_scan_disable is defined.
+   This value represents max number of interfaces activated at the same time.
+ */
+{{#if (eq more.ux_max_device_interfaces 6)}}
+/* #define UX_MAX_DEVICE_INTERFACES 6 */
+{{else}}
+#define UX_MAX_DEVICE_INTERFACES {{more.ux_max_device_interfaces}}
+{{/if}}
+
+/* Defined, this macro enables device bi-directional-endpoint support.  */
+{{#if more.ux_device_bidirectional_endpoint_support}}
+#define UX_DEVICE_BIDIRECTIONAL_ENDPOINT_SUPPORT
+{{else}}
+/* #define UX_DEVICE_BIDIRECTIONAL_ENDPOINT_SUPPORT */
+{{/if}}
+
+/* Defined, this value represents the endpoint buffer owner.
+   0 - The default, endpoint buffer is managed by core stack. Each endpoint takes ux_slave_request_data_max_length bytes.
+   1 - Endpoint buffer managed by classes. In this case not all endpoints consume ux_slave_request_data_max_length bytes.
+*/
+{{#if (eq more.ux_device_endpoint_buffer_owner 0)}}
+/* #define UX_DEVICE_ENDPOINT_BUFFER_OWNER 0 */
+{{else}}
+#define UX_DEVICE_ENDPOINT_BUFFER_OWNER {{more.ux_device_endpoint_buffer_owner}}
+{{/if}}
+
+/* Defined, this enables processing of Get String Descriptor requests with zero Language ID.
+   The first language ID in the language ID framework will be used if the request has a zero
+   Language ID.  */
+{{#if more.ux_device_enable_get_string_with_zero_language_id}}
+#define UX_DEVICE_ENABLE_GET_STRING_WITH_ZERO_LANGUAGE_ID
+{{else}}
+/* #define UX_DEVICE_ENABLE_GET_STRING_WITH_ZERO_LANGUAGE_ID */
+{{/if}}
+
+/* Defined, this macro disables interface alternate setting support.
+   Device stalls
+ */
+{{#if more.ux_device_alternate_setting_support_disable}}
+#define UX_DEVICE_ALTERNATE_SETTING_SUPPORT_DISABLE
+{{else}}
+/* #define UX_DEVICE_ALTERNATE_SETTING_SUPPORT_DISABLE */
+{{/if}}
+
+/* Defined, this macro disables device framework scan, where max number of endpoints (except EP0)
+   and max number of interfaces are calculated at runtime, as a base to allocate memory for
+   interfaces and endpoints structures and their buffers.
+   Undefined, the following two macros must be defined to initialize memory structures.
+ */
+{{#if more.ux_device_initialize_framework_scan_disable}}
+#define UX_DEVICE_INITIALIZE_FRAMEWORK_SCAN_DISABLE
+{{else}}
+/* #define UX_DEVICE_INITIALIZE_FRAMEWORK_SCAN_DISABLE */
+{{/if}}
+{{!-- END of device_core --}}
+{{/with}}
+{{!-- START of hid_class --}}
+{{#if hid_class}}
+{{!-- START of hid_core --}}
+{{#with hid_core~}}
+/* Defined, this value represents the the maximum length of HID reports on the
+   device.
+ */
+{{#if ux_device_class_hid_event_buffer_length}}
+#define UX_DEVICE_CLASS_HID_EVENT_BUFFER_LENGTH {{ux_device_class_hid_event_buffer_length}}
+{{else}}
+/* #define UX_DEVICE_CLASS_HID_EVENT_BUFFER_LENGTH */
+{{/if}}
+
+/* Defined, this value represents the the maximum number of HID events/reports
+   that can be queued at once.
+ */
+{{#if more.ux_device_class_hid_max_events_queue}}
+#define UX_DEVICE_CLASS_HID_MAX_EVENTS_QUEUE {{more.ux_device_class_hid_max_events_queue}}
+{{else}}
+/* #define UX_DEVICE_CLASS_HID_MAX_EVENTS_QUEUE */
+{{/if}}
+/* Defined, it enables device HID zero copy and flexible queue support (works if HID owns endpoint buffer).
+    Enabled, the internal queue buffer is directly used for transfer, the APIs are kept to keep
+    backward compatibility, to AVOID KEEPING BUFFERS IN APPLICATION.
+    Flexible queue introduces initialization parameter _event_max_number and _event_max_length,
+    so each HID function could have different queue settings.
+    _event_max_number could be 2 ~ ux_device_class_hid_max_events_queue.
+    Max of _event_max_length could be ux_device_class_hid_event_buffer_length.
+    If the initialization parameters are invalid (are 0s or exceed upper mentioned definition),
+    ux_device_class_hid_max_events_queue and ux_device_class_hid_event_buffer_length are used to
+    calculate and allocate the queue.
+ */
+{{#if more.ux_device_class_hid_zero_copy}}
+#define UX_DEVICE_CLASS_HID_ZERO_COPY
+{{else}}
+/* #define UX_DEVICE_CLASS_HID_ZERO_COPY */
+{{/if}}
+{{!-- END of hid_core --}}
+{{/with}}
+{{!-- END of hid_class --}}
+{{/if}}
+{{!-- START of device_custom --}}
+{{#if device_custom}}
+{{!-- START of custom_interface --}}
+{{#with custom_interface~}}
+/* Defined, device HID interrupt OUT transfer is supported.  */
+{{#if more.ux_device_class_hid_interrupt_out_support}}
+#define UX_DEVICE_CLASS_HID_INTERRUPT_OUT_SUPPORT
+{{else}}
+/* #define UX_DEVICE_CLASS_HID_INTERRUPT_OUT_SUPPORT */
+{{/if}}
+{{!-- END of custom_interface --}}
+{{/with}}
+{{!-- END of device_custom --}}
+{{/if}}
+{{#if cdc_acm_class}}
+{{!-- START of cdc_acm_core --}}
+{{#with cdc_acm_core~}}
+/* Defined, this macro disables CDC ACM non-blocking transmission support.  */
+{{#if ux_device_class_cdc_acm_transmission_disable}}
+#define UX_DEVICE_CLASS_CDC_ACM_TRANSMISSION_DISABLE
+{{else}}
+/* #define UX_DEVICE_CLASS_CDC_ACM_TRANSMISSION_DISABLE */
+{{/if}}
+
+/* Defined, class _write is pending ZLP automatically (complete transfer) after buffer is sent.  */
+{{#if more.ux_device_class_cdc_acm_write_auto_zlp}}
+#define UX_DEVICE_CLASS_CDC_ACM_WRITE_AUTO_ZLP
+{{else}}
+/* #define UX_DEVICE_CLASS_CDC_ACM_WRITE_AUTO_ZLP */
+{{/if}}
+
+/* Defined, it enables device CDC ACM zero copy for bulk in/out endpoints (write/read).
+    Enabled, the endpoint buffer is not allocated in class, application must
+    provide the buffer for read/write, and the buffer must meet device controller driver (DCD)
+    buffer requirements (e.g., aligned and cache safe).
+    It only works if ux_device_endpoint_buffer_owner is 1 (endpoint buffer managed by class).
+ */
+{{#if more.ux_device_class_cdc_acm_zero_copy}}
+#define UX_DEVICE_CLASS_CDC_ACM_ZERO_COPY
+{{else}}
+/* #define UX_DEVICE_CLASS_CDC_ACM_ZERO_COPY */
+{{/if}}
+{{!-- END of cdc_acm_core --}}
+{{/with}}
+{{/if}}
+{{#if msc_class}}
+{{!-- START of msc_core --}}
+{{#with msc_core~}}
+/* UX_SLAVE_CLASS_STORAGE_INCLUDE_MMC */
+{{#if ux_slave_class_storage_include_mmc}}
+#define UX_SLAVE_CLASS_STORAGE_INCLUDE_MMC
+{{else}}
+/* #define UX_SLAVE_CLASS_STORAGE_INCLUDE_MMC */
+{{/if}}
+{{!-- END of msc_core --}}
+{{/with}}
+{{/if}}
+{{#if dfu_class}}
+{{!-- START of dfu_core --}}
+{{#with dfu_core~}}
+/* Defined, this macro will disable DFU_UPLOAD support.  */
+{{#if dfu_upload_disable}}
+#define UX_DEVICE_CLASS_DFU_UPLOAD_DISABLE
+{{else}}
+/* #define UX_DEVICE_CLASS_DFU_UPLOAD_DISABLE  */
+{{/if}}
+/* Defined, this macro will enable DFU_GETSTATUS and DFU_GETSTATE in dfuERROR.  */
+{{#if dfu_error_get_enable}}
+#define UX_DEVICE_CLASS_DFU_ERROR_GET_ENABLE
+{{else}}
+/* #define UX_DEVICE_CLASS_DFU_ERROR_GET_ENABLE  */
+{{/if}}
+/* Defined, this macro will change status mode.
+   0 - simple mode,
+       status is queried from application in dfuDNLOAD-SYNC and dfuMANIFEST-SYNC state,
+       no bwPollTimeout.
+   1 - status is queried from application once requested,
+       b0-3 : media status
+       b4-7 : bStatus
+       b8-31: bwPollTimeout
+       bwPollTimeout supported.
+*/
+{{#if more.dfu_status_mode}}
+#define UX_DEVICE_CLASS_DFU_STATUS_MODE                     1
+{{else}}
+/* #define UX_DEVICE_CLASS_DFU_STATUS_MODE */
+{{/if}}
+/* Defined, this macro will enable custom request process callback.  */
+{{#if more.dfu_custom_request_enable}}
+#define UX_DEVICE_CLASS_DFU_CUSTOM_REQUEST_ENABLE
+{{else}}
+/* #define UX_DEVICE_CLASS_DFU_CUSTOM_REQUEST_ENABLE */
+{{/if}}
+
+/* Defined, this value represents the default DFU status bwPollTimeout.
+   The value is 3 bytes long (max 0xFFFFFFu).
+   By default the bwPollTimeout is 1 (means 1ms).
+ */
+#define UX_DEVICE_CLASS_DFU_STATUS_POLLTIMEOUT              {{more.dfu_status_polltimeout}}
+/* Media Erase Time  */
+#define DFU_MEDIA_ERASE_TIME                                {{more.dfu_media_erase_time}}
+/* Time to program media  */
+#define DFU_MEDIA_PROGRAM_TIME                              {{more.dfu_media_program_time}}
+{{!-- END of dfu_core --}}
+{{/with}}
+{{/if}}
+{{#if audio_class}}
+{{!-- START of audio_core --}}
+{{#with audio_core~}}
+/* Defined, this macro enables device audio feedback endpoint support.  */
+{{#if audio_feedback_support}}
+#define UX_DEVICE_CLASS_AUDIO_FEEDBACK_SUPPORT
+{{else}}
+/* #define UX_DEVICE_CLASS_AUDIO_FEEDBACK_SUPPORT  */
+{{/if}}
+/* Works if ux_device_endpoint_buffer_owner is 1.
+     Defined, it represents feedback endpoint buffer size.
+     It should be larger than feedback endpoint max packet size in framework.  */
+{{#if (eq ux_device_class_audio_feedback_endpoint_buffer_size 8)}}
+/* #define UX_DEVICE_CLASS_AUDIO_FEEDBACK_ENDPOINT_BUFFER_SIZE    8 */
+{{else}}
+#define UX_DEVICE_CLASS_AUDIO_FEEDBACK_ENDPOINT_BUFFER_SIZE     {{ux_device_class_audio_feedback_endpoint_buffer_size}}
+{{/if}}
+
+/* defined, this macro enables device audio interrupt endpoint support.  */
+{{#if more.audio_interrupt_support}}
+#define UX_DEVICE_CLASS_AUDIO_INTERRUPT_SUPPORT
+{{else}}
+/* #define UX_DEVICE_CLASS_AUDIO_INTERRUPT_SUPPORT  */
+{{/if}}
+{{!-- END of audio_core --}}
+{{/with}}
+{{/if}}
+{{#if printer_class}}
+{{!-- START of printer_core --}}
+{{#with printer_core~}}
+/* Printer Interface Protocol */
+{{#if (eq usbd_printer_interface_protocol 2)}}
+/* #define UX_DEVICE_CLASS_PRINTER_INTERFACE_PROTOCOL 2 */
+{{else}}
+#define UX_DEVICE_CLASS_PRINTER_INTERFACE_PROTOCOL {{usbd_printer_interface_protocol}}
+{{/if}}
+/* Auto Zero-Length Packet for Printer Write  */
+{{#if more.ux_device_class_printer_write_auto_zlp}}
+#define UX_DEVICE_CLASS_PRINTER_WRITE_AUTO_ZLP
+{{else}}
+/* #define UX_DEVICE_CLASS_PRINTER_WRITE_AUTO_ZLP  */
+{{/if}}
+
+/* Defined, it enables zero copy support (works if PRINTER owns endpoint buffer).
+    Defined, it enables zero copy for bulk in/out endpoints (write/read). In this case, the endpoint
+    buffer is not allocated in class, application must provide the buffer for read/write, and the
+    buffer must meet device controller driver (DCD) buffer requirements (e.g., aligned and cache
+    safe if buffer is for DMA).
+ */
+{{#if more.ux_device_class_printer_zero_copy}}
+#define UX_DEVICE_CLASS_PRINTER_ZERO_COPY
+{{else}}
+/* #define UX_DEVICE_CLASS_PRINTER_ZERO_COPY */
+{{/if}}
+{{!-- END of printer_core --}}
+{{/with}}
+{{/if}}
+{{#if pima_mtp_class}}
+{{!-- START of pima_mtp_core --}}
+{{#with pima_mtp_core~}}
+/* Defined, this macro enables device/host PIMA MTP support.  */
+{{#if ux_pima_with_mtp_support}}
+#define UX_PIMA_WITH_MTP_SUPPORT
+{{else}}
+/* #define UX_PIMA_WITH_MTP_SUPPORT */
+{{/if}}
+{{!-- END of pima_mtp_core --}}
+{{/with}}
+{{/if}}
+{{!-- END of device_class --}}
+{{/with}}
+{{!-- START of host_class --}}
+{{#with host_class~}}
+{{!-- START of host_core --}}
+{{#with host_core~}}
+/* Define USBX Host Enum Thread Stack Size.*/
+{{#if (eq ux_host_enum_thread_stack_size 2048)}}
+/* #define UX_HOST_ENUM_THREAD_STACK_SIZE 2048 */
+{{else}}
+#define UX_HOST_ENUM_THREAD_STACK_SIZE {{ux_host_enum_thread_stack_size}}
+{{/if}}
+
+/* Define USBX Host HCD Thread Stack Size. */
+{{#if (eq @root.usbx_cxt.interfaces.logical_interface.host_controllers.ux_host_hcd_thread_stack_size 2048)}}
+/* #define UX_HOST_HCD_THREAD_STACK_SIZE 2048 */
+{{else}}
+#define UX_HOST_HCD_THREAD_STACK_SIZE {{@root.usbx_cxt.interfaces.logical_interface.host_controllers.ux_host_hcd_thread_stack_size}}
+{{/if}}
+
+/* Define USBX Host HNP Polling Thread Stack Size.*/
+{{#if (eq more.ux_host_hnp_polling_thread_stack 2048)}}
+/* #define UX_HOST_HNP_POLLING_THREAD_STACK 2048 */
+{{else}}
+#define UX_HOST_HNP_POLLING_THREAD_STACK {{more.ux_host_hnp_polling_thread_stack}}
+{{/if}}
+
+/* Defined, this value controls host configuration instance creation, include all
+   interfaces and endpoints physical resources.
+   Possible settings:
+    UX_HOST_STACK_CONFIGURATION_INSTANCE_CREATE_ALL (0) - The default, create all inside configuration.
+    UX_HOST_STACK_CONFIGURATION_INSTANCE_CREATE_OWNED (1) - Create things owned by class driver.
+   Not defined, default setting is applied.
+ */
+{{#if (eq more.ux_host_stack_configuration_instance_create_control false)}}
+/* #define UX_HOST_STACK_CONFIGURATION_INSTANCE_CREATE_CONTROL UX_HOST_STACK_CONFIGURATION_INSTANCE_CREATE_OWNED */
+{{else}}
+
+#define UX_HOST_STACK_CONFIGURATION_INSTANCE_CREATE_CONTROL UX_HOST_STACK_CONFIGURATION_INSTANCE_CREATE_OWNED
+{{/if}}
+
+/* Defined, this value will only enable the host side of usbx.  */
+{{#if more.ux_host_side_only}}
+#define UX_HOST_SIDE_ONLY
+{{else}}
+/* #define UX_HOST_SIDE_ONLY */
+{{/if}}
+
+/* Defined, this enables the assert checks inside usbx.  */
+{{#if more.ux_enable_assert}}
+#define UX_ENABLE_ASSERT
+{{else}}
+/* #define UX_ENABLE_ASSERT */
+{{/if}}
+
+/* This is the Thread priority value for the host controller thread */
+{{#if (eq @root.usbx_cxt.interfaces.logical_interface.host_controllers.ux_thread_priority_hcd 20)}}
+/* #define UX_THREAD_PRIORITY_HCD 20 */
+{{else}}
+#define UX_THREAD_PRIORITY_HCD {{@root.usbx_cxt.interfaces.logical_interface.host_controllers.ux_thread_priority_hcd}}
+{{/if}}
+
+/* Defined, this value is the maximum number of classes that can be loaded by USBX. This value
+   represents the class container and not the number of instances of a class. For instance, if a
+   particular implementation of USBX needs the hub class, the printer class, and the storage
+   class, then the ux_max_classes value can be set to 3 regardless of the number of devices
+   that belong to these classes.  */
+{{#if (eq more.ux_max_classes 2)}}
+/* #define UX_MAX_CLASSES 2 */
+{{else}}
+#define UX_MAX_CLASSES {{more.ux_max_classes}}
+{{/if}}
+
+/* UX_MAX_TT */
+{{#if (eq more.ux_max_tt 8)}}
+/* #define UX_MAX_TT 8 */
+{{else}}
+#define UX_MAX_TT {{more.ux_max_tt}}
+{{/if}}
+
+/* Defined, this macro enables host device class code validation.
+   Only following USB-IF allowed device class code is allowed:
+   0x00, 0x02 (CDC Control), 0x09 (Hub), 0x11 (Billboard), 0xDC (Diagnostic), 0xEF (MISC), 0xFF (Vendor)
+   Refer to https://www.usb.org/defined-class-codes for more details.
+ */
+{{#if more.ux_host_device_class_code_validation_enable}}
+#define UX_HOST_DEVICE_CLASS_CODE_VALIDATION_ENABLE
+{{else}}
+/* #define UX_HOST_DEVICE_CLASS_CODE_VALIDATION_ENABLE */
+{{/if}}
+
+/* Defined, this value represents the maximum number of devices that can be attached to the USB.
+   Normally, the theoretical maximum number on a single USB is 127 devices. This value can be
+   scaled down to conserve memory. Note that this value represents the total number of devices
+   regardless of the number of USB buses in the system.  */
+
+{{#if (eq more.ux_max_devices 127)}}
+/* #define UX_MAX_DEVICES 127 */
+{{else}}
+#define UX_MAX_DEVICES {{more.ux_max_devices}}
+
+{{/if}}
+{{#if @root.usbx_cxt.interfaces.logical_interface.host_controllers_enable}}
+/* Defined, this value represents the maximum number of Ed, regular TDs and Isochronous TDs. These values
+   depend on the type of host controller and can be reduced in memory constrained environments.  */
+{{#if (eq @root.usbx_cxt.interfaces.logical_interface.host_controllers.more.ux_max_ed 80)}}
+/* #define UX_MAX_ED 80 */
+{{else}}
+#define UX_MAX_ED {{@root.usbx_cxt.interfaces.logical_interface.host_controllers.more.ux_max_ed}}
+{{/if}}
+{{#if (eq @root.usbx_cxt.interfaces.logical_interface.host_controllers.more.ux_max_td 128)}}
+/* #define UX_MAX_TD 128 */
+{{else}}
+#define UX_MAX_TD {{@root.usbx_cxt.interfaces.logical_interface.host_controllers.more.ux_max_td}}
+{{/if}}
+{{#if (eq @root.usbx_cxt.interfaces.logical_interface.host_controllers.more.ux_max_iso_td 1)}}
+/* #define UX_MAX_ISO_TD 1 */
+{{else}}
+#define UX_MAX_ISO_TD {{@root.usbx_cxt.interfaces.logical_interface.host_controllers.more.ux_max_iso_td}}
+{{/if}}
+/* Defined, this value represents the number of different host controllers available in the system.
+   For USB 1.1 support, this value will usually be 1. For USB 2.0 support, this value can be more
+   than 1. This value represents the number of concurrent host controllers running at the same time.
+   If, for instance, there are two instances of OHCI running, or one EHCI and one OHCI controller
+   running, UX_MAX_HCD should be set to 2.
+   for STM32 MCUs same host controller addresses USB 1.1 and USB 2.0 support so UX_MAX_HCD can be set to 1. */
+{{#if (eq @root.usbx_cxt.interfaces.logical_interface.host_controllers.more.ux_max_hcd 2)}}
+/* #define UX_MAX_HCD 2 */
+{{else}}
+#define UX_MAX_HCD {{@root.usbx_cxt.interfaces.logical_interface.host_controllers.more.ux_max_hcd}}
+{{/if}}
+{{/if}}
+{{!-- END of host_core --}}
+{{/with}}
+{{!-- START of hid_core --}}
+{{#with hid_core~}}
+/* Defined, this value represents the maximum size of the HID decompressed buffer. This cannot be determined
+   in advance so we allocate a big block, usually 4K but for simple HID devices like keyboard and mouse
+   it can be reduced a lot. */
+{{#if (eq ux_host_class_hid_decompression_buffer 4096)}}
+/* #define UX_HOST_CLASS_HID_DECOMPRESSION_BUFFER (1024 * 4) */
+{{else}}
+#define UX_HOST_CLASS_HID_DECOMPRESSION_BUFFER {{ux_host_class_hid_decompression_buffer}}
+{{/if}}
+
+/* Defined, this value represents the maximum number of HID usages for a HID device.
+   Default is 2048 but for simple HID devices like keyboard and mouse it can be reduced a lot. */
+{{#if (eq ux_host_class_hid_usages 2048)}}
+/* #define UX_HOST_CLASS_HID_USAGES (1024 * 2) */
+{{else}}
+#define UX_HOST_CLASS_HID_USAGES {{ux_host_class_hid_usages}}
+{{/if}}
+
+/* Define HID report transfer timeout value in millisecond.
+   The default is 10000 milliseconds.  */
+{{#if (eq ux_host_class_hid_report_transfer_timeout 10000)}}
+/* #define UX_HOST_CLASS_HID_REPORT_TRANSFER_TIMEOUT 10000 */
+{{else}}
+#define UX_HOST_CLASS_HID_REPORT_TRANSFER_TIMEOUT {{ux_host_class_hid_report_transfer_timeout}}
+{{/if}}
+
+/* Defined, host HID interrupt OUT transfer is supported.  */
+{{#if ux_host_class_hid_interrupt_out_support}}
+#define UX_HOST_CLASS_HID_INTERRUPT_OUT_SUPPORT
+{{else}}
+/* #define UX_HOST_CLASS_HID_INTERRUPT_OUT_SUPPORT */
+{{/if}}
+{{!-- END of hid_core --}}
+{{/with}}
+{{!-- START of keyboard_core --}}
+{{#if host_keyboard}}
+{{#with keyboard_core~}}
+/* By default, each key in each HID report from the device is reported by ux_host_class_hid_keyboard_key_get
+   (a HID report from the device is received whenever there is a change in a key state i.e. when a key is pressed
+   or released. The report contains every key that is down). There are limitations to this method such as not being
+   able to determine when a key has been released.
+   Defined, this value causes ux_host_class_hid_keyboard_key_get to only report key changes i.e. key presses
+   and key releases. */
+{{#if ux_host_class_hid_keyboard_events_key_changes_mode}}
+#define UX_HOST_CLASS_HID_KEYBOARD_EVENTS_KEY_CHANGES_MODE
+{{else}}
+/* #define UX_HOST_CLASS_HID_KEYBOARD_EVENTS_KEY_CHANGES_MODE */
+{{/if}}
+
+/* Works when ux_host_class_hid_keyboard_events_key_changes_mode is defined.
+   Defined, this value causes ux_host_class_hid_keyboard_key_get to only report key pressed/down changes;
+   key released/up changes are not reported.
+ */
+{{#if ux_host_class_hid_keyboard_events_key_changes_mode_report_key_down_only}}
+#define UX_HOST_CLASS_HID_KEYBOARD_EVENTS_KEY_CHANGES_MODE_REPORT_KEY_DOWN_ONLY
+{{else}}
+/* #define UX_HOST_CLASS_HID_KEYBOARD_EVENTS_KEY_CHANGES_MODE_REPORT_KEY_DOWN_ONLY */
+{{/if}}
+
+/* Works when ux_host_class_hid_keyboard_events_key_changes_mode is defined.
+   Defined, this value causes ux_host_class_hid_keyboard_key_get to report lock key (CapsLock/NumLock/ScrollLock) changes.
+ */
+{{#if ux_host_class_hid_keyboard_events_key_changes_mode_report_lock_keys}}
+#define UX_HOST_CLASS_HID_KEYBOARD_EVENTS_KEY_CHANGES_MODE_REPORT_LOCK_KEYS
+{{else}}
+/* #define UX_HOST_CLASS_HID_KEYBOARD_EVENTS_KEY_CHANGES_MODE_REPORT_LOCK_KEYS */
+{{/if}}
+
+/* Works when ux_host_class_hid_keyboard_events_key_changes_mode is defined.
+   Defined, this value causes ux_host_class_hid_keyboard_key_get to report modifier key (Ctrl/Alt/Shift/GUI) changes.
+ */
+{{#if ux_host_class_hid_keyboard_events_key_changes_mode_report_modifier_keys}}
+#define UX_HOST_CLASS_HID_KEYBOARD_EVENTS_KEY_CHANGES_MODE_REPORT_MODIFIER_KEYS
+{{else}}
+/* #define UX_HOST_CLASS_HID_KEYBOARD_EVENTS_KEY_CHANGES_MODE_REPORT_MODIFIER_KEYS */
+{{/if}}
+
+/* Thread priority of Keyboard host.  */
+{{#if (eq ux_thread_priority_keyboard 5)}}
+/* #define UX_THREAD_PRIORITY_KEYBOARD 5 */
+{{else}}
+#define UX_THREAD_PRIORITY_KEYBOARD {{ux_thread_priority_keyboard}}
+{{/if}}
+{{!-- END of keyboard_core --}}
+{{/with}}
+{{/if}}
+{{!-- START of msc_core --}}
+{{#with msc_core~}}
+/* Defined, this value represents the maximum number of bytes that a storage payload can send/receive.
+   The default is 8K bytes but can be reduced in memory constrained environments.  */
+{{#if (eq ux_host_class_storage_memory_buffer_size 8192)}}
+/* #define UX_HOST_CLASS_STORAGE_MEMORY_BUFFER_SIZE (1024 * 8) */
+{{else}}
+#define UX_HOST_CLASS_STORAGE_MEMORY_BUFFER_SIZE {{ux_host_class_storage_memory_buffer_size}}
+{{/if}}
+
+/* Define USBX Mass Storage Thread Stack Size. The default is to use ux_thread_stack_size. */
+{{#if (eq ux_host_class_storage_thread_stack_size 2048)}}
+/* #define UX_HOST_CLASS_STORAGE_THREAD_STACK_SIZE (1024 * 2) */
+{{else}}
+#define UX_HOST_CLASS_STORAGE_THREAD_STACK_SIZE {{ux_host_class_storage_thread_stack_size}}
+{{/if}}
+
+/* Defined, This value represents the priority of storage class thread.  */
+{{#if (eq ux_host_class_storage_thread_priority_class 5)}}
+/* #define UX_OS_HOST_CLASS_STORAGE_THREAD_PRIORITY_CLASS 5 */
+{{else}}
+#define UX_OS_HOST_CLASS_STORAGE_THREAD_PRIORITY_CLASS {{ux_host_class_storage_thread_priority_class}}
+{{/if}}
+
+/* Defined, this value represents the maximum number of SCSI logical units represented in the
+   host storage class driver.  */
+{{#if (eq more.ux_max_host_lun 1)}}
+/* #define UX_MAX_HOST_LUN 1 */
+{{else}}
+#define UX_MAX_HOST_LUN {{more.ux_max_host_lun}}
+{{/if}}
+
+/* Defined, this value represents the maximum number of media for the host storage class.
+   Default is 8 but for memory constrained resource systems this can ne reduced to 1. */
+{{#if (eq more.ux_host_class_storage_max_media 2)}}
+/* #define UX_HOST_CLASS_STORAGE_MAX_MEDIA 2 */
+{{else}}
+#define UX_HOST_CLASS_STORAGE_MAX_MEDIA {{more.ux_host_class_storage_max_media}}
+{{/if}}
+
+/* Defined, this value includes code to handle storage devices that use the CB
+   or CBI protocol (such as floppy disks). It is off by default because these
+   protocols are obsolete, being superseded by the Bulk Only Transport (BOT) protocol
+   which virtually all modern storage devices use.
+*/
+{{#if more.ux_host_class_storage_include_legacy_protocol_support}}
+#define UX_HOST_CLASS_STORAGE_INCLUDE_LEGACY_PROTOCOL_SUPPORT
+{{else}}
+/* #define UX_HOST_CLASS_STORAGE_INCLUDE_LEGACY_PROTOCOL_SUPPORT */
+{{/if}}
+
+/* Defined, this value represents the maximum size of single transfers for the SCSI data phase.
+   By default it's 1024.
+*/
+{{#if (eq more.ux_host_class_storage_max_transfer_size 1024)}}
+/* #define UX_HOST_CLASS_STORAGE_MAX_TRANSFER_SIZE (1024 * 1)  */
+{{else}}
+#define UX_HOST_CLASS_STORAGE_MAX_TRANSFER_SIZE {{more.ux_host_class_storage_max_transfer_size}}
+{{/if}}
+
+/* Defined, this macro will remove the FileX dependency of host storage.
+   In this mode, sector access is offered instead of directly FileX FX_MEDIA support.
+   Use following APIs for media obtain and access:
+   - ux_host_class_storage_media_get : get instance of UX_HOST_CLASS_STORAGE_MEDIA
+   - ux_host_class_storage_media_lock : lock specific media for further read/write
+   - ux_host_class_storage_media_read : read sectors on locked media
+   - ux_host_class_storage_media_write : write sectors on locked media
+   - ux_host_class_storage_media_unlock : unlock media
+   Note it's forced defined/enabled in standalone mode of usbx.
+*/
+{{#if more.ux_host_class_storage_no_filex }}
+#define UX_HOST_CLASS_STORAGE_NO_FILEX
+{{else}}
+/* #define UX_HOST_CLASS_STORAGE_NO_FILEX  */
+{{/if}}
+{{!-- END of msc_core --}}
+{{/with}}
+{{!-- START of hub_core --}}
+{{#with hub_core~}}
+/* Define USBX max root hub port (1 ~ n).  */
+{{#if (eq ux_max_roothub_port 4)}}
+/* #define UX_MAX_ROOTHUB_PORT 4 */
+{{else}}
+#define UX_MAX_ROOTHUB_PORT {{ux_max_roothub_port}}
+{{/if}}
+{{!-- END of hub_core --}}
+{{/with}}
+{{!-- START of audio_core --}}
+{{#with audio_core~}}
+{{!-- START of ux_host_class_audio_2_support --}}
+/* Defined, host audio UAC 2.0 is supported.  */
+{{#if ux_host_class_audio_2_support}}
+#define UX_HOST_CLASS_AUDIO_2_SUPPORT
+{{else}}
+/* #define UX_HOST_CLASS_AUDIO_2_SUPPORT */
+{{!-- END of ux_host_class_audio_2_support --}}
+{{/if}}
+{{!-- START of ux_host_class_audio_feedback_support --}}
+/* Defined, host audio optional feedback endpoint is supported.  */
+{{#if more.ux_host_class_audio_feedback_support}}
+#define UX_HOST_CLASS_AUDIO_FEEDBACK_SUPPORT
+{{else}}
+/* #define UX_HOST_CLASS_AUDIO_FEEDBACK_SUPPORT */
+{{!-- END of ux_host_class_audio_feedback_support --}}
+{{/if}}
+{{!-- START of ux_host_class_audio_interrupt_support --}}
+/* Defined, host audio optional interrupt endpoint is support.  */
+{{#if more.ux_host_class_audio_interrupt_support}}
+#define UX_HOST_CLASS_AUDIO_INTERRUPT_SUPPORT
+{{else}}
+/* #define UX_HOST_CLASS_AUDIO_INTERRUPT_SUPPORT */
+{{!-- END of ux_host_class_audio_interrupt_support --}}
+{{/if}}
+{{!-- END of audio_core --}}
+{{/with}}
+{{!-- END of host_class --}}
+{{/with}}
+{{/with}}
+{{/with}}
+#ifdef __cplusplus
+}
+#endif
+#endif /* UX_USER_H */

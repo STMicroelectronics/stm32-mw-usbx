@@ -1,7 +1,4 @@
-::: {.row}
-::: {.col-sm-12 .col-lg-4}
-
-<!-- License terms for [MIT]-->
+<!-- License terms for [MIT] -->
 MIT
 
 Copyright [YEAR] [COPYRIGHT HOLDER]
@@ -12,30 +9,32 @@ The above copyright notice and this permission notice shall be included in all c
 
 THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
----
 
 <!-- End of License terms -->
+
 <BR>
 <BR>
 
-<!-- Copyrights statements for [eclipse-threadx/usbx_STM32]-->
+<!-- Copyrights statements for [eclipse-threadx/usbx_STM32] [MIT] -->
 Copyrights statements for [eclipse-threadx/usbx_STM32]
 
-	Copyright (c) 2024 Microsoft Corporation.
+	(c) 2024 Microsoft Corp. (c) 2026-present Eclipse ThreadX contributors.
+
+	Copyright (c) 2024 Microsoft Corporation
 
 	Copyright (c) 2025-2026 STMicroelectronics.
 
 	Copyright (c) 2026 STMicroelectronics.
 
-	Copyright (c) Microsoft Corporation. All rights reserved
+	Copyright (c) 2026-present Eclipse ThreadX contributors
 
-<!-- End of Copyrights statements for [eclipse-threadx/usbx_STM32]-->
-<!-- Copyrights statements for [USBX]-->
+<!-- End of Copyrights statements for [eclipse-threadx/usbx_STM32] -->
+
+<!-- Copyrights statements for [USBX] [MIT] -->
 Copyrights statements for [USBX]
 
 	Copyright (c) 2024 Microsoft Corporation
 
-<!-- End of Copyrights statements for [USBX]-->
+	Copyright (c) 2026-present Eclipse ThreadX contributors
 
-:::
-:::
+<!-- End of Copyrights statements for [USBX] -->

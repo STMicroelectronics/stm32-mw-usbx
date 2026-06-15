@@ -1,15 +1,15 @@
 {
     "bomFormat": "CycloneDX",
     "specVersion": "1.5",
-    "serialNumber": "urn:uuid:d9c10c8f-acad-4f2f-add8-ad81bf0b2685",
+    "serialNumber": "urn:uuid:3ebd90a5-c8ce-4ee5-9e05-0dfb936cf8cf",
     "version": 1,
     "metadata": {
-        "timestamp": "2026-03-05T08:31:07Z",
+        "timestamp": "2026-05-21T12:06:34Z",
         "tools": [
             {
                 "vendor": "Black Duck",
                 "name": "Hub",
-                "version": "2025.10.0"
+                "version": "2026.1.1"
             },
             {
                 "vendor": "CycloneDX",
@@ -24,12 +24,12 @@
         ],
         "component": {
             "type": "application",
-            "bom-ref": "1907b306-8cd4-4501-99f3-3ab1daeca73b",
+            "bom-ref": "586deb5b-5fc2-43d1-bc54-fb6def1a09e9",
             "supplier": {
-                "name": ""
+                "name": "Organization: USBX"
             },
             "name": "USBX",
-            "version": "2.0.0",
+            "version": "2.1.0",
             "licenses": [
                 {
                     "license": {
@@ -47,7 +47,7 @@
                 },
                 {
                     "name": "BlackDuck-ComponentVersion",
-                    "value": "1907b306-8cd4-4501-99f3-3ab1daeca73b"
+                    "value": "586deb5b-5fc2-43d1-bc54-fb6def1a09e9"
                 }
             ]
         }
@@ -55,13 +55,13 @@
     "components": [
         {
             "type": "library",
-            "bom-ref": "555a6b4d-b293-4dc3-a6df-5e4fed04d93b",
+            "bom-ref": "586deb5b-5fc2-43d1-bc54-fb6def1a09e9---8d5f0b3a-ae0f-4a64-900c-81d3b1ad376b",
             "supplier": {
-                "name": ""
+                "name": "Organization: eclipse-threadx/usbx_STM32"
             },
             "author": "STMicroelectronics",
             "name": "eclipse-threadx/usbx_STM32",
-            "version": "v6.4.3.202503_rel / ST modified",
+            "version": "v6.5.0_rel / ST modified",
             "licenses": [
                 {
                     "license": {
@@ -79,18 +79,18 @@
                 },
                 {
                     "name": "BlackDuck-ComponentVersion",
-                    "value": "555a6b4d-b293-4dc3-a6df-5e4fed04d93b"
+                    "value": "8d5f0b3a-ae0f-4a64-900c-81d3b1ad376b"
                 }
             ]
         },
         {
             "type": "library",
-            "bom-ref": "576c5f32-a51a-49eb-8913-fc818ea3bae6",
+            "bom-ref": "586deb5b-5fc2-43d1-bc54-fb6def1a09e9---45e7e78b-c8c4-4932-87a0-0f5b63eb7c5a",
             "supplier": {
-                "name": ""
+                "name": "Organization: USBX"
             },
             "name": "USBX",
-            "version": "v6.4.3.202503_rel",
+            "version": "v6.5.0.202601_rel",
             "licenses": [
                 {
                     "license": {
@@ -98,7 +98,6 @@
                     }
                 }
             ],
-            "cpe": "cpe:2.3:a:eclipse_threadx:usbx:6.4.3:202503_rel:*:*:*:*:*:*",
             "pedigree": {
                 "notes": "MIT License"
             },
@@ -109,17 +108,17 @@
                 },
                 {
                     "name": "BlackDuck-ComponentVersion",
-                    "value": "576c5f32-a51a-49eb-8913-fc818ea3bae6"
+                    "value": "45e7e78b-c8c4-4932-87a0-0f5b63eb7c5a"
                 }
             ]
         }
     ],
     "dependencies": [
         {
-            "ref": "1907b306-8cd4-4501-99f3-3ab1daeca73b",
+            "ref": "586deb5b-5fc2-43d1-bc54-fb6def1a09e9",
             "dependsOn": [
-                "555a6b4d-b293-4dc3-a6df-5e4fed04d93b",
-                "576c5f32-a51a-49eb-8913-fc818ea3bae6"
+                "586deb5b-5fc2-43d1-bc54-fb6def1a09e9---8d5f0b3a-ae0f-4a64-900c-81d3b1ad376b",
+                "586deb5b-5fc2-43d1-bc54-fb6def1a09e9---45e7e78b-c8c4-4932-87a0-0f5b63eb7c5a"
             ]
         }
     ]

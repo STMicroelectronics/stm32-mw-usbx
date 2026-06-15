@@ -416,8 +416,8 @@ VOID    outpl(ULONG,ULONG);
 
 /* Define the version ID of USBX.  This may be utilized by the application. */
 #ifdef  UX_SYSTEM_INIT
-CHAR                            _ux_version_id[] = 
-                                    "Copyright (c) 2024 Microsoft Corporation. * USBX ARM9/GNU Version 6.4.1 *";
+CHAR                            _ux_version_id[] =
+                                    "(c) 2024 Microsoft Corp. (c) 2026-present Eclipse ThreadX contributors. * USBX Generic Version 6.5.0.202601 *";
 #else
 extern  CHAR                    _ux_version_id[];
 #endif

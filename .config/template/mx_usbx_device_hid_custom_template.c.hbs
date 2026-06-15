@@ -1,0 +1,191 @@
+{{assign "usbxFilter" (JSONparse '{"cgroup": "STM32CubeMX2 Config", "csub": "USBX"}')~}}
+{{assign 'usbx_context' (@root.SWConfigurationAPI.getInstancesConfiguration @root.usbxFilter)~}}
+{{assign 'usbx_cxt' @root.usbx_context.[0].settings.parameters~}}
+{{!
+/**
+  ******************************************************************************
+  * @file    mx_usbx_device_hid_custom_template.c.hbs
+  * @brief   USBX Device Custom HID applicative source file
+  ******************************************************************************
+  * @attention
+  *
+  * Copyright (c) 2025-2026 STMicroelectronics.
+  * All rights reserved.
+  *
+  * This software is licensed under terms that can be found in the LICENSE file
+  * in the root directory of this software component.
+  * If no LICENSE file comes with this software, it is provided AS-IS.
+  *
+  ******************************************************************************
+~}}
+/**
+  ******************************************************************************
+  * @file    mx_usbx_device_hid_custom.c
+  * @brief   USBX Device Custom HID applicative source file
+{{> LICENSE}}
+
+{{#with @root.usbx_cxt~}}
+/* Includes ------------------------------------------------------------------*/
+#include "mx_usbx_device_hid_custom.h"
+/* Private typedef -----------------------------------------------------------*/
+/* Private define ------------------------------------------------------------*/
+/* Private macro -------------------------------------------------------------*/
+/* Private variables ---------------------------------------------------------*/
+UCHAR usbd_custom_hid_report_descriptor[] =
+{
+    0x06, 0x00, 0xFF,      /* Usage Page (Vendor Defined 0xFF00) */
+    0x09, 0x01,            /* Usage (Vendor Usage 1) */
+    0xA1, 0x01,            /* Collection (Application) */
+
+    // Input report (4 bytes)
+    0x09, 0x02,            /*   Usage (Vendor Usage 2) */
+    0x15, 0x00,            /*   Logical Minimum (0) */
+    0x26, 0xFF, 0x00,      /*   Logical Maximum (255) */
+    0x75, 0x08,            /*   Report Size (8 bits) */
+    0x95, 0x04,            /*   Report Count (4) */
+    0x81, 0x02,            /*   Input (Data, Variable, Absolute) */
+
+    // Output report (4 bytes)
+    0x09, 0x03,            /*   Usage (Vendor Usage 3) */
+    0x15, 0x00,            /*   Logical Minimum (0) */
+    0x26, 0xFF, 0x00,      /*   Logical Maximum (255) */
+    0x75, 0x08,            /*   Report Size (8 bits) */
+    0x95, 0x04,            /*   Report Count (4) */
+    0x91, 0x02,            /*   Output (Data, Variable, Absolute) */
+
+    0xC0                   /* End Collection */
+};
+/* Private function prototypes -----------------------------------------------*/
+
+/**
+  * @brief  usbd_custom_hid_activate
+  *         This function is called when insertion of a Custom HID device.
+  * @param  hid_instance: Pointer to the hid class instance.
+  * @retval none
+  */
+VOID usbd_custom_hid_activate(VOID *hid_instance)
+{
+  UX_PARAMETER_NOT_USED(hid_instance);
+
+  return;
+}
+
+/**
+  * @brief  usbd_custom_hid_deactivate
+  *         This function is called when extraction of a Custom HID device.
+  * @param  hid_instance: Pointer to the hid class instance.
+  * @retval none
+  */
+VOID usbd_custom_hid_deactivate(VOID *hid_instance)
+{
+  UX_PARAMETER_NOT_USED(hid_instance);
+
+  return;
+}
+
+/**
+  * @brief  usbd_custom_hid_set_feature
+  *         This function is invoked when the host sends a HID SET_REPORT
+  *         to the application over Endpoint 0 (Set Feature).
+  * @param  hid_instance: Pointer to the hid class instance.
+  * @param  hid_event: Pointer to structure of the hid event.
+  * @retval status
+  */
+UINT usbd_custom_hid_set_feature(struct UX_SLAVE_CLASS_HID_STRUCT *hid_instance,
+                                 UX_SLAVE_CLASS_HID_EVENT *hid_event)
+{
+  UINT status = UX_SUCCESS;
+
+  UX_PARAMETER_NOT_USED(hid_instance);
+  UX_PARAMETER_NOT_USED(hid_event);
+
+  return status;
+}
+
+/**
+  * @brief  usbd_custom_hid_get_report
+  *         This function is invoked when host is requesting event through
+  *         control GET_REPORT request.
+  * @param  hid_instance: Pointer to the hid class instance.
+  * @param  hid_event: Pointer to structure of the hid event.
+  * @retval status
+  */
+UINT usbd_custom_hid_get_report(struct UX_SLAVE_CLASS_HID_STRUCT *hid_instance,
+                                UX_SLAVE_CLASS_HID_EVENT *hid_event)
+{
+  UINT status = UX_SUCCESS;
+
+  UX_PARAMETER_NOT_USED(hid_instance);
+  UX_PARAMETER_NOT_USED(hid_event);
+
+  return status;
+}
+
+/**
+  * @brief  usbd_custom_hid_set_report
+  *         This function is invoked when a HID OUT event is received.
+  * @param  hid_instance: Pointer to the hid class instance.
+  * @retval none
+  */
+VOID usbd_custom_hid_set_report(struct UX_SLAVE_CLASS_HID_STRUCT *hid_instance)
+{
+  UX_PARAMETER_NOT_USED(hid_instance);
+
+  return;
+}
+
+/**
+  * @brief  usbd_custom_hid_EventMaxNumber
+  *         This function to set receiver event max number parameter.
+  * @param  none
+  * @retval receiver event max number
+  */
+ULONG usbd_custom_hid_EventMaxNumber(VOID)
+{
+  ULONG max_number = 0U;
+
+  return max_number;
+}
+
+/**
+  * @brief  usbd_custom_hid_EventMaxLength
+  *         This function to set receiver event max length parameter.
+  * @param  none
+  * @retval receiver event max length
+  */
+ULONG usbd_custom_hid_EventMaxLength(VOID)
+{
+  ULONG max_length = 0U;
+
+  return max_length;
+}
+/**
+  * @brief  usbd_custom_hid_report_address
+  *         Return the device HID MOUSE Report Descriptor
+  * @retval Pointer to HID Report Descriptor buffer
+  */
+UCHAR *usbd_custom_hid_report_address(VOID)
+{
+  return usbd_custom_hid_report_descriptor;
+}
+
+/**
+  * @brief  usbd_custom_hid_report_length
+  *         Return the device HID Report Descriptor
+  * @retval Size of HID Report Descriptor buffer
+  */
+ULONG usbd_custom_hid_report_length(VOID)
+{
+  return sizeof(usbd_custom_hid_report_descriptor);
+}
+
+/**
+  * @brief  usbd_custom_hid_report_id
+  *         Return the device HID Report ID Support
+  * @retval UX_FALSE / UX_TRUE
+  */
+ULONG usbd_custom_hid_report_id(VOID)
+{
+  return UX_FALSE;
+}
+{{/with}}

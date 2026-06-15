@@ -1,0 +1,61 @@
+{{assign "usbxFilter" (JSONparse '{"cgroup": "STM32CubeMX2 Config", "csub": "USBX"}')~}}
+{{assign 'usbx_context' (@root.SWConfigurationAPI.getInstancesConfiguration @root.usbxFilter)~}}
+{{assign 'usbx_cxt' @root.usbx_context.[0].settings.parameters~}}
+{{!
+/**
+  ******************************************************************************
+  * @file    mx_usbx_device_video_template.h.hbs
+  * @brief   USBX Device Video applicative header file
+  ******************************************************************************
+  * @attention
+  *
+  * Copyright (c) 2025-2026 STMicroelectronics.
+  * All rights reserved.
+  *
+  * This software is licensed under terms that can be found in the LICENSE file
+  * in the root directory of this software component.
+  * If no LICENSE file comes with this software, it is provided AS-IS.
+  *
+  ******************************************************************************
+~}}
+/**
+  ******************************************************************************
+  * @file    mx_usbx_device_video.h
+  * @brief   USBX Device Video applicative header file
+{{> LICENSE}}
+
+/* Define to prevent recursive inclusion -------------------------------------*/
+#ifndef MX_USBX_DEVICE_VIDEO_H
+#define MX_USBX_DEVICE_VIDEO_H
+
+#ifdef __cplusplus
+extern "C" {
+#endif /* __cplusplus */
+{{#with @root.usbx_cxt~}}
+/* Includes ------------------------------------------------------------------*/
+#include "ux_api.h"
+#include "ux_device_class_video.h"
+/* Exported types ------------------------------------------------------------*/
+/* Exported constants --------------------------------------------------------*/
+#ifndef USBD_VIDEO_STREAM_NUMBER
+#define USBD_VIDEO_STREAM_NUMBER  1
+#endif
+
+#ifndef USBD_VIDEO_PAYLOAD_BUFFER_NUMBER
+#define USBD_VIDEO_PAYLOAD_BUFFER_NUMBER  8
+#endif
+/* Exported macros -----------------------------------------------------------*/
+/* Exported functions prototypes -------------------------------------------- */
+VOID usbd_video_activate(VOID *video_instance);
+VOID usbd_video_deactivate(VOID *video_instance);
+VOID usbd_video_stream_change(UX_DEVICE_CLASS_VIDEO_STREAM *video_stream, ULONG alternate_setting);
+VOID usbd_video_stream_payload_done(UX_DEVICE_CLASS_VIDEO_STREAM *video_stream, ULONG length);
+UINT usbd_video_stream_request(UX_DEVICE_CLASS_VIDEO_STREAM *video_stream, UX_SLAVE_TRANSFER *transfer);
+ULONG usbd_video_stream_get_max_payload_buffer_size(VOID);
+
+#ifdef __cplusplus
+}
+#endif /* __cplusplus */
+
+#endif /* MX_USBX_DEVICE_VIDEO_H */
+{{~/with~}}

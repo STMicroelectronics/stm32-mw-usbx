@@ -71,7 +71,7 @@ extern "C" {
 #endif
 
 #ifndef USBD_MAX_CLASS_INTERFACES
-#define USBD_MAX_CLASS_INTERFACES               0X02U
+#define USBD_MAX_CLASS_INTERFACES               0x04U
 #endif
 
 #ifndef USBD_MAX_SUPPORTED_USER_STRING_DESC
@@ -301,6 +301,150 @@ typedef struct
 } __PACKED USBD_IAD_DESC;
 
 
+#if USBD_DFU_CLASS_ACTIVATED == 1U
+typedef struct
+{
+  UCHAR         bLength;
+  UCHAR         bDescriptorType;
+  UCHAR         bmAttributes;
+  USHORT        wDetachTimeOut;
+  USHORT        wTransferSize;
+  USHORT        bcdDFUVersion;
+} __PACKED USBD_DFU_FUNCTIONAL_DESC;
+#endif /* USBD_DFU_CLASS_ACTIVATED */
+
+
+#if USBD_AUDIO_CLASS_ACTIVATED == 1U
+typedef struct
+{
+  UCHAR         bLength;
+  UCHAR         bDescriptorType;
+  UCHAR         bDescriptorSubtype;
+  USHORT        bcdADC;
+  UCHAR         bCategory;
+  USHORT        wTotalLength;
+  UCHAR         bmControls;
+} __PACKED USBD_AUDIO_AC_CS_IF_DESC;
+
+typedef struct
+{
+  UCHAR         bLength;
+  UCHAR         bDescriptorType;
+  UCHAR         bDescriptorSubtype;
+  UCHAR         bClockID;
+  UCHAR         bmAttributes;
+  UCHAR         bmControls;
+  UCHAR         bAssocTerminal;
+  UCHAR         iClockSource;
+} __PACKED USBD_AUDIO_CLOCK_SOURCE_DESC;
+
+typedef struct
+{
+  UCHAR         bLength;
+  UCHAR         bDescriptorType;
+  UCHAR         bDescriptorSubtype;
+  UCHAR         bTerminalID;
+  USHORT        wTerminalType;
+  UCHAR         bAssocTerminal;
+  UCHAR         bCSourceID;
+  UCHAR         bNrChannels;
+  ULONG         bmChannelConfig;
+  UCHAR         iChannelNames;
+  USHORT        bmControls;
+  UCHAR         iTerminal;
+} __PACKED USBD_AUDIO_INPUT_TERMINAL_DESC;
+
+typedef struct
+{
+  UCHAR         bLength;
+  UCHAR         bDescriptorType;
+  UCHAR         bDescriptorSubtype;
+  UCHAR         bUnitID;
+  UCHAR         bSourceID;
+  ULONG         bmaControls[3];
+  UCHAR         iFeature;
+} __PACKED USBD_AUDIO_FEATURE_UNIT_DESC;
+
+typedef struct
+{
+  UCHAR         bLength;
+  UCHAR         bDescriptorType;
+  UCHAR         bDescriptorSubtype;
+  UCHAR         bTerminalID;
+  USHORT        wTerminalType;
+  UCHAR         bAssocTerminal;
+  UCHAR         bSourceID;
+  UCHAR         bCSourceID;
+  USHORT        bmaControls;
+  UCHAR         iTerminal;
+} __PACKED USBD_AUDIO_OUTPUT_TERMINAL_DESC;
+
+typedef struct
+{
+  UCHAR         bLength;
+  UCHAR         bDescriptorType;
+  UCHAR         bDescriptorSubtype;
+  UCHAR         bTerminalLink;
+  UCHAR         bmControls;
+  UCHAR         bFormatType;
+  ULONG         bmFormats;
+  UCHAR         bNrChannels;
+  ULONG         bmChannelConfig;
+  UCHAR         iChannelNames;
+} __PACKED USBD_AUDIO_AS_CS_IF_DESC;
+
+typedef struct
+{
+  UCHAR         bLength;
+  UCHAR         bDescriptorType;
+  UCHAR         bDescriptorSubtype;
+  UCHAR         bFormatType;
+  UCHAR         bSubslotSize;
+  UCHAR         bBitResolution;
+} __PACKED USBD_AUDIO_FORMAT_TYPE_DESC;
+
+typedef struct
+{
+  UCHAR         bLength;
+  UCHAR         bDescriptorType;
+  UCHAR         bDescriptorSubtype;
+  UCHAR         bmAttributes;
+  UCHAR         bmControls;
+  UCHAR         bLockDelayUnits;
+  USHORT        wLockDelay;
+} __PACKED USBD_AUDIO_CS_EP_DESC;
+#endif /* USBD_AUDIO_CLASS_ACTIVATED */
+
+
+#if USBD_CCID_CLASS_ACTIVATED == 1U
+typedef struct
+{
+  UCHAR         bLength;
+  UCHAR         bDescriptorType;
+  USHORT        bcdCCID;
+  UCHAR         bMaxSlotIndex;
+  UCHAR         bVoltageSupport;
+  ULONG         dwProtocols;
+  ULONG         dwDefaultClock;
+  ULONG         dwMaximumClock;
+  UCHAR         bNumClockSupported;
+  ULONG         dwDataRate;
+  ULONG         dwMaxDataRate;
+  UCHAR         bNumDataRatesSupported;
+  ULONG         dwMaxIFSD;
+  ULONG         dwSynchProtocols;
+  ULONG         dwMechanical;
+  ULONG         dwFeatures;
+  ULONG         dwMaxCCIDMessageLength;
+  UCHAR         bClassGetResponse;
+  UCHAR         bClassEnvelope;
+  USHORT        wLcdLayout;
+  UCHAR         bPINSupport;
+  UCHAR         bMaxCCIDBusySlots;
+} __PACKED USBD_CCID_DESC;
+#endif /* USBD_CCID_CLASS_ACTIVATED */
+
+
 #if USBD_HID_CLASS_ACTIVATED == 1U
 
 /* Enum HID Interface Type */
@@ -395,6 +539,13 @@ typedef struct
   uint16_t wTerminalType;
   uint8_t bAssocTerminal;
   uint8_t iTerminal;
+#if (USBD_UVC_USE_CAMERA == 1U)
+  uint16_t wObjectiveFocalLengthMin;
+  uint16_t wObjectiveFocalLengthMax;
+  uint16_t wOcularFocalLength;
+  uint8_t bControlSize;
+  uint8_t bmControls[3];
+#endif /* USBD_UVC_USE_CAMERA */
 } __PACKED USBD_VIDEO_INPUT_TERMINAL_DESC;
 
 /* Video Interface Descriptor (Output Terminal) */
@@ -436,12 +587,51 @@ typedef struct
   uint8_t bDescriptorSubType;
   uint8_t bFormatIndex;
   uint8_t bNumFrameDescriptors;
+#if (USBD_UVC_USE_H264 == 1U)
+  uint8_t bDefaultFrameIndex;
+  uint8_t bMaxCodecConfigDelay;
+  uint8_t bmSupportedSliceModes;
+  uint8_t bmSupportedSyncFrameTypes;
+  uint8_t bResolutionScaling;
+  uint8_t Reserved;
+  uint8_t bmSupportedRateControlModes;
+  uint16_t wMaxMBperSecOneResNoScal;
+  uint16_t wMaxMBperSecTwoResNoScal;
+  uint16_t wMaxMBperSecThreeResNoScal;
+  uint16_t wMaxMBperSecFourResNoScal;
+  uint16_t wMaxMBperSecOneResTemporalScal;
+  uint16_t wMaxMBperSecTwoResTemporalScal;
+  uint16_t wMaxMBperSecThreeResTemporalScal;
+  uint16_t wMaxMBperSecFourResTemporalScal;
+  uint16_t wMaxMBperSecOneResTemporalQualityScal;
+  uint16_t wMaxMBperSecTwoResTemporalQualityScal;
+  uint16_t wMaxMBperSecThreeResTemporalQualityScal;
+  uint16_t wMaxMBperSecFourResTemporalQualityScal;
+  uint16_t wMaxMBperSecOneResTemporalSpatialScal;
+  uint16_t wMaxMBperSecTwoResTemporalSpatialScal;
+  uint16_t wMaxMBperSecThreeResTemporalSpatialScal;
+  uint16_t wMaxMBperSecFourResTemporalSpatialScal;
+  uint16_t wMaxMBperSecOneResFullScal;
+  uint16_t wMaxMBperSecTwoResFullScal;
+  uint16_t wMaxMBperSecThreeResFullScal;
+  uint16_t wMaxMBperSecFourResFullScal;
+#elif (USBD_UVC_USE_FRAME_BASE_H264 == 1U)
+  uint8_t pGuidFormat[16];
+  uint8_t bBitsPerPixel;
+  uint8_t bDefaultFrameIndex;
+  uint8_t bAspectRatioX;
+  uint8_t bAspectRatioY;
+  uint8_t bmInterlaceFlag;
+  uint8_t bCopyProtect;
+  uint8_t bVariableSize;
+#else
   uint8_t bmFlags;
   uint8_t bDefaultFrameIndex;
   uint8_t bAspectRatioX;
   uint8_t bAspectRatioY;
   uint8_t bmInterfaceFlag;
   uint8_t bCopyProtect;
+#endif /* USBD_UVC_USE_H264 */
 } __PACKED USBD_VIDEO_PAYLOAD_FORMAT_DESC;
 
 /* Frame Descriptor */
@@ -451,6 +641,34 @@ typedef struct
   uint8_t bDescriptorType;
   uint8_t bDescriptorSubType;
   uint8_t bFrameIndex;
+#if (USBD_UVC_USE_H264 == 1U)
+  uint16_t wWidth;
+  uint16_t wHeight;
+  uint16_t wSARwidth;
+  uint16_t wSARheight;
+  uint16_t wProfile;
+  uint8_t  bLevelIDC;
+  uint16_t wConstrainedToolset;
+  uint32_t bmSupportedUsages;
+  uint16_t bmCapabilities;
+  uint32_t bmSVCCapabilities;
+  uint32_t bmMVCCapabilities;
+  uint32_t dwMinBitRate;
+  uint32_t dwMaxBitRate;
+  uint32_t dwDefaultFrameInterval;
+  uint8_t  bNumFrameIntervals;
+  uint32_t dwFrameInterval;
+#elif (USBD_UVC_USE_FRAME_BASE_H264 == 1U)
+  uint8_t bmCapabilities;
+  uint16_t wWidth;
+  uint16_t wHeight;
+  uint32_t dwMinBitRate;
+  uint32_t dwMaxBitRate;
+  uint32_t dwDefaultFrameInterval;
+  uint8_t bFrameIntervalType;
+  uint32_t dwBytesPerLine;
+  uint32_t dwFrameInterval;
+#else
   uint8_t bmCapabilities;
   uint16_t wWidth;
   uint16_t wHeight;
@@ -460,6 +678,7 @@ typedef struct
   uint32_t dwDefaultFrameInterval;
   uint8_t bFrameIntervalType;
   uint32_t dwFrameInterval;
+#endif /* USBD_UVC_USE_H264 */
 } __PACKED USBD_VIDEO_FRAME_DESC;
 
 typedef struct
@@ -480,7 +699,36 @@ typedef struct
   uint8_t bPreferedVersion;
   uint8_t bMinVersion;
   uint8_t bMaxVersion;
+#if (USBD_UVC_USE_FRAME_BASE_H264 == 1U)
+  uint8_t bUsage;
+  uint8_t bBitDepthLuma;
+  uint8_t bmSettings;
+  uint8_t bMaxNumberOfRefFramesPlus1;
+  uint16_t bmRateControlModes;
+  uint32_t bmLayoutPerStream;
+#endif /* USBD_UVC_USE_FRAME_BASE_H264 */
 } __PACKED USBD_VIDEO_CONTROL_DESC;
+
+/* Processing Unit Descriptor */
+typedef struct _USBD_VIDEO_PROCESSING_UNIT_DESCRIPTOR {
+  uint8_t  bLength;
+  uint8_t  bDescriptorType;
+  uint8_t  bDescriptorSubtype;
+  uint8_t  bUnitID;
+  uint8_t  bSourceID;
+  uint16_t wMaxMultiplier;
+  uint8_t  bControlSize;
+  uint8_t  bmControls[3];
+  uint8_t  iProcessing;
+  uint8_t  bmVideoStandards;
+} __PACKED USBD_VIDEO_PROCESSING_UNIT_DESCRIPTOR;
+
+#define VC_HEADER_SIZE             (sizeof(USBD_VIDEO_DESC) + \
+                                    sizeof(USBD_VIDEO_INPUT_TERMINAL_DESC) + \
+                                    sizeof(USBD_VIDEO_OUTPUT_TERMINAL_DESC))
+#define VS_HEADER_SIZE             (sizeof(USBD_VIDEO_VS_HEADER_DESC) + \
+                                    sizeof(USBD_VIDEO_PAYLOAD_FORMAT_DESC) + \
+                                    sizeof(USBD_VIDEO_FRAME_DESC))
 
 #endif /* USBD_VIDEO_CLASS_ACTIVATED */
 
@@ -620,15 +868,38 @@ typedef struct
 
 #ifndef USBD_HID_MOUSE_ITF_SUBCLASS
 #define USBD_HID_MOUSE_ITF_SUBCLASS             0x01U
-#endif
+#endif /* USBD_HID_MOUSE_ITF_SUBCLASS */
 
 #ifndef USBD_HID_MOUSE_ITF_STR_DESC_IDX
 #define USBD_HID_MOUSE_ITF_STR_DESC_IDX         0x00U
-#endif
+#endif /* USBD_HID_MOUSE_ITF_STR_DESC_IDX */
 
 #define USBD_HID_MOUSE_EPIN_TYPE                UX_INTERRUPT_ENDPOINT
 
 #endif /* USBD_HID_MOUSE_ACTIVATED */
+
+#if USBD_HID_KEYBOARD_ACTIVATED == 1U
+/*------------------------------
+  HID Keyboard Interface Descriptor:
+  ------------------------------*/
+
+#define USBD_HID_KEYBOARD_ITF_NUMBERS           0x00U
+#define USBD_HID_KEYBOARD_ITF_ATL_SETTING       0x00U
+#define USBD_HID_KEYBOARD_ITF_EP_NUMBERS        0x01U
+#define USBD_HID_KEYBOARD_ITF_CLASS             UX_DEVICE_CLASS_HID_CLASS
+#define USBD_HID_KEYBOARD_ITF_PROTOCOL          USBD_HID_KEYBOARD_INTERFACE
+
+#ifndef USBD_HID_KEYBOARD_ITF_SUBCLASS
+#define USBD_HID_KEYBOARD_ITF_SUBCLASS          0x01U
+#endif /* USBD_HID_KEYBOARD_ITF_SUBCLASS */
+
+#ifndef USBD_HID_KEYBOARD_ITF_STR_DESC_IDX
+#define USBD_HID_KEYBOARD_ITF_STR_DESC_IDX      0x00U
+#endif /* USBD_HID_KEYBOARD_ITF_STR_DESC_IDX */
+
+#define USBD_HID_KEYBOARD_EPIN_TYPE             UX_INTERRUPT_ENDPOINT
+
+#endif /* USBD_HID_KEYBOARD_ACTIVATED */
 
 #if USBD_HID_CUSTOM_ACTIVATED == 1U
 /*------------------------------
@@ -643,11 +914,11 @@ typedef struct
 
 #ifndef USBD_HID_CUSTOM_ITF_SUBCLASS
 #define USBD_HID_CUSTOM_ITF_SUBCLASS             0x00U
-#endif
+#endif /* USBD_HID_CUSTOM_ITF_SUBCLASS */
 
 #ifndef USBD_HID_CUSTOM_ITF_STR_DESC_IDX
 #define USBD_HID_CUSTOM_ITF_STR_DESC_IDX         0x00U
-#endif
+#endif /* USBD_HID_CUSTOM_ITF_STR_DESC_IDX */
 
 #define USBD_HID_CUSTOM_EPIN_TYPE                UX_INTERRUPT_ENDPOINT
 #define USBD_HID_CUSTOM_EPOUT_TYPE               UX_INTERRUPT_ENDPOINT
@@ -666,15 +937,15 @@ typedef struct
 
 #ifndef USBD_CDC_BCOUNTRY_CODE
 #define USBD_CDC_BCOUNTRY_CODE                  0x00U
-#endif
+#endif /* USBD_CDC_BCOUNTRY_CODE */
 
 #ifndef USBD_CDC_NUM_DESCRIPTORS
 #define USBD_CDC_NUM_DESCRIPTORS                0x01U
-#endif
+#endif /* USBD_CDC_NUM_DESCRIPTORS */
 
 #ifndef USBD_CDC_DESCRIPTOR_TYPE
 #define USBD_CDC_DESCRIPTOR_TYPE                0x24U
-#endif
+#endif /* USBD_CDC_DESCRIPTOR_TYPE */
 
 /*------------------------------
   CDC ACM Interface Descriptor:
@@ -699,6 +970,185 @@ typedef struct
 #define USBD_CDC_ACM_DATA_STR_DESC_IDX          0
 
 #endif /* USBD_CDC_ACM_CLASS_ACTIVATED */
+
+#if USBD_MSC_CLASS_ACTIVATED == 1U
+/*------------------------------
+  MSC Interface Descriptor:
+  ------------------------------*/
+
+#define USBD_MSC_ITF_NUMBERS                    0x01U
+#define USBD_MSC_ITF_ATL_SETTING                0x00U
+#define USBD_MSC_ITF_EP_NUMBERS                 0x02U
+#define USBD_MSC_ITF_CLASS                      0x08U
+#define USBD_MSC_ITF_PROTOCOL                   0x50U
+
+#ifndef USBD_MSC_ITF_SUBCLASS
+#define USBD_MSC_ITF_SUBCLASS                   0x06U
+#endif /* USBD_MSC_ITF_SUBCLASS */
+
+#ifndef USBD_MSC_ITF_STR_DESC_IDX
+#define USBD_MSC_ITF_STR_DESC_IDX               0x00U
+#endif /* USBD_MSC_ITF_STR_DESC_IDX */
+
+#endif /* USBD_MSC_CLASS_ACTIVATED */
+
+#if USBD_DFU_CLASS_ACTIVATED == 1U
+/*------------------------------
+  DFU Interface Descriptor:
+  ------------------------------*/
+
+#define USBD_DFU_ITF_NUMBERS                    0x00U
+#define USBD_DFU_ITF_ATL_SETTING                0x00U
+#define USBD_DFU_ITF_EP_NUMBERS                 0x00U
+#define USBD_DFU_ITF_CLASS                      0xFEU
+#define USBD_DFU_ITF_PROTOCOL                   0x02U
+
+#ifndef USBD_DFU_ITF_SUBCLASS
+#define USBD_DFU_ITF_SUBCLASS                   0x01U
+#endif /* USBD_DFU_ITF_SUBCLASS */
+
+#ifndef USBD_DFU_ITF_STR_DESC_IDX
+#ifdef USBD_DFU_STRING_DESC_INDEX
+#define USBD_DFU_ITF_STR_DESC_IDX               USBD_DFU_STRING_DESC_INDEX
+#else
+#define USBD_DFU_ITF_STR_DESC_IDX               0x00U
+#endif
+#endif /* USBD_DFU_ITF_STR_DESC_IDX */
+
+#ifndef USBD_DFU_BCD_VERSION
+#define USBD_DFU_BCD_VERSION                    0x011AU
+#endif
+
+#ifndef USBD_DFU_DESCRIPTOR_TYPE
+#define USBD_DFU_DESCRIPTOR_TYPE                0x21U
+#endif
+
+#ifndef USBD_DFU_BM_ATTRIBUTES
+#define USBD_DFU_BM_ATTRIBUTES                  0x0BU
+#endif
+
+#ifndef USBD_DFU_DETACH_TIMEOUT
+#define USBD_DFU_DETACH_TIMEOUT                 255U
+#endif
+
+#ifndef USBD_DFU_XFER_SIZE
+#define USBD_DFU_XFER_SIZE                      1024U
+#endif
+
+#endif /* USBD_DFU_CLASS_ACTIVATED */
+
+#if USBD_AUDIO_CLASS_ACTIVATED == 1U
+/*------------------------------
+  AUDIO Interface Descriptor:
+  ------------------------------*/
+
+#define USBD_AUDIO_CONTROL_ITF_NUMBERS          0x00U
+#define USBD_AUDIO_CONTROL_ITF_ATL_SETTING      0x00U
+#ifdef USBD_AUDIO_EPINTERRUPT_SUPPORTED
+#define USBD_AUDIO_CONTROL_ITF_EP_NUMBERS       0x01U
+#else
+#define USBD_AUDIO_CONTROL_ITF_EP_NUMBERS       0x00U
+#endif
+#define USBD_AUDIO_CONTROL_ITF_CLASS            0x01U
+#define USBD_AUDIO_CONTROL_ITF_SUBCLASS         0x01U
+#define USBD_AUDIO_CONTROL_ITF_PROTOCOL         0x20U
+
+#define USBD_AUDIO_STREAM_IN_ITF_NUMBERS        0x01U
+#define USBD_AUDIO_STREAM_IN_ITF_ATL_SETTING    0x00U
+#define USBD_AUDIO_STREAM_IN_ITF_EP_NUMBERS     0x00U
+#define USBD_AUDIO_STREAM_IN_ITF_CLASS          0x01U
+#define USBD_AUDIO_STREAM_IN_ITF_SUBCLASS       0x02U
+#define USBD_AUDIO_STREAM_IN_ITF_PROTOCOL       0x20U
+
+#define USBD_AUDIO_STREAM_OUT_ITF_NUMBERS       0x02U
+#define USBD_AUDIO_STREAM_OUT_ITF_ATL_SETTING   0x00U
+#define USBD_AUDIO_STREAM_OUT_ITF_EP_NUMBERS    0x00U
+#define USBD_AUDIO_STREAM_OUT_ITF_CLASS         0x01U
+#define USBD_AUDIO_STREAM_OUT_ITF_SUBCLASS      0x02U
+#define USBD_AUDIO_STREAM_OUT_ITF_PROTOCOL      0x20U
+
+#define USBD_AUDIO_STREAM_ALT_ITF_ATL_SETTING   0x01U
+#define USBD_AUDIO_STREAM_IN_ALT_EP_NUMBERS     0x01U
+
+#ifdef USBD_AUDIO_EPFEEDBACK_SUPPORTED
+#define USBD_AUDIO_STREAM_OUT_ALT_EP_NUMBERS    0x02U
+#else
+#define USBD_AUDIO_STREAM_OUT_ALT_EP_NUMBERS    0x01U
+#endif
+
+#ifndef USBD_AUDIO_ITF_STR_DESC_IDX
+#define USBD_AUDIO_ITF_STR_DESC_IDX             0x00U
+#endif /* USBD_AUDIO_ITF_STR_DESC_IDX */
+
+#ifndef USBD_AUDIO_CATEGORY
+#define USBD_AUDIO_CATEGORY                     0x08U
+#endif
+
+#ifndef USBD_AUDIO_FU_CONTROL_MUTE
+#define USBD_AUDIO_FU_CONTROL_MUTE              0x0003U
+#endif
+
+#ifndef USBD_AUDIO_FU_CONTROL_VOLUME
+#define USBD_AUDIO_FU_CONTROL_VOLUME            0x000CU
+#endif
+
+#ifndef USBD_AUDIO_CAPTURE_TERMINAL_INPUT_ID
+#define USBD_AUDIO_CAPTURE_TERMINAL_INPUT_ID    0x01U
+#endif
+
+#ifndef USBD_AUDIO_CAPTURE_FEATURE_UNIT_ID
+#define USBD_AUDIO_CAPTURE_FEATURE_UNIT_ID      0x02U
+#endif
+
+#ifndef USBD_AUDIO_CAPTURE_TERMINAL_OUTPUT_ID
+#define USBD_AUDIO_CAPTURE_TERMINAL_OUTPUT_ID   0x03U
+#endif
+
+#ifndef USBD_AUDIO_PLAY_TERMINAL_INPUT_ID
+#define USBD_AUDIO_PLAY_TERMINAL_INPUT_ID       0x04U
+#endif
+
+#ifndef USBD_AUDIO_PLAY_FEATURE_UNIT_ID
+#define USBD_AUDIO_PLAY_FEATURE_UNIT_ID         0x05U
+#endif
+
+#ifndef USBD_AUDIO_PLAY_TERMINAL_OUTPUT_ID
+#define USBD_AUDIO_PLAY_TERMINAL_OUTPUT_ID      0x06U
+#endif
+
+#ifndef USBD_AUDIO_CLOCK_SOURCE_ID
+#define USBD_AUDIO_CLOCK_SOURCE_ID              0x10U
+#endif
+
+#ifndef USBD_AUDIO_CHANNEL_COUNT
+#define USBD_AUDIO_CHANNEL_COUNT                0x02U
+#endif
+
+#ifndef USBD_AUDIO_CHANNEL_MAP
+#define USBD_AUDIO_CHANNEL_MAP                  0x00000003UL
+#endif
+
+#ifndef USBD_AUDIO_RES_BYTE
+#define USBD_AUDIO_RES_BYTE                     0x02U
+#endif
+
+#ifndef USBD_AUDIO_RES_BIT
+#define USBD_AUDIO_RES_BIT                      0x10U
+#endif
+
+#define USBD_AUDIO_DATA_EP_TYPE                 0x05U
+#define USBD_AUDIO_FEEDBACK_EP_TYPE             0x11U
+
+#define USBD_AUDIO_CONTROL_INTERFACE_SIZE       (sizeof(USBD_AUDIO_AC_CS_IF_DESC) + \
+                                                 sizeof(USBD_AUDIO_CLOCK_SOURCE_DESC) + \
+                                                 sizeof(USBD_AUDIO_INPUT_TERMINAL_DESC) + \
+                                                 sizeof(USBD_AUDIO_FEATURE_UNIT_DESC) + \
+                                                 sizeof(USBD_AUDIO_OUTPUT_TERMINAL_DESC) + \
+                                                 sizeof(USBD_AUDIO_INPUT_TERMINAL_DESC) + \
+                                                 sizeof(USBD_AUDIO_FEATURE_UNIT_DESC) + \
+                                                 sizeof(USBD_AUDIO_OUTPUT_TERMINAL_DESC))
+
+#endif /* USBD_AUDIO_CLASS_ACTIVATED */
 
 #if USBD_MTP_CLASS_ACTIVATED == 1U
 
@@ -782,6 +1232,125 @@ typedef struct
 #define USBD_VIDEO_VS_AS_ITF_STR_DESC_IDX       0
 
 #endif /* USBD_VIDEO_CLASS_ACTIVATED */
+
+#if USBD_PRINTER_CLASS_ACTIVATED == 1U
+/*------------------------------
+  PRINTER Interface Descriptor:
+  ------------------------------*/
+
+#define USBD_PRINTER_ITF_NUMBERS                0x01U
+#define USBD_PRINTER_ITF_ATL_SETTING            0x00U
+#define USBD_PRINTER_ITF_EP_NUMBERS             0x02U
+#define USBD_PRINTER_ITF_CLASS                  0x07U
+#define USBD_PRINTER_ITF_PROTOCOL               0x02U
+
+#ifndef USBD_PRINTER_ITF_SUBCLASS
+#define USBD_PRINTER_ITF_SUBCLASS               0x01U
+#endif /* USBD_PRINTER_ITF_SUBCLASS */
+
+#ifndef USBD_PRINTER_ITF_STR_DESC_IDX
+#define USBD_PRINTER_ITF_STR_DESC_IDX           0x00U
+#endif /* USBD_PRINTER_ITF_STR_DESC_IDX */
+
+#endif /* USBD_PRINTER_CLASS_ACTIVATED */
+
+#if USBD_CCID_CLASS_ACTIVATED == 1U
+/*------------------------------
+  CCID Interface Descriptor:
+  ------------------------------*/
+
+#define USBD_CCID_ITF_NUMBERS                   0x00U
+#define USBD_CCID_ITF_ATL_SETTING               0x00U
+#define USBD_CCID_ITF_EP_NUMBERS                0x03U
+#define USBD_CCID_ITF_CLASS                     UX_DEVICE_CLASS_CCID_CLASS
+#define USBD_CCID_ITF_SUBCLASS                  UX_DEVICE_CLASS_CCID_SUBCLASS
+#define USBD_CCID_ITF_PROTOCOL                  UX_DEVICE_CLASS_CCID_PROTOCOL
+
+#ifndef USBD_CCID_ITF_STR_DESC_IDX
+#define USBD_CCID_ITF_STR_DESC_IDX              0x00U
+#endif /* USBD_CCID_ITF_STR_DESC_IDX */
+
+/*
+ * Override these defaults to match the attached CCID smartcard interface.
+ * The provided values describe a minimal single-slot reader profile.
+ */
+#ifndef USBD_CCID_MAX_SLOT_INDEX
+#define USBD_CCID_MAX_SLOT_INDEX                0x00U
+#endif
+
+#ifndef USBD_CCID_VOLTAGE_SUPPLY
+#define USBD_CCID_VOLTAGE_SUPPLY                0x07U
+#endif
+
+#ifndef USBD_CCID_DEFAULT_CLOCK_FREQ
+#define USBD_CCID_DEFAULT_CLOCK_FREQ            4000UL
+#endif
+
+#ifndef USBD_CCID_MAX_CLOCK_FREQ
+#define USBD_CCID_MAX_CLOCK_FREQ                4000UL
+#endif
+
+#ifndef USBD_CCID_N_CLOCKS
+#define USBD_CCID_N_CLOCKS                      0x00U
+#endif
+
+#ifndef USBD_CCID_DEFAULT_DATA_RATE
+#define USBD_CCID_DEFAULT_DATA_RATE             9600UL
+#endif
+
+#ifndef USBD_CCID_MAX_DATA_RATE
+#define USBD_CCID_MAX_DATA_RATE                 9600UL
+#endif
+
+#ifndef USBD_CCID_N_DATA_RATES
+#define USBD_CCID_N_DATA_RATES                  0x00U
+#endif
+
+#ifndef USBD_CCID_PROTOCOL
+#define USBD_CCID_PROTOCOL                     0x00000003UL
+#endif
+
+#ifndef USBD_CCID_CLASS_GET_RESPONSE
+#define USBD_CCID_CLASS_GET_RESPONSE            0xFFU
+#endif
+
+#ifndef USBD_CCID_CLASS_ENVELOPE
+#define USBD_CCID_CLASS_ENVELOPE                0xFFU
+#endif
+
+#ifndef USBD_CCID_LCD_LAYOUT
+#define USBD_CCID_LCD_LAYOUT                    0x0000U
+#endif
+
+#ifndef USBD_CCID_PIN_SUPPORT
+#define USBD_CCID_PIN_SUPPORT                   0U
+#endif
+
+#ifndef USBD_CCID_FEATURES
+#define USBD_CCID_FEATURES                      0x000407B8UL
+#endif
+
+#ifndef USBD_CCID_MAX_MESSAGE_LENGTH
+#define USBD_CCID_MAX_MESSAGE_LENGTH            512U
+#endif
+
+#ifndef USBD_CCID_MAX_IFSD
+#define USBD_CCID_MAX_IFSD                      0U
+#endif
+
+#ifndef USBD_CCID_SYNCH_PROTOCOLS
+#define USBD_CCID_SYNCH_PROTOCOLS               0x00000007UL
+#endif
+
+#ifndef USBD_CCID_MECHANICAL
+#define USBD_CCID_MECHANICAL                    0U
+#endif
+
+#ifndef USBD_CCID_MAX_BUSY_SLOTS
+#define USBD_CCID_MAX_BUSY_SLOTS                0x01U
+#endif
+
+#endif /* USBD_CCID_CLASS_ACTIVATED */
 
 /*------------------------------
   USB DEVICE FRAMEWORK Variable:

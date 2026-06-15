@@ -1,0 +1,216 @@
+{{assign "usbxFilter" (JSONparse '{"cgroup": "STM32CubeMX2 Config", "csub": "USBX"}')~}}
+{{assign 'usbx_context' (@root.SWConfigurationAPI.getInstancesConfiguration @root.usbxFilter)~}}
+{{assign 'usbx_cxt' @root.usbx_context.[0].settings.parameters~}}
+{{!
+/**
+  ******************************************************************************
+  * @file    mx_usbx_device_msc_template.c.hbs
+  * @brief   USBX Device MSC applicative source file
+  ******************************************************************************
+  * @attention
+  *
+  * Copyright (c) 2025-2026 STMicroelectronics.
+  * All rights reserved.
+  *
+  * This software is licensed under terms that can be found in the LICENSE file
+  * in the root directory of this software component.
+  * If no LICENSE file comes with this software, it is provided AS-IS.
+  *
+  ******************************************************************************
+~}}
+/**
+  ******************************************************************************
+  * @file    mx_usbx_device_msc.c
+  * @brief   USBX Device MSC applicative source file
+{{> LICENSE}}
+
+{{#with @root.usbx_cxt~}}
+/* Includes ------------------------------------------------------------------*/
+#include "mx_usbx_device_msc.h"
+/* Private typedef -----------------------------------------------------------*/
+/* Private define ------------------------------------------------------------*/
+/* Private macro -------------------------------------------------------------*/
+/* Private variables ---------------------------------------------------------*/
+/* Private function prototypes -----------------------------------------------*/
+
+/**
+  * @brief  usbd_storage_activate
+  *         This function is called when insertion of a storage device.
+  * @param  storage_instance: Pointer to the storage class instance.
+  * @retval none
+  */
+VOID usbd_storage_activate(VOID *storage_instance)
+{
+  UX_PARAMETER_NOT_USED(storage_instance);
+
+  return;
+}
+
+/**
+  * @brief  usbd_storage_deactivate
+  *         This function is called when extraction of a storage device.
+  * @param  storage_instance: Pointer to the storage class instance.
+  * @retval none
+  */
+VOID usbd_storage_deactivate(VOID *storage_instance)
+{
+  UX_PARAMETER_NOT_USED(storage_instance);
+
+  return;
+}
+
+/**
+  * @brief  usbd_storage_read
+  *         This function is invoked to read from media.
+  * @param  storage_instance : Pointer to the storage class instance.
+  * @param  lun: Logical unit number is the command is directed to.
+  * @param  data_pointer: Address of the buffer to be used for reading or writing.
+  * @param  number_blocks: number of sectors to read/write.
+  * @param  lba: Logical block address is the sector address to read.
+  * @param  media_status: should be filled out exactly like the media status
+  *                       callback return value.
+  * @retval status
+  */
+UINT usbd_storage_read(VOID *storage_instance, ULONG lun, UCHAR *data_pointer,
+                       ULONG number_blocks, ULONG lba, ULONG *media_status)
+{
+  UINT status = UX_SUCCESS;
+
+  UX_PARAMETER_NOT_USED(storage_instance);
+  UX_PARAMETER_NOT_USED(lun);
+  UX_PARAMETER_NOT_USED(data_pointer);
+  UX_PARAMETER_NOT_USED(number_blocks);
+  UX_PARAMETER_NOT_USED(lba);
+  UX_PARAMETER_NOT_USED(media_status);
+
+  return status;
+}
+
+/**
+  * @brief  usbd_storage_write
+  *         This function is invoked to write in media.
+  * @param  storage_instance : Pointer to the storage class instance.
+  * @param  lun: Logical unit number is the command is directed to.
+  * @param  data_pointer: Address of the buffer to be used for reading or writing.
+  * @param  number_blocks: number of sectors to read/write.
+  * @param  lba: Logical block address is the sector address to read.
+  * @param  media_status: should be filled out exactly like the media status
+  *                       callback return value.
+  * @retval status
+  */
+UINT usbd_storage_write(VOID *storage_instance, ULONG lun, UCHAR *data_pointer,
+                        ULONG number_blocks, ULONG lba, ULONG *media_status)
+{
+  UINT status = UX_SUCCESS;
+
+  UX_PARAMETER_NOT_USED(storage_instance);
+  UX_PARAMETER_NOT_USED(lun);
+  UX_PARAMETER_NOT_USED(data_pointer);
+  UX_PARAMETER_NOT_USED(number_blocks);
+  UX_PARAMETER_NOT_USED(lba);
+  UX_PARAMETER_NOT_USED(media_status);
+
+  return status;
+}
+
+/**
+  * @brief  usbd_storage_flush
+  *         This function is invoked to flush media.
+  * @param  storage_instance : Pointer to the storage class instance.
+  * @param  lun: Logical unit number is the command is directed to.
+  * @param  number_blocks: number of sectors to read/write.
+  * @param  lba: Logical block address is the sector address to read.
+  * @param  media_status: should be filled out exactly like the media status
+  *                       callback return value.
+  * @retval status
+  */
+UINT usbd_storage_flush(VOID *storage_instance, ULONG lun, ULONG number_blocks,
+                        ULONG lba, ULONG *media_status)
+{
+  UINT status = UX_SUCCESS;
+
+  UX_PARAMETER_NOT_USED(storage_instance);
+  UX_PARAMETER_NOT_USED(lun);
+  UX_PARAMETER_NOT_USED(number_blocks);
+  UX_PARAMETER_NOT_USED(lba);
+  UX_PARAMETER_NOT_USED(media_status);
+
+  return status;
+}
+
+/**
+  * @brief  usbd_storage_status
+  *         This function is invoked to obtain the status of the device.
+  * @param  storage_instance : Pointer to the storage class instance.
+  * @param  lun: Logical unit number is the command is directed to.
+  * @param  media_id: is not currently used.
+  * @param  media_status: should be filled out exactly like the media status
+  *                       callback return value.
+  * @retval status
+  */
+UINT usbd_storage_status(VOID *storage_instance, ULONG lun, ULONG media_id,
+                         ULONG *media_status)
+{
+  UINT status = UX_SUCCESS;
+
+  UX_PARAMETER_NOT_USED(storage_instance);
+  UX_PARAMETER_NOT_USED(lun);
+  UX_PARAMETER_NOT_USED(media_id);
+  UX_PARAMETER_NOT_USED(media_status);
+
+  return status;
+}
+
+/**
+  * @brief  usbd_storage_notification
+  *         This function is invoked to obtain the notification of the device.
+  * @param  storage_instance : Pointer to the storage class instance.
+  * @param  lun: Logical unit number is the command is directed to.
+  * @param  media_id: is not currently used.
+  * @param  notification_class: specifies the class of notification.
+  * @param  media_notification: response for the notification.
+  * @param  media_notification_length: length of the response buffer.
+  * @retval status
+  */
+UINT usbd_storage_notification(VOID *storage_instance, ULONG lun, ULONG media_id,
+                               ULONG notification_class, UCHAR **media_notification,
+                               ULONG *media_notification_length)
+{
+  UINT status = UX_SUCCESS;
+
+  UX_PARAMETER_NOT_USED(storage_instance);
+  UX_PARAMETER_NOT_USED(lun);
+  UX_PARAMETER_NOT_USED(media_id);
+  UX_PARAMETER_NOT_USED(notification_class);
+  UX_PARAMETER_NOT_USED(media_notification);
+  UX_PARAMETER_NOT_USED(media_notification_length);
+
+  return status;
+}
+
+/**
+  * @brief  usbd_storage_get_media_last_lba
+  *         Get Media last LBA.
+  * @param  none
+  * @retval last lba
+  */
+ULONG usbd_storage_get_media_last_lba(VOID)
+{
+  ULONG LastLba = 0U;
+
+  return LastLba;
+}
+
+/**
+  * @brief  usbd_storage_get_media_blocklength
+  *         Get Media block length.
+  * @param  none.
+  * @retval block length.
+  */
+ULONG usbd_storage_get_media_blocklength(VOID)
+{
+  ULONG MediaBlockLen = 0U;
+
+  return MediaBlockLen;
+}
+{{/with}}

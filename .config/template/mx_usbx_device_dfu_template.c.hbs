@@ -1,0 +1,152 @@
+{{assign "usbxFilter" (JSONparse '{"cgroup": "STM32CubeMX2 Config", "csub": "USBX"}')~}}
+{{assign 'usbx_context' (@root.SWConfigurationAPI.getInstancesConfiguration @root.usbxFilter)~}}
+{{assign 'usbx_cxt' @root.usbx_context.[0].settings.parameters~}}
+{{!
+/**
+  ******************************************************************************
+  * @file    mx_usbx_device_dfu_template.c.hbs
+  * @brief   USBX Device DFU applicative source file
+  ******************************************************************************
+  * @attention
+  *
+  * Copyright (c) 2025-2026 STMicroelectronics.
+  * All rights reserved.
+  *
+  * This software is licensed under terms that can be found in the LICENSE file
+  * in the root directory of this software component.
+  * If no LICENSE file comes with this software, it is provided AS-IS.
+  *
+  ******************************************************************************
+~}}
+/**
+  ******************************************************************************
+  * @file    mx_usbx_device_dfu.c
+  * @brief   USBX Device DFU applicative source file
+{{> LICENSE}}
+
+{{#with @root.usbx_cxt~}}
+/* Includes ------------------------------------------------------------------*/
+#include "mx_usbx_device_dfu.h"
+/* Private typedef -----------------------------------------------------------*/
+/* Private define ------------------------------------------------------------*/
+/* Private macro -------------------------------------------------------------*/
+/* Private variables ---------------------------------------------------------*/
+/* Private function prototypes -----------------------------------------------*/
+
+/**
+  * @brief  usbd_dfu_activate
+  *         This function is called when insertion of a DFU device.
+  * @param  dfu_instance: Pointer to the dfu class instance.
+  * @retval none
+  */
+VOID usbd_dfu_activate(VOID *dfu_instance)
+{
+  UX_PARAMETER_NOT_USED(dfu_instance);
+  return;
+}
+
+/**
+  * @brief  usbd_dfu_deactivate
+  *         This function is called when extraction of a DFU device.
+  * @param  dfu_instance: Pointer to the dfu class instance.
+  * @retval none
+  */
+VOID usbd_dfu_deactivate(VOID *dfu_instance)
+{
+  UX_PARAMETER_NOT_USED(dfu_instance);
+  return;
+}
+
+/**
+  * @brief  usbd_dfu_get_status
+  *         This function is invoked to get media status.
+  * @param  dfu_instance: Pointer to the dfu class instance.
+  * @param  media_status: dfu media status.
+  * @retval status
+  */
+UINT usbd_dfu_get_status(VOID *dfu_instance, ULONG *media_status)
+{
+  UINT status = UX_SUCCESS;
+  UX_PARAMETER_NOT_USED(dfu_instance);
+  UX_PARAMETER_NOT_USED(media_status);
+  return status;
+}
+
+/**
+  * @brief  usbd_dfu_read
+  *         This function is invoked when host is requesting to read from media.
+  * @param  dfu_instance: Pointer to the dfu class instance.
+  * @param  block_number: block number.
+  * @param  data_pointer: Pointer to the Source buffer.
+  * @param  length: Number of data to be read (in bytes).
+  * @param  actual_length: length of data to be written.
+  * @retval status
+  */
+UINT usbd_dfu_read(VOID *dfu_instance, ULONG block_number, UCHAR *data_pointer,
+                   ULONG length, ULONG *actual_length)
+{
+  UINT status = UX_SUCCESS;
+  UX_PARAMETER_NOT_USED(dfu_instance);
+  UX_PARAMETER_NOT_USED(block_number);
+  UX_PARAMETER_NOT_USED(data_pointer);
+  UX_PARAMETER_NOT_USED(length);
+  UX_PARAMETER_NOT_USED(actual_length);
+  return status;
+}
+
+/**
+  * @brief  usbd_dfu_write
+  *         This function is invoked when host is requesting to write in media.
+  * @param  dfu_instance: Pointer to the dfu class instance.
+  * @param  block_number: block number.
+  * @param  data_pointer: Pointer to the Source buffer.
+  * @param  length: Number of data to be read (in bytes).
+  * @param  media_status: dfu media status.
+  * @retval status
+  */
+UINT usbd_dfu_write(VOID *dfu_instance, ULONG block_number, UCHAR *data_pointer,
+                    ULONG length, ULONG *media_status)
+{
+  UINT status = UX_SUCCESS;
+  UX_PARAMETER_NOT_USED(dfu_instance);
+  UX_PARAMETER_NOT_USED(block_number);
+  UX_PARAMETER_NOT_USED(data_pointer);
+  UX_PARAMETER_NOT_USED(length);
+  UX_PARAMETER_NOT_USED(media_status);
+  return status;
+}
+
+/**
+  * @brief  usbd_dfu_notify
+  *         This function is invoked to application when a begin and end
+  *         of transfer of the firmware occur.
+  * @param  dfu_instance: Pointer to the dfu class instance.
+  * @param  notification: unused.
+  * @retval status
+  */
+UINT usbd_dfu_notify(VOID *dfu_instance, ULONG notification)
+{
+  UINT status = UX_SUCCESS;
+  UX_PARAMETER_NOT_USED(dfu_instance);
+  UX_PARAMETER_NOT_USED(notification);
+  return status;
+}
+
+#ifdef UX_DEVICE_CLASS_DFU_CUSTOM_REQUEST_ENABLE
+
+/**
+  * @brief  usbd_dfu_custom_request
+  *         This function is invoked to Handles DFU sub-protocol request.
+  * @param  dfu_instance: Pointer to the dfu class instance.
+  * @param  transfer: transfer request.
+  * @retval status
+  */
+UINT usbd_dfu_custom_request(VOID *dfu_instance, UX_SLAVE_TRANSFER *transfer)
+{
+  UINT status = UX_SUCCESS;
+  UX_PARAMETER_NOT_USED(dfu_instance);
+  UX_PARAMETER_NOT_USED(transfer);
+  return status;
+}
+#endif
+{{/with}}

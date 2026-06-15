@@ -1,0 +1,158 @@
+{{assign "usbxFilter" (JSONparse '{"cgroup": "STM32CubeMX2 Config", "csub": "USBX"}')~}}
+{{assign 'usbx_context' (@root.SWConfigurationAPI.getInstancesConfiguration @root.usbxFilter)~}}
+{{assign 'usbx_cxt' @root.usbx_context.[0].settings.parameters~}}
+{{assign 'USBX_Core_Selected' (@root.SWProjectAPI.getUsedComponents 'asObject' cgroup="USBX Core")~}}
+{{!
+/**
+  ******************************************************************************
+  * @file    mx_usbx_app_template.c.hbs
+  * @brief   USBX applicative source file
+  ******************************************************************************
+  * @attention
+  *
+  * Copyright (c) 2025-2026 STMicroelectronics.
+  * All rights reserved.
+  *
+  * This software is licensed under terms that can be found in the LICENSE file
+  * in the root directory of this software component.
+  * If no LICENSE file comes with this software, it is provided AS-IS.
+  *
+  ******************************************************************************
+~}}
+/**
+  ******************************************************************************
+  * @file    mx_usbx_app.c
+  * @brief   USBX applicative source file
+{{> LICENSE}}
+
+{{#with @root.usbx_cxt~}}
+{{#with core.basic~}}
+
+/* Includes ------------------------------------------------------------------*/
+#include "mx_usbx_app.h"
+{{#if (helper_usbx_core_is_enabled @root.USBX_Core_Selected 'Device')}}
+#include "mx_usbx_device.h"
+{{/if}}
+{{#if (helper_usbx_core_is_enabled @root.USBX_Core_Selected 'Host')}}
+#include "mx_usbx_host.h"
+{{/if}}
+/* Private typedef -----------------------------------------------------------*/
+/* Private define ------------------------------------------------------------*/
+/* Private macro -------------------------------------------------------------*/
+/* Private variables ---------------------------------------------------------*/
+static __ALIGNED(4) UCHAR ux_system_memory_buffer[APP_DEFAULT_STACK_SIZE];
+/* Private function prototypes -----------------------------------------------*/
+
+/**
+  * @brief  Application USBX Initialization.
+  * @param  status
+  */
+UINT app_usbx_init(VOID)
+{
+  UINT status = UX_SUCCESS;
+{{#if (or
+    (helper_usbx_core_is_enabled @root.USBX_Core_Selected "Device")
+    (helper_usbx_core_is_enabled @root.USBX_Core_Selected "Host")
+)}}
+  UCHAR *pointer;
+
+  pointer = ux_system_memory_buffer;
+
+  /* Initialize USBX Memory */
+  status = ux_system_initialize(pointer, APP_DEFAULT_STACK_SIZE, UX_NULL, 0);
+  if (status != UX_SUCCESS)
+  {
+    return status;
+  }
+{{/if}}
+{{#if (helper_usbx_core_is_enabled @root.USBX_Core_Selected 'Device')}}
+  status = app_usbx_device_init();
+
+  if (status != UX_SUCCESS)
+  {
+    return status;
+  }
+{{/if}}
+{{#if (helper_usbx_core_is_enabled @root.USBX_Core_Selected 'Host')}}
+  status = app_usbx_host_init();
+
+  if (status != UX_SUCCESS)
+  {
+    return status;
+  }
+{{/if}}
+
+  return status;
+}
+
+/**
+  * @brief  Application USBX De-Initialization.
+  * @retval none
+  */
+UINT app_usbx_deinit(VOID)
+{
+  UINT ret = UX_SUCCESS;
+
+  return ret;
+}
+
+{{#with usb_core_system~}}
+{{!-- check if we are in STANDALONE mode --}}
+{{#if (eq ux_standalone 'No OS')~}}
+/**
+  * @brief  Application USBX Process.
+  * @retval none
+  */
+VOID app_usbx_process(VOID)
+{
+{{#if (helper_usbx_core_is_enabled @root.USBX_Core_Selected 'Device')}}
+  if (app_usbx_device_process() != UX_SUCCESS)
+  {
+    return;
+  }
+
+{{/if}}
+{{#if (helper_usbx_core_is_enabled @root.USBX_Core_Selected 'Host')}}
+  if (app_usbx_host_process() != UX_SUCCESS)
+  {
+    return;
+  }
+
+{{/if}}
+}
+{{/if}}
+{{/with}}
+
+/**
+  * @brief  USB utility interrupt disable.
+  * @retval none
+  */
+ALIGN_TYPE _ux_utility_interrupt_disable(VOID)
+{
+  UINT interrupt_save;
+
+  interrupt_save = __get_PRIMASK();
+  __disable_irq();
+
+  return interrupt_save;
+}
+
+/**
+  * @brief  USB utility interrupt restore.
+  * @retval none
+  */
+VOID _ux_utility_interrupt_restore(ALIGN_TYPE flags)
+{
+  __set_PRIMASK(flags);
+}
+
+/**
+  * @brief  Get Time Tick for host timing.
+  * @retval time tick
+  */
+ULONG _ux_utility_time_get(VOID)
+{
+  return HAL_GetTick();
+}
+{{/with}}
+{{~/with~}}

@@ -1,5 +1,6 @@
 /***************************************************************************
  * Copyright (c) 2024 Microsoft Corporation
+ * Copyright (c) 2026-present Eclipse ThreadX contributors
  *
  * This program and the accompanying materials are made available under the
  * terms of the MIT License which is available at
@@ -117,22 +118,6 @@ UCHAR _ux_system_host_hcd_simulator_name[] =                                "ux_
 /*  CALLED BY                                                             */
 /*                                                                        */
 /*    Application                                                         */
-/*                                                                        */
-/*  RELEASE HISTORY                                                       */
-/*                                                                        */
-/*    DATE              NAME                      DESCRIPTION             */
-/*                                                                        */
-/*  05-19-2020     Chaoqiong Xiao           Initial Version 6.0           */
-/*  09-30-2020     Chaoqiong Xiao           Modified comment(s),          */
-/*                                            optimized based on compile  */
-/*                                            definitions, used UX prefix */
-/*                                            to refer to TX symbols      */
-/*                                            instead of using them       */
-/*                                            directly,                   */
-/*                                            resulting in version 6.1    */
-/*  01-31-2022     Chaoqiong Xiao           Modified comment(s),          */
-/*                                            added standalone support,   */
-/*                                            resulting in version 6.1.10 */
 /*                                                                        */
 /**************************************************************************/
 UINT  _ux_host_stack_initialize(UINT (*ux_system_host_change_function)(ULONG, UX_HOST_CLASS *, VOID *))
@@ -333,7 +318,7 @@ UX_DEVICE   *device;
         _ux_utility_memory_free(_ux_system_host -> ux_system_host_hnp_polling_thread_stack);
 
     /* Delete _ux_system_host -> ux_system_host_hcd_thread.  */
-    if (_ux_utility_thread_created(_ux_system_host -> ux_system_host_hcd_thread))
+    if (_ux_utility_thread_created(&_ux_system_host -> ux_system_host_hcd_thread))
         _ux_utility_thread_delete(&_ux_system_host -> ux_system_host_hcd_thread);
 #else
 
@@ -349,15 +334,15 @@ UX_DEVICE   *device;
 
 #if !defined(UX_HOST_STANDALONE)
     /* Delete _ux_system_host -> ux_system_host_enum_thread.  */
-    if (_ux_utility_thread_created(_ux_system_host -> ux_system_host_enum_thread))
+    if (_ux_utility_thread_created(&_ux_system_host -> ux_system_host_enum_thread))
         _ux_utility_thread_delete(&_ux_system_host -> ux_system_host_enum_thread);
 
     /* Delete _ux_system_host -> ux_system_host_hcd_semaphore.  */
-    if (_ux_utility_semaphore_created(_ux_system_host -> ux_system_host_hcd_semaphore))
+    if (_ux_utility_semaphore_created(&_ux_system_host -> ux_system_host_hcd_semaphore))
         _ux_utility_semaphore_delete(&_ux_system_host -> ux_system_host_hcd_semaphore);
 
     /* Delete _ux_system_host -> ux_system_host_enum_semaphore.  */
-    if (_ux_utility_semaphore_created(_ux_system_host -> ux_system_host_enum_semaphore))
+    if (_ux_utility_semaphore_created(&_ux_system_host -> ux_system_host_enum_semaphore))
         _ux_utility_semaphore_delete(&_ux_system_host -> ux_system_host_enum_semaphore);
 
     /* Free _ux_system_host -> ux_system_host_hcd_thread_stack.  */

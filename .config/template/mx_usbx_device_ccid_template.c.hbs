@@ -1,0 +1,294 @@
+{{assign "usbxFilter" (JSONparse '{"cgroup": "STM32CubeMX2 Config", "csub": "USBX"}')~}}
+{{assign 'usbx_context' (@root.SWConfigurationAPI.getInstancesConfiguration @root.usbxFilter)~}}
+{{assign 'usbx_cxt' @root.usbx_context.[0].settings.parameters~}}
+{{!
+/**
+  ******************************************************************************
+  * @file    mx_usbx_device_ccid_template.c.hbs
+  * @brief   USBX Device CCID applicative source file
+  ******************************************************************************
+  * @attention
+  *
+  * Copyright (c) 2025-2026 STMicroelectronics.
+  * All rights reserved.
+  *
+  * This software is licensed under terms that can be found in the LICENSE file
+  * in the root directory of this software component.
+  * If no LICENSE file comes with this software, it is provided AS-IS.
+  *
+  ******************************************************************************
+~}}
+/**
+  ******************************************************************************
+  * @file    mx_usbx_device_ccid.c
+  * @brief   USBX Device CCID applicative source file
+{{> LICENSE}}
+
+{{#with @root.usbx_cxt~}}
+/* Includes ------------------------------------------------------------------*/
+#include "mx_usbx_device_ccid.h"
+/* Private typedef -----------------------------------------------------------*/
+/* Private define ------------------------------------------------------------*/
+/* Private macro -------------------------------------------------------------*/
+/* Private variables ---------------------------------------------------------*/
+/* Define ccid device command handle */
+UX_DEVICE_CLASS_CCID_HANDLES usbd_ccid_handles = {
+  usbd_ccid_icc_power_on,
+  usbd_ccid_icc_power_off,
+  usbd_ccid_get_slot_status,
+  usbd_ccid_xfr_block,
+  usbd_ccid_get_parameters,
+  usbd_ccid_reset_parameters,
+  usbd_ccid_set_parameters,
+  usbd_ccid_escape,
+  usbd_ccid_icc_clock,
+  usbd_ccid_t0_apdu,
+  usbd_ccid_secure,
+  usbd_ccid_mechanical,
+  usbd_ccid_abort,
+  usbd_ccid_set_data_rate_and_clock_frequency,
+};
+
+ULONG usbd_ccid_clocks[USBD_CCID_N_CLOCKS] = {
+  USBD_CCID_DEFAULT_CLOCK_FREQ
+};
+
+ULONG usbd_ccid_data_rates[USBD_CCID_N_DATA_RATES] = {
+  USBD_CCID_DEFAULT_DATA_RATE
+};
+/* Private functions prototype -----------------------------------------------*/
+
+/**
+  * @brief  usbd_ccid_activate
+  *         This function is called while inserting ccid device.
+  * @param  ccid_instance: Pointer to the ccid class instance.
+  * @retval none
+  */
+VOID usbd_ccid_activate(VOID *ccid_instance)
+{
+  UX_PARAMETER_NOT_USED(ccid_instance);
+  return;
+}
+
+/**
+  * @brief  usbd_ccid_deactivate
+  *         This function is called while extracting ccid device.
+  * @param  ccid_instance: Pointer to the ccid class instance.
+  * @retval none
+  */
+VOID usbd_ccid_deactivate(VOID *ccid_instance)
+{
+  UX_PARAMETER_NOT_USED(ccid_instance);
+  return;
+}
+
+/**
+  * @brief  usbd_ccid_icc_power_on
+  *         deactivate the card slot and get the ATR from ICC
+  * @param  slot: card slot
+  * @param  io_msg: ccid message struct
+  * @retval status
+  */
+UINT usbd_ccid_icc_power_on(ULONG slot, UX_DEVICE_CLASS_CCID_MESSAGES *io_msg)
+{
+  UINT status = UX_SUCCESS;
+  UX_PARAMETER_NOT_USED(slot);
+  UX_PARAMETER_NOT_USED(io_msg);
+  return status;
+}
+
+/**
+  * @brief  usbd_ccid_icc_power_off
+  *         deactivate the card slot
+  * @param  slot: card slot
+  * @param  io_msg: ccid message struct
+  * @retval status
+  */
+UINT usbd_ccid_icc_power_off(ULONG slot, UX_DEVICE_CLASS_CCID_MESSAGES *io_msg)
+{
+  UINT status = UX_SUCCESS;
+  UX_PARAMETER_NOT_USED(slot);
+  UX_PARAMETER_NOT_USED(io_msg);
+  return status;
+}
+
+/**
+  * @brief  usbd_ccid_get_slot_status
+  *         Get current status of the slot
+  * @param  slot: card slot
+  * @param  io_msg: ccid message struct
+  * @retval status
+  */
+UINT usbd_ccid_get_slot_status(ULONG slot, UX_DEVICE_CLASS_CCID_MESSAGES *io_msg)
+{
+  UINT status = UX_SUCCESS;
+  UX_PARAMETER_NOT_USED(slot);
+  UX_PARAMETER_NOT_USED(io_msg);
+  return status;
+}
+
+/**
+  * @brief  usbd_ccid_xfr_block
+  *         Transfer data block to the ICC
+  * @param  slot: card slot
+  * @param  io_msg: ccid message struct
+  * @retval status
+  */
+UINT usbd_ccid_xfr_block(ULONG slot, UX_DEVICE_CLASS_CCID_MESSAGES *io_msg)
+{
+  UINT status = UX_SUCCESS;
+  UX_PARAMETER_NOT_USED(slot);
+  UX_PARAMETER_NOT_USED(io_msg);
+  return status;
+}
+
+/**
+  * @brief  usbd_ccid_get_parameters
+  *         Get slot parameters
+  * @param  slot: card slot
+  * @param  io_msg: ccid message struct
+  * @retval status
+  */
+UINT usbd_ccid_get_parameters(ULONG slot, UX_DEVICE_CLASS_CCID_MESSAGES *io_msg)
+{
+  UINT status = UX_SUCCESS;
+  UX_PARAMETER_NOT_USED(slot);
+  UX_PARAMETER_NOT_USED(io_msg);
+  return status;
+}
+
+/**
+  * @brief  usbd_ccid_reset_parameters
+  *         Reset slot parameters to default value
+  * @param  slot: card slot
+  * @param  io_msg: ccid message struct
+  * @retval status
+  */
+UINT usbd_ccid_reset_parameters(ULONG slot, UX_DEVICE_CLASS_CCID_MESSAGES *io_msg)
+{
+  UINT status = UX_SUCCESS;
+  UX_PARAMETER_NOT_USED(slot);
+  UX_PARAMETER_NOT_USED(io_msg);
+  return status;
+}
+
+/**
+  * @brief  usbd_ccid_set_parameters
+  *         Set slot parameters
+  * @param  slot: card slot
+  * @param  io_msg: ccid message struct
+  * @retval status
+  */
+UINT usbd_ccid_set_parameters(ULONG slot, UX_DEVICE_CLASS_CCID_MESSAGES *io_msg)
+{
+  UINT status = UX_SUCCESS;
+  UX_PARAMETER_NOT_USED(slot);
+  UX_PARAMETER_NOT_USED(io_msg);
+  return status;
+}
+
+/**
+  * @brief  usbd_ccid_escape
+  *         Define and access extended features
+  * @param  slot: card slot
+  * @param  io_msg: ccid message struct
+  * @retval status
+  */
+UINT usbd_ccid_escape(ULONG slot, UX_DEVICE_CLASS_CCID_MESSAGES *io_msg)
+{
+  UINT status = UX_SUCCESS;
+  UX_PARAMETER_NOT_USED(slot);
+  UX_PARAMETER_NOT_USED(io_msg);
+  return status;
+}
+
+/**
+  * @brief  usbd_ccid_icc_clock
+  *         Stop or restart the clock
+  * @param  slot: card slot
+  * @param  io_msg: ccid message struct
+  * @retval status
+  */
+UINT usbd_ccid_icc_clock(ULONG slot, UX_DEVICE_CLASS_CCID_MESSAGES *io_msg)
+{
+  UINT status = UX_SUCCESS;
+  UX_PARAMETER_NOT_USED(slot);
+  UX_PARAMETER_NOT_USED(io_msg);
+  return status;
+}
+
+/**
+  * @brief  usbd_ccid_t0_apdu
+  *         Changes parameters used for T=0 protocol APDU messages transportation
+  * @param  slot: card slot
+  * @param  io_msg: ccid message struct
+  * @retval status
+  */
+UINT usbd_ccid_t0_apdu(ULONG slot, UX_DEVICE_CLASS_CCID_MESSAGES *io_msg)
+{
+  UINT status = UX_SUCCESS;
+  UX_PARAMETER_NOT_USED(slot);
+  UX_PARAMETER_NOT_USED(io_msg);
+  return status;
+}
+
+/**
+  * @brief  usbd_ccid_secure
+  *         Allow entering the PIN for verification or modification
+  * @param  slot: card slot
+  * @param  io_msg: ccid message struct
+  * @retval status
+  */
+UINT usbd_ccid_secure(ULONG slot, UX_DEVICE_CLASS_CCID_MESSAGES *io_msg)
+{
+  UINT status = UX_SUCCESS;
+  UX_PARAMETER_NOT_USED(slot);
+  UX_PARAMETER_NOT_USED(io_msg);
+  return status;
+}
+
+/**
+  * @brief  usbd_ccid_mechanical
+  *         Manage motorized type ccid functionality
+  * @param  slot: card slot
+  * @param  io_msg: ccid message struct
+  * @retval status
+  */
+UINT usbd_ccid_mechanical(ULONG slot, UX_DEVICE_CLASS_CCID_MESSAGES *io_msg)
+{
+  UINT status = UX_SUCCESS;
+  UX_PARAMETER_NOT_USED(slot);
+  UX_PARAMETER_NOT_USED(io_msg);
+  return status;
+}
+
+/**
+  * @brief  usbd_ccid_abort
+  *         Tell the ccid to stop any current transfer at the specified slot
+  * @param  slot: card slot
+  * @param  io_msg: ccid message struct
+  * @retval status
+  */
+UINT usbd_ccid_abort(ULONG slot, UX_DEVICE_CLASS_CCID_MESSAGES *io_msg)
+{
+  UINT status = UX_SUCCESS;
+  UX_PARAMETER_NOT_USED(slot);
+  UX_PARAMETER_NOT_USED(io_msg);
+  return status;
+}
+
+/**
+  * @brief  usbd_ccid_set_data_rate_and_clock_frequency
+  *         Set the data rate and clock frequency of a specific slot
+  * @param  slot: card slot
+  * @param  io_msg: ccid message struct
+  * @retval status
+  */
+UINT usbd_ccid_set_data_rate_and_clock_frequency(ULONG slot, UX_DEVICE_CLASS_CCID_MESSAGES *io_msg)
+{
+  UINT status = UX_SUCCESS;
+  UX_PARAMETER_NOT_USED(slot);
+  UX_PARAMETER_NOT_USED(io_msg);
+  return status;
+}
+{{/with}}

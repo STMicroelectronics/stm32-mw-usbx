@@ -110,11 +110,26 @@ UINT _ux_hcd_stm32_initialize(UX_HCD *hcd)
 
   /* Get HCD handle from parameter.  */
   hcd_stm32 -> hcd_handle = (hal_hcd_handle_t*)hcd -> ux_hcd_irq;
-  HAL_HCD_SetUserData(hcd_stm32 -> hcd_handle, hcd);
+    if (hcd_stm32 -> hcd_handle == UX_NULL)
+    {
+      hcd -> ux_hcd_controller_hardware = UX_NULL;
+      _ux_utility_memory_free(hcd_stm32);
+      return(UX_ERROR);
+    }
+
+  #if defined (USE_HAL_HCD_USER_DATA) && (USE_HAL_HCD_USER_DATA == 1)
+    HAL_HCD_SetUserData(hcd_stm32 -> hcd_handle, hcd);
+  #endif
 
   /* Allocate the number of channels.   */
   hcd_stm32 ->ux_hcd_stm32_channels_ed = _ux_utility_memory_allocate(UX_NO_ALIGN, UX_REGULAR_MEMORY,
                                                                      sizeof(UX_HCD_STM32_ED) * hcd_stm32 -> hcd_handle -> host_channels_nbr);
+    if (hcd_stm32 -> ux_hcd_stm32_channels_ed == UX_NULL)
+    {
+      hcd -> ux_hcd_controller_hardware = UX_NULL;
+      _ux_utility_memory_free(hcd_stm32);
+      return(UX_MEMORY_INSUFFICIENT);
+    }
 
   /* Initialize the number of channels.  */
   hcd_stm32 -> ux_hcd_stm32_nb_channels = hcd_stm32 -> hcd_handle -> host_channels_nbr;
@@ -124,6 +139,8 @@ UINT _ux_hcd_stm32_initialize(UX_HCD *hcd)
                                                                   sizeof(UX_HCD_STM32_ED) *_ux_system_host -> ux_system_host_max_ed);
   if (hcd_stm32 -> ux_hcd_stm32_ed_list == UX_NULL)
   {
+    _ux_utility_memory_free(hcd_stm32 -> ux_hcd_stm32_channels_ed);
+    hcd -> ux_hcd_controller_hardware = UX_NULL;
     _ux_utility_memory_free(hcd_stm32);
     return(UX_MEMORY_INSUFFICIENT);
   }

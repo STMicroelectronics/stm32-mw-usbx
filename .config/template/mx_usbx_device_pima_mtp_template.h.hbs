@@ -1,0 +1,165 @@
+{{assign "usbxFilter" (JSONparse '{"cgroup": "STM32CubeMX2 Config", "csub": "USBX"}')~}}
+{{assign 'usbx_context' (@root.SWConfigurationAPI.getInstancesConfiguration @root.usbxFilter)~}}
+{{assign 'usbx_cxt' @root.usbx_context.[0].settings.parameters~}}
+{{!
+/**
+  ******************************************************************************
+  * @file    mx_usbx_device_pima_mtp_template.h.hbs
+  * @brief   USBX Device PIMA MTP applicative header file
+  ******************************************************************************
+  * @attention
+  *
+  * Copyright (c) 2025-2026 STMicroelectronics.
+  * All rights reserved.
+  *
+  * This software is licensed under terms that can be found in the LICENSE file
+  * in the root directory of this software component.
+  * If no LICENSE file comes with this software, it is provided AS-IS.
+  *
+  ******************************************************************************
+~}}
+/**
+  ******************************************************************************
+  * @file    mx_usbx_device_pima_mtp.h
+  * @brief   USBX Device PIMA MTP applicative header file
+{{> LICENSE}}
+
+/* Define to prevent recursive inclusion -------------------------------------*/
+#ifndef MX_USBX_DEVICE_PIMA_MTP_H
+#define MX_USBX_DEVICE_PIMA_MTP_H
+
+#ifdef __cplusplus
+extern "C" {
+#endif /* __cplusplus */
+{{#with @root.usbx_cxt~}}
+/* Includes ------------------------------------------------------------------*/
+#include "ux_api.h"
+#include "ux_device_class_pima.h"
+/* Exported types ------------------------------------------------------------*/
+/* Exported constants --------------------------------------------------------*/
+/* Exported macro ------------------------------------------------------------*/
+/* Exported functions prototypes ---------------------------------------------*/
+VOID usbd_pima_mtp_activate(VOID *pima_instance);
+VOID usbd_pima_mtp_deactivate(VOID *pima_instance);
+UINT usbd_mtp_cancel(struct UX_SLAVE_CLASS_PIMA_STRUCT *pima_instance);
+UINT usbd_mtp_device_reset(struct UX_SLAVE_CLASS_PIMA_STRUCT *pima_instance);
+UINT usbd_mtp_get_device_prop_desc(struct UX_SLAVE_CLASS_PIMA_STRUCT *pima_instance,
+                                ULONG device_property,
+                                UCHAR **device_prop_dataset,
+                                ULONG *device_prop_dataset_length);
+UINT usbd_mtp_get_device_prop_value(struct UX_SLAVE_CLASS_PIMA_STRUCT *pima_instance,
+                                 ULONG device_property,
+                                 UCHAR **device_prop_value,
+                                 ULONG *device_prop_value_length);
+UINT usbd_mtp_set_device_prop_value(struct UX_SLAVE_CLASS_PIMA_STRUCT *pima_instance,
+                                 ULONG device_property,
+                                 UCHAR *device_prop_value,
+                                 ULONG device_prop_value_length);
+UINT usbd_mtp_format_storage(struct UX_SLAVE_CLASS_PIMA_STRUCT *pima_instance,
+                            ULONG storage_id);
+UINT usbd_mtp_get_storage_info(struct UX_SLAVE_CLASS_PIMA_STRUCT *pima_instance,
+                             ULONG storage_id);
+UINT usbd_mtp_get_object_number(struct UX_SLAVE_CLASS_PIMA_STRUCT *pima_instance,
+                              ULONG object_format_code,
+                              ULONG object_association,
+                              ULONG *object_number);
+UINT usbd_mtp_get_object_handles(struct UX_SLAVE_CLASS_PIMA_STRUCT *pima_instance,
+                               ULONG object_handles_format_code,
+                               ULONG object_handles_association,
+                               ULONG *object_handles_array,
+                               ULONG object_handles_max_number);
+UINT usbd_mtp_get_object_info(struct UX_SLAVE_CLASS_PIMA_STRUCT *pima_instance,
+                            ULONG object_handle,
+                            UX_SLAVE_CLASS_PIMA_OBJECT **object);
+UINT usbd_mtp_get_object_data(struct UX_SLAVE_CLASS_PIMA_STRUCT *pima_instance,
+                            ULONG object_handle,
+                            UCHAR *object_buffer,
+                            ULONG object_offset,
+                            ULONG object_length_requested,
+                            ULONG *object_actual_length);
+UINT usbd_mtp_send_object_info(struct UX_SLAVE_CLASS_PIMA_STRUCT *pima_instance,
+                             UX_SLAVE_CLASS_PIMA_OBJECT *object,
+                             ULONG storage_id, ULONG parent_object_handle,
+                             ULONG *object_handle);
+UINT usbd_mtp_send_object_data(struct UX_SLAVE_CLASS_PIMA_STRUCT *pima_instance,
+                             ULONG object_handle, ULONG phase,
+                             UCHAR *object_buffer, ULONG object_offset,
+                             ULONG object_length);
+UINT usbd_mtp_delete_object(struct UX_SLAVE_CLASS_PIMA_STRUCT *pima_instance,
+                           ULONG object_handle);
+UINT usbd_mtp_get_object_prop_desc(struct UX_SLAVE_CLASS_PIMA_STRUCT *pima_instance,
+                                ULONG object_property,
+                                ULONG object_format_code,
+                                UCHAR **object_prop_dataset,
+                                ULONG *object_prop_dataset_length);
+UINT usbd_mtp_get_object_prop_value(struct UX_SLAVE_CLASS_PIMA_STRUCT *pima_instance,
+                                 ULONG object_handle,
+                                 ULONG object_prop_code,
+                                 UCHAR **object_prop_value,
+                                 ULONG *object_prop_value_length);
+UINT usbd_mtp_set_object_prop_value(struct UX_SLAVE_CLASS_PIMA_STRUCT *pima_instance,
+                                 ULONG object_handle,
+                                 ULONG object_prop_code,
+                                 UCHAR *object_prop_value,
+                                 ULONG object_prop_value_length);
+UINT usbd_mtp_get_object_references(struct UX_SLAVE_CLASS_PIMA_STRUCT *pima_instance,
+                                  ULONG object_handle,
+                                  UCHAR **object_handle_array,
+                                  ULONG *object_handle_array_length);
+UINT usbd_mtp_set_object_references(struct UX_SLAVE_CLASS_PIMA_STRUCT *pima_instance,
+                                  ULONG object_handle,
+                                  UCHAR *object_handle_array,
+                                  ULONG object_handle_array_length);
+ULONG usbd_mtp_StorageGetMaxCapabilityLow(VOID);
+ULONG usbd_mtp_StorageGetMaxCapabilityHigh(VOID);
+ULONG usbd_mtp_StorageGetFreeSpaceLow(VOID);
+ULONG usbd_mtp_StorageGetFreeSpaceHigh(VOID);
+ULONG usbd_mtp_StorageGetFreeSpaceImage(VOID);
+
+/* Private defines -----------------------------------------------------------*/
+
+#ifndef USBD_MTP_STORAGE_ID
+#define USBD_MTP_STORAGE_ID  0x00010001U
+#endif
+
+#ifndef USBD_MTP_STORAGE_TYPE
+#define USBD_MTP_STORAGE_TYPE  UX_DEVICE_CLASS_PIMA_STC_REMOVABLE_RAM
+#endif
+
+#ifndef USBD_MTP_STORAGE_FILE_SYSTEM_TYPE
+#define USBD_MTP_STORAGE_FILE_SYSTEM_TYPE  UX_DEVICE_CLASS_PIMA_FSTC_GENERIC_FLAT
+#endif
+
+#ifndef USBD_MTP_STORAGE_FILE_ACCESS_CAPABILITY
+#define USBD_MTP_STORAGE_FILE_ACCESS_CAPABILITY  UX_DEVICE_CLASS_PIMA_AC_READ_WRITE
+#endif
+
+#ifndef USBD_MTP_INFO_MANUFACTURER
+#define USBD_MTP_INFO_MANUFACTURER  "STMicroelectronics"
+#endif
+
+#ifndef USBD_MTP_INFO_MODEL
+#define USBD_MTP_INFO_MODEL  "STM32"
+#endif
+
+#ifndef USBD_MTP_INFO_VERSION
+#define USBD_MTP_INFO_VERSION  "V1.00"
+#endif
+
+#ifndef USBD_MTP_INFO_SERIAL_NUMBER
+#define USBD_MTP_INFO_SERIAL_NUMBER  "001"
+#endif
+
+#ifndef USBD_MTP_STORAGE_DESCRIPTION
+#define USBD_MTP_STORAGE_DESCRIPTION  "STM32 MTP Storage Volume"
+#endif
+
+#ifndef USBD_MTP_STORAGE_DESCRIPTION_IDENTIFIER
+#define USBD_MTP_STORAGE_DESCRIPTION_IDENTIFIER  "STM32 MTP Storage Label"
+#endif
+
+#ifdef __cplusplus
+}
+#endif
+#endif  /* MX_USBX_DEVICE_PIMA_MTP_H */
+{{~/with~}}

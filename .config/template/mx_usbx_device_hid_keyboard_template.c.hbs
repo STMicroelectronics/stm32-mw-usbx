@@ -1,0 +1,155 @@
+{{assign "usbxFilter" (JSONparse '{"cgroup": "STM32CubeMX2 Config", "csub": "USBX"}')~}}
+{{assign 'usbx_context' (@root.SWConfigurationAPI.getInstancesConfiguration @root.usbxFilter)~}}
+{{assign 'usbx_cxt' @root.usbx_context.[0].settings.parameters~}}
+{{!
+/**
+  ******************************************************************************
+  * @file    mx_usbx_device_hid_keyboard_template.c.hbs
+  * @brief   USBX Device Keyboard HID applicative source file
+  ******************************************************************************
+  * @attention
+  *
+  * Copyright (c) 2025-2026 STMicroelectronics.
+  * All rights reserved.
+  *
+  * This software is licensed under terms that can be found in the LICENSE file
+  * in the root directory of this software component.
+  * If no LICENSE file comes with this software, it is provided AS-IS.
+  *
+  ******************************************************************************
+~}}
+/**
+  ******************************************************************************
+  * @file    mx_usbx_device_hid_keyboard.c
+  * @brief   USBX Device Keyboard HID applicative source file
+{{> LICENSE}}
+
+{{#with @root.usbx_cxt~}}
+/* Includes ------------------------------------------------------------------*/
+#include "mx_usbx_device_hid_keyboard.h"
+/* Private typedef -----------------------------------------------------------*/
+/* Private define ------------------------------------------------------------*/
+/* Private macro -------------------------------------------------------------*/
+/* Private variables ---------------------------------------------------------*/
+UCHAR usbd_hid_keyboard_report_descriptor[] =
+{
+    0x05, 0x01,        /* Usage Page (Generic Desktop) */
+    0x09, 0x06,        /* Usage (Keyboard) */
+    0xA1, 0x01,        /* Collection (Application) */
+    0x05, 0x07,        /*   Usage Page (Key Codes) */
+    0x19, 0xE0,        /*   Usage Minimum (224) */
+    0x29, 0xE7,        /*   Usage Maximum (231) */
+    0x15, 0x00,        /*   Logical Minimum (0) */
+    0x25, 0x01,        /*   Logical Maximum (1) */
+    0x75, 0x01,        /*   Report Size (1) */
+    0x95, 0x08,        /*   Report Count (8) */
+    0x81, 0x02,        /*   Input (Data, Variable, Absolute) ; Modifier byte */
+    0x95, 0x01,        /*   Report Count (1) */
+    0x75, 0x08,        /*   Report Size (8) */
+    0x81, 0x01,        /*   Input (Constant) ; Reserved byte */
+    0x95, 0x06,        /*   Report Count (6) */
+    0x75, 0x08,        /*   Report Size (8) */
+    0x15, 0x00,        /*   Logical Minimum (0) */
+    0x25, 0x65,        /*   Logical Maximum (101) */
+    0x05, 0x07,        /*   Usage Page (Key Codes) */
+    0x19, 0x00,        /*   Usage Minimum (0) */
+    0x29, 0x65,        /*   Usage Maximum (101) */
+    0x81, 0x00,        /*   Input (Data, Array) ; Key arrays (6 bytes) */
+    0xC0               /* End Collection */
+};
+/* Private function prototypes -----------------------------------------------*/
+
+/**
+  * @brief  usbd_hid_keyboard_activate
+  *         This function is called when insertion of a HID Keyboard device.
+  * @param  hid_instance: Pointer to the hid class instance.
+  * @retval none
+  */
+VOID usbd_hid_keyboard_activate(VOID *hid_instance)
+{
+  UX_PARAMETER_NOT_USED(hid_instance);
+
+  return;
+}
+
+/**
+  * @brief  usbd_hid_keyboard_deactivate
+  *         This function is called when extraction of a HID Keyboard device.
+  * @param  hid_instance: Pointer to the hid class instance.
+  * @retval none
+  */
+VOID usbd_hid_keyboard_deactivate(VOID *hid_instance)
+{
+  UX_PARAMETER_NOT_USED(hid_instance);
+
+  return;
+}
+
+/**
+  * @brief  usbd_hid_keyboard_set_report
+  *         This function is invoked when the host sends a HID SET_REPORT
+  *         to the application over Endpoint 0.
+  * @param  hid_instance: Pointer to the hid class instance.
+  * @param  hid_event: Pointer to structure of the hid event.
+  * @retval status
+  */
+UINT usbd_hid_keyboard_set_report(UX_SLAVE_CLASS_HID *hid_instance,
+                                 UX_SLAVE_CLASS_HID_EVENT *hid_event)
+{
+  UINT status = UX_SUCCESS;
+
+  UX_PARAMETER_NOT_USED(hid_instance);
+  UX_PARAMETER_NOT_USED(hid_event);
+
+  return status;
+}
+
+/**
+  * @brief  usbd_hid_keyboard_get_report
+  *         This function is invoked when host is requesting event through
+  *         control GET_REPORT request.
+  * @param  hid_instance: Pointer to the hid class instance.
+  * @param  hid_event: Pointer to structure of the hid event.
+  * @retval status
+  */
+UINT usbd_hid_keyboard_get_report(UX_SLAVE_CLASS_HID *hid_instance,
+                                 UX_SLAVE_CLASS_HID_EVENT *hid_event)
+{
+  UINT status = UX_SUCCESS;
+
+  UX_PARAMETER_NOT_USED(hid_instance);
+  UX_PARAMETER_NOT_USED(hid_event);
+
+  return status;
+}
+/**
+  * @brief  usbd_hid_keyboard_report_address
+  *         Return the device HID MOUSE Report Descriptor
+  * @retval Pointer to HID Report Descriptor buffer
+  */
+UCHAR *usbd_hid_keyboard_report_address(VOID)
+{
+  return usbd_hid_keyboard_report_descriptor;
+}
+
+/**
+  * @brief  usbd_hid_keyboard_report_length
+  *         Return the device HID Report Descriptor
+  * @retval Size of HID Report Descriptor buffer
+  */
+ULONG usbd_hid_keyboard_report_length(VOID)
+{
+  return sizeof(usbd_hid_keyboard_report_descriptor);
+}
+
+/**
+  * @brief  usbd_hid_keyboard_report_id
+  *         Return the device HID Report ID Support
+  * @retval UX_FALSE / UX_TRUE
+  */
+ULONG usbd_hid_keyboard_report_id(VOID)
+{
+  return UX_FALSE;
+}
+
+{{/with}}

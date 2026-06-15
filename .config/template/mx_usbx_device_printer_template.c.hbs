@@ -1,0 +1,92 @@
+{{assign "usbxFilter" (JSONparse '{"cgroup": "STM32CubeMX2 Config", "csub": "USBX"}')~}}
+{{assign 'usbx_context' (@root.SWConfigurationAPI.getInstancesConfiguration @root.usbxFilter)~}}
+{{assign 'usbx_cxt' @root.usbx_context.[0].settings.parameters~}}
+{{!
+/**
+  ******************************************************************************
+  * @file    mx_usbx_device_printer_template.c.hbs
+  * @brief   USBX Device Printer applicative source file
+  ******************************************************************************
+  * @attention
+  *
+  * Copyright (c) 2025-2026 STMicroelectronics.
+  * All rights reserved.
+  *
+  * This software is licensed under terms that can be found in the LICENSE file
+  * in the root directory of this software component.
+  * If no LICENSE file comes with this software, it is provided AS-IS.
+  *
+  ******************************************************************************
+~}}
+/**
+  ******************************************************************************
+  * @file    mx_usbx_device_printer.c
+  * @brief   USBX Device Printer applicative source file
+{{> LICENSE}}
+
+{{#with @root.usbx_cxt~}}
+/* Includes ------------------------------------------------------------------*/
+#include "mx_usbx_device_printer.h"
+/* Private typedef -----------------------------------------------------------*/
+/* Private define ------------------------------------------------------------*/
+/* Private macro -------------------------------------------------------------*/
+/* Private variables ---------------------------------------------------------*/
+/* Define Printer device ID */
+UCHAR usbd_printer_DeviceID [] = {
+  "  "                             /* Length */
+  "MFG:Generic;"                   /* Manufacturer */
+  "MDL:Generic_/_Text_Only;"       /* Model */
+  "CMD:1284.4;"                    /* Command Set */
+  "CLS:PRINTER;"                   /* Class */
+  "DES:Generic text only printer;" /* Description */
+};
+/* Private functions prototype -----------------------------------------------*/
+
+/**
+  * @brief  usbd_printer_get_deviceID
+  *         Get the printer device ID.
+  * @param  none
+  * @retval usbd_printer_DeviceID : Pointer to printer device ID.
+  */
+UCHAR *usbd_printer_get_deviceID(VOID)
+{
+  ux_utility_short_put_big_endian(usbd_printer_DeviceID, sizeof(usbd_printer_DeviceID));
+  return usbd_printer_DeviceID;
+}
+
+/**
+  * @brief  usbd_printer_activate
+  *         This function is called when insertion of a printer device.
+  * @param  printer_instance: Pointer to the printer class instance.
+  * @retval none
+  */
+VOID usbd_printer_activate(VOID *printer_instance)
+{
+  UX_PARAMETER_NOT_USED(printer_instance);
+  return;
+}
+
+/**
+  * @brief  usbd_printer_deactivate
+  *         This function is called when extraction of a printer device.
+  * @param  printer_instance: Pointer to the printer class instance.
+  * @retval none
+  */
+VOID usbd_printer_deactivate(VOID *printer_instance)
+{
+  UX_PARAMETER_NOT_USED(printer_instance);
+  return;
+}
+
+/**
+  * @brief  usbd_printer_soft_reset
+  *         This function is called when resetting a printer device.
+  * @param  printer_instance: Pointer to the printer class instance.
+  * @retval none
+  */
+VOID usbd_printer_soft_reset(VOID *printer_instance)
+{
+  UX_PARAMETER_NOT_USED(printer_instance);
+  return;
+}
+{{/with}}
