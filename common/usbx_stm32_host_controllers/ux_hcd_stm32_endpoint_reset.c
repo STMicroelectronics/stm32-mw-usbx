@@ -86,10 +86,12 @@ UX_HCD_STM32_ED       *ed;
     /* Finish current transfer.  */
     _ux_hcd_stm32_request_trans_finish(hcd_stm32, ed);
 
-    /* Free ed data resources */
-    if ((ed -> ux_stm32_ed_data != UX_NULL) && (ed ->ux_stm32_ed_data_free == UX_HCD_STM32_ED_STATUS_ALIGNED_BUFFER_PENDING_FREE))
+    /* Free ed data resources, the isochronous buffer lives until the endpoint is destroyed.  */
+    if ((ed -> ux_stm32_ed_aligned_data != UX_NULL) && (ed -> ux_stm32_ed_type != EP_TYPE_ISOC) &&
+        (ed ->ux_stm32_ed_data_free == UX_HCD_STM32_ED_STATUS_ALIGNED_BUFFER_PENDING_FREE))
     {
-      _ux_utility_memory_free(ed -> ux_stm32_ed_data);
+      _ux_utility_memory_free(ed -> ux_stm32_ed_aligned_data);
+      ed -> ux_stm32_ed_aligned_data = UX_NULL;
       ed -> ux_stm32_ed_data = UX_NULL;
       ed ->ux_stm32_ed_data_free = UX_HCD_STM32_ED_STATUS_ALIGNED_BUFFER_FREE_DONE;
     }

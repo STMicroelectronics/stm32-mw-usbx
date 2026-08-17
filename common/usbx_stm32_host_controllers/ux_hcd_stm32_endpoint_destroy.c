@@ -150,11 +150,6 @@ UINT                   endpoint_type;
             }
         }
 
-        if (endpoint_type == UX_ISOCHRONOUS_ENDPOINT)
-        {
-          ed -> ux_stm32_ed_data_free = UX_HCD_STM32_ED_STATUS_ALIGNED_BUFFER_PENDING_FREE;
-        }
-
         /* Decrease the periodic active count.  */
         hcd_stm32 -> ux_hcd_stm32_periodic_scheduler_active --;
     }
@@ -168,6 +163,13 @@ UINT                   endpoint_type;
 
     /* Finish current transfer and reset the endpoint  */
     _ux_hcd_stm32_endpoint_reset(hcd_stm32, endpoint);
+
+    if (ed -> ux_stm32_ed_aligned_data != UX_NULL)
+    {
+        _ux_utility_memory_free(ed -> ux_stm32_ed_aligned_data);
+        ed -> ux_stm32_ed_aligned_data = UX_NULL;
+    }
+    ed -> ux_stm32_ed_data = UX_NULL;
 
 #if defined(UX_HOST_STANDALONE)
 
