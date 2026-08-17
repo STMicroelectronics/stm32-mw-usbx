@@ -132,10 +132,12 @@ UX_INTERRUPT_SAVE_AREA
 
     UX_RESTORE
 
-    /* Free ed data resources */
-    if ((ed -> ux_stm32_ed_data != UX_NULL) && (ed ->ux_stm32_ed_data_free == UX_HCD_STM32_ED_STATUS_ALIGNED_BUFFER_PENDING_FREE))
+    /* Free ed data resources, the isochronous bounce buffer lives until the endpoint is destroyed.  */
+    if ((ed -> ux_stm32_ed_aligned_data != UX_NULL) && (ed -> ux_stm32_ed_type != EP_TYPE_ISOC) &&
+        (ed ->ux_stm32_ed_data_free == UX_HCD_STM32_ED_STATUS_ALIGNED_BUFFER_PENDING_FREE))
     {
-      _ux_utility_memory_free(ed -> ux_stm32_ed_data);
+      _ux_utility_memory_free(ed -> ux_stm32_ed_aligned_data);
+      ed -> ux_stm32_ed_aligned_data = UX_NULL;
       ed -> ux_stm32_ed_data = UX_NULL;
       ed ->ux_stm32_ed_data_free = UX_HCD_STM32_ED_STATUS_ALIGNED_BUFFER_FREE_DONE;
     }
