@@ -81,7 +81,11 @@ UINT _ux_os_utility_timer_create(UX_TIMER *timer, CHAR *timer_name, VOID (*expir
     return UX_ERROR;
   }
 
-  timer->timer_handle = xTimerCreate(timer_name, (TickType_t)initial_ticks, pdTRUE, (void *)timer,
+  timer->timer_reschedule_ticks = reschedule_ticks;
+
+  timer->timer_handle = xTimerCreate(timer_name, (TickType_t)initial_ticks,
+                                     pdFALSE,
+                                     (void *)timer,
                                      (TimerCallbackFunction_t)_utility_timer_callback_wrapper);
 
   if (timer->timer_handle == NULL)
@@ -115,12 +119,29 @@ UINT _ux_os_utility_timer_create(UX_TIMER *timer, CHAR *timer_name, VOID (*expir
 VOID _utility_timer_callback_wrapper(TimerHandle_t xTimer)
 {
   UX_TIMER *timer;
+  ULONG reschedule_ticks;
 
   /* Obtain the timer ID */
   timer = (UX_TIMER *)pvTimerGetTimerID(xTimer);
 
+  if (timer == NULL)
+  {
+    return;
+  }
+
+  reschedule_ticks = timer->timer_reschedule_ticks;
+
+  if (reschedule_ticks != 0U)
+  {
+    if (xTimerChangePeriod(xTimer, (TickType_t)reschedule_ticks, 0) != pdPASS)
+    {
+      _ux_system_error_handler(UX_SYSTEM_LEVEL_THREAD, UX_SYSTEM_CONTEXT_UTILITY, UX_ERROR);
+      UX_ASSERT(0);
+    }
+  }
+
   /* Call the application callback timer function */
-  if ((timer != NULL) && (timer->timer_callback_function != NULL))
+  if (timer->timer_callback_function != NULL)
   {
     timer->timer_callback_function(timer->timer_callback_input);
   }

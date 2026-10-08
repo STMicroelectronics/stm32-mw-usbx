@@ -1,3 +1,14 @@
+/***************************************************************************/
+/* Copyright (c) 2024 Microsoft Corporation                                */
+/* Copyright (c) 2026 Eclipse ThreadX contributors                         */
+/*                                                                         */
+/* This program and the accompanying materials are made available under    */
+/* the terms of the MIT License which is available at                      */
+/* https://opensource.org/licenses/MIT.                                    */
+/*                                                                         */
+/* SPDX-License-Identifier: MIT                                            */
+/***************************************************************************/
+
 /* This test is designed to test the simple dpump host/device class operation.  */
 
 #include <stdio.h>
@@ -738,7 +749,7 @@ static UINT    demo_thread_media_read(VOID *storage, ULONG lun, UCHAR * data_poi
 
     if (lun > 1)
         return UX_ERROR;
-    
+
     ram_disk_read_sent = UX_TRUE;
     if (ram_disk_read_status != UX_SUCCESS)
     {

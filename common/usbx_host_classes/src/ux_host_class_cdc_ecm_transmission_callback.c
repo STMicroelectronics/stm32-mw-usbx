@@ -1,6 +1,7 @@
 /***************************************************************************
- * Copyright (c) 2024 Microsoft Corporation 
- * 
+ * Copyright (c) 2024 Microsoft Corporation
+ * Copyright (c) 2026-present Eclipse ThreadX contributors
+ *
  * This program and the accompanying materials are made available under the
  * terms of the MIT License which is available at
  * https://opensource.org/licenses/MIT.
@@ -57,31 +58,10 @@
 /*                                                                        */ 
 /*    _ux_host_stack_transfer_request       Process transfer request      */ 
 /*    nx_packet_transmit_release            Release NetX packet           */
-/*                                                                        */ 
-/*  CALLED BY                                                             */ 
-/*                                                                        */ 
-/*    Application                                                         */ 
-/*                                                                        */ 
-/*  RELEASE HISTORY                                                       */ 
-/*                                                                        */ 
-/*    DATE              NAME                      DESCRIPTION             */ 
-/*                                                                        */ 
-/*  05-19-2020     Chaoqiong Xiao           Initial Version 6.0           */
-/*  09-30-2020     Chaoqiong Xiao           Modified comment(s),          */
-/*                                            resulting in version 6.1    */
-/*  02-02-2021     Chaoqiong Xiao           Modified comment(s), fixed    */
-/*                                            ZLP issue for transmission, */
-/*                                            resulting in version 6.1.4  */
-/*  10-15-2021     Chaoqiong Xiao           Modified comment(s),          */
-/*                                            use pre-calculated value    */
-/*                                            instead of wMaxPacketSize,  */
-/*                                            resulting in version 6.1.9  */
-/*  04-25-2022     Chaoqiong Xiao           Modified comment(s),          */
-/*                                            fixed standalone compile,   */
-/*                                            resulting in version 6.1.11 */
-/*  10-31-2022     Chaoqiong Xiao           Modified comment(s),          */
-/*                                            supported NX packet chain,  */
-/*                                            resulting in version 6.2.0  */
+/*                                                                        */
+/*  CALLED BY                                                             */
+/*                                                                        */
+/*    Application                                                         */
 /*                                                                        */
 /**************************************************************************/
 VOID  _ux_host_class_cdc_ecm_transmission_callback(UX_TRANSFER *transfer_request)
@@ -180,7 +160,7 @@ ULONG                           copied;
             transfer_request -> ux_transfer_request_user_specific = next_packet;
 
             /* If error log is enabled, insert this message into the log buffer.  */
-            UX_DEBUG_LOG("_ux_host_class_cdc_ecm_transmission_callback", "Sending packet", next_packet, next_packet, _ux_system -> ux_system_mutex.tx_mutex_suspended_count)
+            UX_DEBUG_LOG("_ux_host_class_cdc_ecm_transmission_callback", "Sending packet", next_packet, next_packet, _ux_system_mutex_suspended_count(&_ux_system -> ux_system_mutex))
         
             /* If there is an error, the system will hang up. Not much we can do to
                fix this.  */

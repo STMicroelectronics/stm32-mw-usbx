@@ -1,5 +1,6 @@
 /***************************************************************************
  * Copyright (c) 2024 Microsoft Corporation
+ * Copyright (c) 2026-present Eclipse ThreadX contributors
  *
  * This program and the accompanying materials are made available under the
  * terms of the MIT License which is available at
@@ -67,17 +68,6 @@
 /*  CALLED BY                                                             */
 /*                                                                        */
 /*    HID Class                                                           */
-/*                                                                        */
-/*  RELEASE HISTORY                                                       */
-/*                                                                        */
-/*    DATE              NAME                      DESCRIPTION             */
-/*                                                                        */
-/*  05-19-2020     Chaoqiong Xiao           Initial Version 6.0           */
-/*  09-30-2020     Chaoqiong Xiao           Modified comment(s),          */
-/*                                            resulting in version 6.1    */
-/*  01-31-2022     Chaoqiong Xiao           Modified comment(s),          */
-/*                                            added standalone support,   */
-/*                                            resulting in version 6.1.10 */
 /*                                                                        */
 /**************************************************************************/
 UINT  _ux_host_class_hid_deactivate(UX_HOST_CLASS_COMMAND *command)
@@ -148,10 +138,21 @@ UINT                                status;
     hid_client_command.ux_host_class_hid_client_command_instance =   (VOID *) hid;
     hid_client_command.ux_host_class_hid_client_command_container =  (VOID *) hid -> ux_host_class_hid_class;
     hid_client_command.ux_host_class_hid_client_command_request =    UX_HOST_CLASS_COMMAND_DEACTIVATE;
-
+    
     /* Call the HID client with a deactivate command if there was a client registered.  */
     if (hid -> ux_host_class_hid_client != UX_NULL)
+    {
         hid -> ux_host_class_hid_client -> ux_host_class_hid_client_handler(&hid_client_command);
+
+        /* Free the per-instance client copy allocated in _ux_host_class_hid_client_search.
+           Handlers for keyboard/mouse/remote_control null hid_client after freeing their own
+           combined allocation; simple clients leave hid_client pointing at the per-instance copy.  */
+        if (hid -> ux_host_class_hid_client != UX_NULL)
+        {
+            _ux_utility_memory_free(hid -> ux_host_class_hid_client);
+            hid -> ux_host_class_hid_client = UX_NULL;
+        }
+    }
 
     /* Clean all the HID memory fields.  */
     _ux_host_class_hid_instance_clean(hid);

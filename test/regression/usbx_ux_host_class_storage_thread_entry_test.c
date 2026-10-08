@@ -1,3 +1,14 @@
+/***************************************************************************/
+/* Copyright (c) 2024 Microsoft Corporation                                */
+/* Copyright (c) 2026 Eclipse ThreadX contributors                         */
+/*                                                                         */
+/* This program and the accompanying materials are made available under    */
+/* the terms of the MIT License which is available at                      */
+/* https://opensource.org/licenses/MIT.                                    */
+/*                                                                         */
+/* SPDX-License-Identifier: MIT                                            */
+/***************************************************************************/
+
 /* This test is designed to test the simple dpump host/device class operation.  */
 
 #include <stdio.h>
@@ -727,7 +738,7 @@ TX_SEMAPHORE                                *semaphore_ptr;
         ram_disk_media_status = 0x003A02;
 
         _ux_utility_delay_ms(UX_HOST_CLASS_STORAGE_THREAD_SLEEP_TIME*6);
-        if (semaphore_ptr->tx_semaphore_id != 0)
+        if (_ux_utility_semaphore_created(semaphore_ptr))
         {
             printf("ERROR #%d: semaphore not deleted\n", __LINE__);
             test_control_return(1);
@@ -759,7 +770,7 @@ TX_SEMAPHORE                                *semaphore_ptr;
         ram_disk_media_status = UX_SLAVE_CLASS_STORAGE_SENSE_KEY_UNIT_ATTENTION | (0x28 << 8);
 
         _ux_utility_delay_ms(UX_HOST_CLASS_STORAGE_THREAD_SLEEP_TIME*6);
-        if (semaphore_ptr->tx_semaphore_id != 0)
+        if (_ux_utility_semaphore_created(semaphore_ptr))
         {
             printf("ERROR #%d: semaphore not deleted\n", __LINE__);
             test_control_return(1);

@@ -1,3 +1,14 @@
+/***************************************************************************/
+/* Copyright (c) 2024 Microsoft Corporation                                */
+/* Copyright (c) 2026 Eclipse ThreadX contributors                         */
+/*                                                                         */
+/* This program and the accompanying materials are made available under    */
+/* the terms of the MIT License which is available at                      */
+/* https://opensource.org/licenses/MIT.                                    */
+/*                                                                         */
+/* SPDX-License-Identifier: MIT                                            */
+/***************************************************************************/
+
 
 #ifndef UX_HOST_CLASS_DUMMY_H
 #define UX_HOST_CLASS_DUMMY_H
@@ -7,7 +18,7 @@
 typedef struct UX_HOST_CLASS_DUMMY_STRUCT
 {
 
-    struct UX_HOST_CLASS_DUMMY_STRUCT  
+    struct UX_HOST_CLASS_DUMMY_STRUCT
                         *ux_host_class_dummy_next_instance;
 
     UX_HOST_CLASS       *ux_host_class_dummy_class;

@@ -1,3 +1,14 @@
+/***************************************************************************/
+/* Copyright (c) 2024 Microsoft Corporation                                */
+/* Copyright (c) 2026 Eclipse ThreadX contributors                         */
+/*                                                                         */
+/* This program and the accompanying materials are made available under    */
+/* the terms of the MIT License which is available at                      */
+/* https://opensource.org/licenses/MIT.                                    */
+/*                                                                         */
+/* SPDX-License-Identifier: MIT                                            */
+/***************************************************************************/
+
 /* This test is designed to test the simple dpump host/device class operation.  */
 
 #include <stdio.h>
@@ -580,7 +591,7 @@ UINT  _ux_system_uninitialize(VOID)
 {
 
     /* Delete the Mutex object used by USBX to control critical sections. */
-    if (_ux_system->ux_system_mutex.tx_mutex_id != TX_CLEAR_ID)
+    if (_ux_utility_mutex_created(&_ux_system -> ux_system_mutex))
         _ux_utility_mutex_delete(&_ux_system -> ux_system_mutex);
 
     return(UX_SUCCESS);
@@ -613,7 +624,7 @@ ULONG                           endpoints_found;
     if (transfer_request -> ux_slave_transfer_request_data_pointer)
         _ux_utility_memory_free(transfer_request -> ux_slave_transfer_request_data_pointer);
 
-    /* Get the number of endoints found in the device framework.  */
+    /* Get the number of endpoints found in the device framework.  */
     endpoints_found = device -> ux_slave_device_endpoints_pool_number;
 
     /* Get the endpoint pool address in the device container.  */
@@ -627,7 +638,7 @@ ULONG                           endpoints_found;
             _ux_utility_memory_free(endpoints_pool -> ux_slave_endpoint_transfer_request.ux_slave_transfer_request_data_pointer);
 
         /* Remove the TX semaphore for the endpoint.  */
-        if (endpoints_pool -> ux_slave_endpoint_transfer_request.ux_slave_transfer_request_semaphore.tx_semaphore_id != TX_CLEAR_ID)
+        if (_ux_utility_semaphore_created(&endpoints_pool -> ux_slave_endpoint_transfer_request.ux_slave_transfer_request_semaphore))
             _ux_utility_semaphore_delete(&endpoints_pool -> ux_slave_endpoint_transfer_request.ux_slave_transfer_request_semaphore);
 
         /* Next endpoint.  */
@@ -673,10 +684,10 @@ VOID _ux_host_stack_uninitialize(VOID)
         ux_utility_memory_free(_ux_system_host->ux_system_host_hnp_polling_thread_stack);
 #endif
 
-    if (_ux_system_host->ux_system_host_hcd_semaphore.tx_semaphore_id != TX_CLEAR_ID)
+    if (_ux_utility_semaphore_created(&_ux_system_host->ux_system_host_hcd_semaphore))
         ux_utility_semaphore_delete(&_ux_system_host->ux_system_host_hcd_semaphore);
 
-    if (_ux_system_host->ux_system_host_enum_semaphore.tx_semaphore_id != TX_CLEAR_ID)
+    if (_ux_utility_semaphore_created(&_ux_system_host->ux_system_host_enum_semaphore))
         ux_utility_semaphore_delete(&_ux_system_host->ux_system_host_enum_semaphore);
 
 

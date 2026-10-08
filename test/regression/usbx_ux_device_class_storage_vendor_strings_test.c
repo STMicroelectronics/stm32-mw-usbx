@@ -1,3 +1,14 @@
+/***************************************************************************/
+/* Copyright (c) 2024 Microsoft Corporation                                */
+/* Copyright (c) 2026 Eclipse ThreadX contributors                         */
+/*                                                                         */
+/* This program and the accompanying materials are made available under    */
+/* the terms of the MIT License which is available at                      */
+/* https://opensource.org/licenses/MIT.                                    */
+/*                                                                         */
+/* SPDX-License-Identifier: MIT                                            */
+/***************************************************************************/
+
 /* This test is designed to test the simple dpump host/device class operation.  */
 
 #include <stdio.h>
@@ -43,7 +54,7 @@ UCHAR test_ux_system_slave_class_storage_product_serial[] = "0123456789012345678
 
 /* HID reports.  */
 
-static UCHAR hid_mouse_report[] = { 
+static UCHAR hid_mouse_report[] = {
 
     0x05, 0x01,                    // USAGE_PAGE (Generic Desktop)
     0x09, 0x02,                    // USAGE (Mouse)
@@ -84,7 +95,7 @@ static UCHAR hid_mouse_report[] = {
 };
 #define HID_MOUSE_REPORT_LENGTH sizeof(hid_mouse_report)
 
-static UCHAR hid_keyboard_report[] = { 
+static UCHAR hid_keyboard_report[] = {
 
     0x05, 0x01,                    // USAGE_PAGE (Generic Desktop)
     0x09, 0x06,                    // USAGE (Keyboard)
@@ -479,7 +490,7 @@ UINT status;
         return status;
     }
 
-    /* The code below is required for installing the device portion of USBX. 
+    /* The code below is required for installing the device portion of USBX.
        In this demo, DFU is possible and we have a call back for state change. */
     status =  ux_device_stack_initialize(device_framework_high_speed, DEVICE_FRAMEWORK_LENGTH_HIGH_SPEED,
                                        device_framework_full_speed, DEVICE_FRAMEWORK_LENGTH_FULL_SPEED,
@@ -532,13 +543,13 @@ UINT            command_length;
 
     /* Initialize the CBW for this command.  */
     _ux_host_class_storage_cbw_initialize(storage, UX_HOST_CLASS_STORAGE_DATA_IN, UX_HOST_CLASS_STORAGE_INQUIRY_RESPONSE_LENGTH, command_length);
-    
+
     /* Prepare the INQUIRY command block.  */
     *(cbw + UX_HOST_CLASS_STORAGE_CBW_CB + UX_HOST_CLASS_STORAGE_INQUIRY_OPERATION) = UX_HOST_CLASS_STORAGE_SCSI_INQUIRY;
 
     /* Store the page code.  */
     *(cbw + UX_HOST_CLASS_STORAGE_CBW_CB + UX_HOST_CLASS_STORAGE_INQUIRY_PAGE_CODE) = page_code;
-    
+
     /* Store the length of the Inquiry Response.  */
     *(cbw + UX_HOST_CLASS_STORAGE_CBW_CB + UX_HOST_CLASS_STORAGE_INQUIRY_ALLOCATION_LENGTH) =  (UCHAR)response_length;
 
@@ -546,7 +557,7 @@ UINT            command_length;
     status =  _ux_host_class_storage_transport(storage, response);
 
     /* Return completion status.  */
-    return(status);                                            
+    return(status);
 }
 
 /* Define what the initial system looks like.  */
@@ -599,7 +610,7 @@ CHAR *                  memory_pointer;
     storage_parameter.ux_slave_class_storage_parameter_lun[0].ux_slave_class_storage_media_type            =  0;
     storage_parameter.ux_slave_class_storage_parameter_lun[0].ux_slave_class_storage_media_removable_flag  =  0x80;
     storage_parameter.ux_slave_class_storage_parameter_lun[0].ux_slave_class_storage_media_read            =  default_device_media_read;
-    storage_parameter.ux_slave_class_storage_parameter_lun[0].ux_slave_class_storage_media_write           =  default_device_media_write; 
+    storage_parameter.ux_slave_class_storage_parameter_lun[0].ux_slave_class_storage_media_write           =  default_device_media_write;
     storage_parameter.ux_slave_class_storage_parameter_lun[0].ux_slave_class_storage_media_status          =  default_device_media_status;
 
     /* Initialize callbacks.  */
@@ -896,16 +907,16 @@ UINT status = UX_SUCCESS;
 
 
         status = ram_disk.fx_media_driver_status;
-    }        
+    }
     else
-    {        
+    {
         while(number_blocks--)
         {
             status =  fx_media_read(&ram_disk,lba,data_pointer);
             data_pointer+=512;
             lba++;
         }
-    }        
+    }
     return(status);
 }
 
@@ -924,7 +935,7 @@ UINT status = UX_SUCCESS;
 
         status = ram_disk.fx_media_driver_status;
 
-    }        
+    }
     else
     {
 
@@ -933,7 +944,7 @@ UINT status = UX_SUCCESS;
             status =  fx_media_write(&ram_disk,lba,data_pointer);
             data_pointer+=512;
             lba++;
-        }        
+        }
         return(status);
     }
     return(status);

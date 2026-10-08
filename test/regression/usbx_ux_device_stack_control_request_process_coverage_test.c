@@ -1,3 +1,14 @@
+/***************************************************************************/
+/* Copyright (c) 2024 Microsoft Corporation                                */
+/* Copyright (c) 2026 Eclipse ThreadX contributors                         */
+/*                                                                         */
+/* This program and the accompanying materials are made available under    */
+/* the terms of the MIT License which is available at                      */
+/* https://opensource.org/licenses/MIT.                                    */
+/*                                                                         */
+/* SPDX-License-Identifier: MIT                                            */
+/***************************************************************************/
+
 #include <stdio.h>
 #include "tx_api.h"
 #include "ux_api.h"
@@ -48,7 +59,7 @@ UCHAR                   request = 0;
     slave_class1.ux_slave_class_entry_function = _test_class_entry;
     slave_interface.ux_slave_interface_descriptor.bInterfaceClass = 0x7;
     _ux_device_stack_control_request_process(&transfer_request);
-    
+
     printf("SUCCESS!\n");
     test_control_return(0);
 

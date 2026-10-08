@@ -1,5 +1,6 @@
 /***************************************************************************
  * Copyright (c) 2024 Microsoft Corporation
+ * Copyright (c) 2026-present Eclipse ThreadX contributors
  *
  * This program and the accompanying materials are made available under the
  * terms of the MIT License which is available at
@@ -37,116 +38,6 @@
 /*    and data structure definitions are defined in this file.            */
 /*    Please note that basic data type definitions and other architecture-*/
 /*    specific information is contained in the file ux_port.h.            */
-/*                                                                        */
-/*  RELEASE HISTORY                                                       */
-/*                                                                        */
-/*    DATE              NAME                      DESCRIPTION             */
-/*                                                                        */
-/*  05-19-2020     Chaoqiong Xiao           Initial Version 6.0           */
-/*  09-30-2020     Chaoqiong Xiao           Modified comment(s),          */
-/*                                            added query usage of device */
-/*                                            ClassSubclassProtocol,      */
-/*                                            added option to disable FX  */
-/*                                            media integration, prefixed */
-/*                                            UX to MS_TO_TICK, added     */
-/*                                            APIs and macros related to  */
-/*                                            uninitialize, optimized     */
-/*                                            based on compile            */
-/*                                            definitions, updated        */
-/*                                            product constants, used     */
-/*                                            host class extension        */
-/*                                            pointer for class specific  */
-/*                                            structured data, used UX    */
-/*                                            prefix to refer to TX       */
-/*                                            symbols instead of using    */
-/*                                            them directly,              */
-/*                                            resulting in version 6.1    */
-/*  11-09-2020     Chaoqiong Xiao           Modified comment(s),          */
-/*                                            used unsigned defines,      */
-/*                                            added HCD uninit command,   */
-/*                                            modified HCD status code,   */
-/*                                            fixed compile warnings,     */
-/*                                            resulting in version 6.1.2  */
-/*  12-31-2020     Chaoqiong Xiao           Modified comment(s),          */
-/*                                            added BOS support,          */
-/*                                            resulting in version 6.1.3  */
-/*  02-02-2021     Chaoqiong Xiao           Modified comment(s),          */
-/*                                            added configuration activate*/
-/*                                            and deactivate support,     */
-/*                                            added host printer get      */
-/*                                            device ID support,          */
-/*                                            added host device string    */
-/*                                            descriptor get support,     */
-/*                                            added events for device     */
-/*                                            connection/disconnection,   */
-/*                                            resulting in version 6.1.4  */
-/*  03-02-2021     Chaoqiong Xiao           Modified comment(s),          */
-/*                                            resulting in version 6.1.5  */
-/*  04-02-2021     Chaoqiong Xiao           Modified comment(s),          */
-/*                                            added macros for Word/DWord */
-/*                                            to bytes extraction,        */
-/*                                            resulting in version 6.1.6  */
-/*  06-02-2021     Chaoqiong Xiao           Modified comment(s),          */
-/*                                            added trace dependency test,*/
-/*                                            changed transfer timeout    */
-/*                                            value,                      */
-/*                                            resulting in version 6.1.7  */
-/*  08-02-2021     Chaoqiong Xiao           Modified comment(s),          */
-/*                                            fixed spelling error,       */
-/*                                            fixed trace ID order error, */
-/*                                            resulting in version 6.1.8  */
-/*  10-15-2021     Chaoqiong Xiao           Modified comment(s),          */
-/*                                            improved assert macros,     */
-/*                                            added transfer size field,  */
-/*                                            improved traceX support,    */
-/*                                            resulting in version 6.1.9  */
-/*  01-31-2022     Chaoqiong Xiao           Modified comment(s),          */
-/*                                            added too many ports error, */
-/*                                            moved tx_api.h include and  */
-/*                                            typedefs to ux_port.h,      */
-/*                                            added standalone support,   */
-/*                                            added device HID trace IDs, */
-/*                                            added some general errors,  */
-/*                                            added printer trace IDs,    */
-/*                                            resulting in version 6.1.10 */
-/*  04-25-2022     Chaoqiong Xiao           Modified comment(s),          */
-/*                                            assumed OS types to avoid   */
-/*                                            standalone compiling error, */
-/*                                            added CCID trace IDs,       */
-/*                                            resulting in version 6.1.11 */
-/*  07-29-2022     Chaoqiong Xiao           Modified comment(s),          */
-/*                                            fixed parameter/variable    */
-/*                                            names conflict C++ keyword, */
-/*                                            added feedback size defs,   */
-/*                                            added shared device config  */
-/*                                            descriptor for enum scan,   */
-/*                                            resulting in version 6.1.12 */
-/*  10-31-2022     Chaoqiong Xiao           Modified comment(s),          */
-/*                                            added some ETH error codes, */
-/*                                            allowed align minimal def,  */
-/*                                            added interface instance    */
-/*                                            creation strategy control,  */
-/*                                            resulting in version 6.2.0  */
-/*  03-08-2023     Chaoqiong Xiao           Modified comment(s),          */
-/*                                            accepted UX_MAX_CLASSES as  */
-/*                                            max class driver configure, */
-/*                                            added a new error code,     */
-/*                                            resulting in version 6.2.1  */
-/*  10-31-2023     Chaoqiong Xiao           Modified comment(s),          */
-/*                                            refined memory management,  */
-/*                                            added a new mode to manage  */
-/*                                            endpoint buffer in classes, */
-/*                                            optimized USB descriptors,  */
-/*                                            added error checks support, */
-/*                                            resulting in version 6.3.0  */
-/*  12-31-2023     Chaoqiong Xiao           Modified comment(s),          */
-/*                                            resulting in version 6.4.0  */
-/*  03-01-2024     Tiejun Zhou              Modified comment(s),          */
-/*                                            update version number,      */
-/*                                            resulting in version 6.4.1  */
-/*  02-19-2025     Frédéric Desbiens        Modified comment(s),          */
-/*                                            update version number,      */
-/*                                            resulting in version 6.4.2  */
 /*                                                                        */
 /**************************************************************************/
 
@@ -353,9 +244,9 @@ typedef signed char               SCHAR;
 /* Define basic constants for the USBX Stack.  */
 #define AZURE_RTOS_USBX
 #define USBX_MAJOR_VERSION            6
-#define USBX_MINOR_VERSION            4
-#define USBX_PATCH_VERSION            3
-#define USBX_BUILD_VERSION            202503
+#define USBX_MINOR_VERSION            5
+#define USBX_PATCH_VERSION            1
+#define USBX_BUILD_VERSION            202602
 #define USBX_HOTFIX_VERSION           'a'
 
 /* Macros for concatenating tokens, where UX_CONCATn concatenates n tokens.  */
@@ -2860,7 +2751,6 @@ typedef struct UX_HOST_CLASS_DPUMP_STRUCT
 #define ux_device_stack_transfer_run                            _ux_device_stack_transfer_run
 
 #define ux_hcd_ehci_initialize                                  _ux_hcd_ehci_initialize
-#define ux_hcd_isp1161_initialize                               _ux_hcd_isp1161_initialize
 #define ux_hcd_ohci_initialize                                  _ux_hcd_ohci_initialize
 #define ux_hcd_sim_host_initialize                              _ux_hcd_sim_host_initialize
 #define ux_dcd_sim_slave_initialize                             _ux_dcd_sim_slave_initialize
@@ -2884,7 +2774,6 @@ UINT    uxe_system_initialize(VOID *non_cached_memory_pool_start, ULONG non_cach
 /* Define USBX Host API prototypes.  */
 
 UINT    ux_hcd_ehci_initialize(UX_HCD *hcd);
-UINT    ux_hcd_isp1161_initialize(UX_HCD *hcd);
 UINT    ux_hcd_ohci_initialize(UX_HCD *hcd);
 UINT    ux_hcd_sim_host_initialize(UX_HCD *hcd);
 
@@ -2920,13 +2809,9 @@ UINT    ux_host_stack_transfer_run(UX_TRANSFER *transfer_request);
 
 /* Define USBX Device API prototypes.  */
 
-UINT    ux_dcd_at91_initialize(ULONG dcd_io);
-UINT    ux_dcd_isp1181_initialize(ULONG dcd_io, ULONG dcd_irq, ULONG dcd_vbus_address);
-UINT    ux_dcd_ml6965_initialize(ULONG dcd_io, ULONG dcd_irq, ULONG dcd_vbus_address);
 UINT    ux_dcd_sim_slave_initialize(VOID);
 
 UINT    ux_device_class_storage_entry(UX_SLAVE_CLASS_COMMAND *command);
-VOID    ux_device_class_storage_thread(ULONG);
 UINT    ux_device_stack_alternate_setting_get(ULONG interface_value);
 UINT    ux_device_stack_alternate_setting_set(ULONG interface_value, ULONG alternate_setting_value);
 UINT    ux_device_stack_class_register(UCHAR *class_name,
@@ -2954,7 +2839,6 @@ UINT    ux_device_stack_interface_set(UCHAR * device_framework, ULONG device_fra
                                     ULONG alternate_setting_value);
 UINT    ux_device_stack_interface_start(UX_SLAVE_INTERFACE *ux_interface);
 UINT    ux_device_stack_transfer_request(UX_SLAVE_TRANSFER *transfer_request, ULONG slave_length, ULONG host_length);
-UINT    ux_device_stack_transfer_request_abort(UX_SLAVE_TRANSFER *transfer_request, ULONG completion_code);
 UINT    ux_device_stack_microsoft_extension_register(ULONG vendor_request,
                                     UINT (*vendor_request_function)(ULONG, ULONG, ULONG, ULONG, UCHAR *, ULONG *));
 

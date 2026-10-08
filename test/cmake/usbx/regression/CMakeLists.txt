@@ -139,6 +139,7 @@ set(ux_class_hid_test_cases
     ${SOURCE_DIR}/usbx_ux_device_class_hid_activate_test2.c
     ${SOURCE_DIR}/usbx_ux_device_class_hid_activate_test3.c
     ${SOURCE_DIR}/usbx_ux_device_class_hid_control_request_test.c
+    ${SOURCE_DIR}/usbx_ux_device_class_hid_set_protocol_callback_test.c
     ${SOURCE_DIR}/usbx_ux_device_class_hid_initialize_test.c
     ${SOURCE_DIR}/usbx_ux_device_class_hid_interrupt_thread_test2.c
     ${SOURCE_DIR}/usbx_ux_device_class_hid_read_test.c
@@ -347,6 +348,7 @@ set(ux_class_storage_test_cases
     ${SOURCE_DIR}/usbx_ux_device_class_storage_read_test.c
     ${SOURCE_DIR}/usbx_ux_device_class_storage_request_sense_test.c
     ${SOURCE_DIR}/usbx_ux_device_class_storage_start_stop_test.c
+    ${SOURCE_DIR}/usbx_ux_device_class_storage_media_start_stop_test.c
     ${SOURCE_DIR}/usbx_ux_device_class_storage_synchronize_cache_test.c
     ${SOURCE_DIR}/usbx_ux_device_class_storage_test_ready_test.c
     ${SOURCE_DIR}/usbx_ux_device_class_storage_thread_test.c

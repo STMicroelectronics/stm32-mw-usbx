@@ -1,3 +1,14 @@
+/***************************************************************************/
+/* Copyright (c) 2024 Microsoft Corporation                                */
+/* Copyright (c) 2026 Eclipse ThreadX contributors                         */
+/*                                                                         */
+/* This program and the accompanying materials are made available under    */
+/* the terms of the MIT License which is available at                      */
+/* https://opensource.org/licenses/MIT.                                    */
+/*                                                                         */
+/* SPDX-License-Identifier: MIT                                            */
+/***************************************************************************/
+
 /* This tests the case where there is only one default data interface and it
    has no endpoints. Host should report an error. */
 
@@ -97,8 +108,8 @@ static unsigned char one_data_interface_with_no_endpoints_framework[] = {
 };
 
 static DEVICE_INIT_DATA device_init_data = {
-    .framework = one_data_interface_with_no_endpoints_framework, 
-    .framework_length = sizeof(one_data_interface_with_no_endpoints_framework), 
+    .framework = one_data_interface_with_no_endpoints_framework,
+    .framework_length = sizeof(one_data_interface_with_no_endpoints_framework),
     .dont_register_hcd = 1,
 };
 

@@ -1,3 +1,14 @@
+/***************************************************************************/
+/* Copyright (c) 2024 Microsoft Corporation                                */
+/* Copyright (c) 2026 Eclipse ThreadX contributors                         */
+/*                                                                         */
+/* This program and the accompanying materials are made available under    */
+/* the terms of the MIT License which is available at                      */
+/* https://opensource.org/licenses/MIT.                                    */
+/*                                                                         */
+/* SPDX-License-Identifier: MIT                                            */
+/***************************************************************************/
+
 #include <stdio.h>
 #include "tx_api.h"
 #include "ux_api.h"
@@ -68,8 +79,8 @@ UX_TRANSFER     *transfer_request;
 
     /* Inform user.  */
     printf("Running USB host Class Hub Port Change Coverage Test ............... ");
-    
-    ux_system_initialize(usb_memory_pool_area, USB_MEMORY_POOL_SIZE, 
+
+    ux_system_initialize(usb_memory_pool_area, USB_MEMORY_POOL_SIZE,
         usb_cache_safe_memory_pool_area, USB_CACHE_SAFE_MEMORY_POOL_SIZE);
 
 

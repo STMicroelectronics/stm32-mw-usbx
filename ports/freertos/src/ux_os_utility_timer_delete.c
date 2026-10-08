@@ -89,8 +89,9 @@ UINT _ux_os_utility_timer_delete(UX_TIMER *timer)
   }
   else
   {
-    /* Reset the timer handle */
+    /* Reset the timer handle and reschedule period. */
     timer->timer_handle = 0U;
+    timer->timer_reschedule_ticks = 0U;
   }
 
   /* Return completion status. */

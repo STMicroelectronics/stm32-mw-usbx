@@ -1,6 +1,5 @@
 /***************************************************************************
- * Copyright (c) 2024 Microsoft Corporation
- * Copyright (c) 2025-2026 STMicroelectronics.
+ * Copyright (c) 2025-present Eclipse ThreadX Contributors
  *
  * This program and the accompanying materials are made available under the
  * terms of the MIT License which is available at
@@ -15,33 +14,30 @@
 /**                                                                       */
 /** USBX Component                                                        */
 /**                                                                       */
-/**   Utility                                                             */
+/**   Slave Simulator Controller Driver                                   */
 /**                                                                       */
 /**************************************************************************/
 /**************************************************************************/
 
+#define UX_SOURCE_CODE
+
 
 /* Include necessary system files.  */
 
-#define UX_SOURCE_CODE
-
 #include "ux_api.h"
-#include "tx_thread.h"
+#include "ux_dcd_sim_slave.h"
 
 
 /**************************************************************************/
 /*                                                                        */
 /*  FUNCTION                                               RELEASE        */
 /*                                                                        */
-/*    _ux_os_utility_thread_identify                      PORTABLE C      */
-/*                                                           6.4.1        */
-/*  AUTHOR                                                                */
-/*                                                                        */
-/*    Chaoqiong Xiao, Microsoft Corporation                               */
+/*    _ux_dcd_sim_slave_uninitialize                      PORTABLE C      */
 /*                                                                        */
 /*  DESCRIPTION                                                           */
 /*                                                                        */
-/*    This function return a pointer to the calling thread.               */
+/*    This function uninitializes the USB simulation slave controller.    */
+/*    The controller releases its resources (memory ...).                 */
 /*                                                                        */
 /*  INPUT                                                                 */
 /*                                                                        */
@@ -53,33 +49,40 @@
 /*                                                                        */
 /*  CALLS                                                                 */
 /*                                                                        */
-/*    tx_thread_identify                       ThreadX identify function  */
+/*    _ux_utility_memory_free               Free memory block             */
 /*                                                                        */
 /*  CALLED BY                                                             */
 /*                                                                        */
-/*    USBX Components                                                     */
-/*                                                                        */
-/*  RELEASE HISTORY                                                       */
-/*                                                                        */
-/*    DATE              NAME                      DESCRIPTION             */
-/*                                                                        */
-/*  05-19-2020     Chaoqiong Xiao           Initial Version 6.0           */
-/*  09-30-2020     Chaoqiong Xiao           Modified comment(s),          */
-/*                                            used UX prefix to refer to  */
-/*                                            TX symbols instead of using */
-/*                                            them directly,              */
-/*                                            resulting in version 6.1    */
-/*  04-25-2022     Chaoqiong Xiao           Modified comment(s),          */
-/*                                            off in standalone build,    */
-/*                                            resulting in version 6.1.11 */
-/*  21-05-2024     STMicroelectronics       Modified the code             */
-/*                                            to be RTOS agnostic support */
-/*                                            resulting in version 6.4.1  */
+/*    Application                                                         */
 /*                                                                        */
 /**************************************************************************/
-UX_THREAD *_ux_os_utility_thread_identify(VOID)
+UINT  _ux_dcd_sim_slave_uninitialize(VOID)
 {
-  /* If we're under interrupt, the thread returned by tx_thread_identify
-  is the thread running prior to the ISR. Instead, we set it to null.  */
-  return(UX_THREAD_GET_SYSTEM_STATE() ? UX_NULL : tx_thread_identify());
+
+UX_SLAVE_DCD            *dcd;
+UX_DCD_SIM_SLAVE        *dcd_sim_slave;
+
+    /* Get the pointer to the DCD.  */
+    dcd = &_ux_system_slave -> ux_system_slave_dcd;
+
+    /* If already unused, treat as success.  */
+    if (dcd -> ux_slave_dcd_status == UX_UNUSED)
+        return(UX_SUCCESS);
+
+    /* Set the state of the controller to HALTED first.  */
+    dcd -> ux_slave_dcd_status = UX_DCD_STATUS_HALTED;
+
+    /* Free the simulated slave controller.  */
+    dcd_sim_slave = (UX_DCD_SIM_SLAVE *) dcd -> ux_slave_dcd_controller_hardware;
+    if (dcd_sim_slave != UX_NULL)
+        _ux_utility_memory_free(dcd_sim_slave);
+
+    /* Clear DCD bindings.  */
+    dcd -> ux_slave_dcd_controller_hardware = UX_NULL;
+    dcd -> ux_slave_dcd_function = UX_NULL;
+
+    /* Set the state of the controller to UNUSED.  */
+    dcd -> ux_slave_dcd_status = UX_UNUSED;
+
+    return(UX_SUCCESS);
 }

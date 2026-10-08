@@ -1,18 +1,19 @@
 /***************************************************************************
- * Copyright (c) 2024 Microsoft Corporation 
- * 
+ * Copyright (c) 2024 Microsoft Corporation
+ * Copyright (c) 2026-present Eclipse ThreadX contributors
+ *
  * This program and the accompanying materials are made available under the
  * terms of the MIT License which is available at
  * https://opensource.org/licenses/MIT.
- * 
+ *
  * SPDX-License-Identifier: MIT
  **************************************************************************/
 
 
 /**************************************************************************/
 /**************************************************************************/
-/**                                                                       */ 
-/** USBX Component                                                        */ 
+/**                                                                       */
+/** USBX Component                                                        */
 /**                                                                       */
 /**   EHCI Controller                                                     */
 /**                                                                       */
@@ -20,40 +21,20 @@
 /**************************************************************************/
 
 
-/**************************************************************************/ 
-/*                                                                        */ 
-/*  COMPONENT DEFINITION                                   RELEASE        */ 
-/*                                                                        */ 
-/*    ux_hcd_ehci.h                                       PORTABLE C      */ 
+/**************************************************************************/
+/*                                                                        */
+/*  COMPONENT DEFINITION                                   RELEASE        */
+/*                                                                        */
+/*    ux_hcd_ehci.h                                       PORTABLE C      */
 /*                                                           6.1.8        */
 /*  AUTHOR                                                                */
 /*                                                                        */
 /*    Chaoqiong Xiao, Microsoft Corporation                               */
 /*                                                                        */
 /*  DESCRIPTION                                                           */
-/*                                                                        */ 
+/*                                                                        */
 /*    This file contains all the header and extern functions used by the  */
-/*    USBX host EHCI Controller.                                          */ 
-/*                                                                        */ 
-/*  RELEASE HISTORY                                                       */ 
-/*                                                                        */ 
-/*    DATE              NAME                      DESCRIPTION             */ 
-/*                                                                        */ 
-/*  05-19-2020     Chaoqiong Xiao           Initial Version 6.0           */
-/*  09-30-2020     Chaoqiong Xiao           Modified comment(s),          */
-/*                                            used UX prefix to refer to  */
-/*                                            TX symbols instead of using */
-/*                                            them directly,              */
-/*                                            resulting in version 6.1    */
-/*  11-09-2020     Chaoqiong Xiao           Modified comment(s),          */
-/*                                            used unsigned defines,      */
-/*                                            named unions and structs,   */
-/*                                            resulting in version 6.1.2  */
-/*  08-02-2021     Chaoqiong Xiao           Modified comment(s),          */
-/*                                            fixed spelling error,       */
-/*                                            added extern "C" keyword    */
-/*                                            for compatibility with C++, */
-/*                                            resulting in version 6.1.8  */
+/*    USBX host EHCI Controller.                                          */
 /*                                                                        */
 /**************************************************************************/
 
@@ -65,12 +46,12 @@
 /* Determine if a C++ compiler is being used.  If so, ensure that standard 
    C is used to process the API information.  */ 
 
-#ifdef   __cplusplus 
+#ifdef   __cplusplus
 
-/* Yes, C++ compiler is present.  Use standard C.  */ 
-extern   "C" { 
+/* Yes, C++ compiler is present.  Use standard C.  */
+extern   "C" {
 
-#endif  
+#endif
 
 
 /* Possible defined EHCI HCD extensions.  */
@@ -88,7 +69,7 @@ extern   "C" {
 
 #define UX_EHCI_CONTROLLER                                  2
 #define UX_EHCI_MAX_PAYLOAD                                 16384
-#define UX_EHCI_FRAME_DELAY                                 4 
+#define UX_EHCI_FRAME_DELAY                                 4
 #define UX_EHCI_PAGE_SIZE                                   4096
 #define UX_EHCI_PAGE_ALIGN                                  0xfffff000
 
@@ -136,7 +117,7 @@ extern   "C" {
 
 /* The number if entries in the periodic tree can be changed to save space IF and only IF the PFLF flag in the HCCPARAMS register
    allows it. Setting values less than 1024 in controllers without the ability to change the Frame List Size leads to a EHCI crash.  */
-   
+
 #ifndef UX_EHCI_FRAME_LIST_ENTRIES
 #define UX_EHCI_FRAME_LIST_ENTRIES                          1024
 #endif
@@ -343,30 +324,30 @@ typedef union UX_EHCI_PERIODIC_LINK_POINTER_UNION {
 /* Define the EHCI structure.  */
 
 typedef struct UX_HCD_EHCI_STRUCT
-{                                      
+{
 
     struct UX_HCD_STRUCT
                     *ux_hcd_ehci_hcd_owner;
     ULONG           ux_hcd_ehci_hcor;
-    struct UX_EHCI_ED_STRUCT              
+    struct UX_EHCI_ED_STRUCT
                     **ux_hcd_ehci_frame_list;
     ULONG           *ux_hcd_ehci_base;
     UINT            ux_hcd_ehci_nb_root_hubs;
-    struct UX_EHCI_TD_STRUCT              
+    struct UX_EHCI_TD_STRUCT
                     *ux_hcd_ehci_done_head;
-    struct UX_EHCI_ED_STRUCT              
+    struct UX_EHCI_ED_STRUCT
                     *ux_hcd_ehci_ed_list;
-    struct UX_EHCI_TD_STRUCT              
+    struct UX_EHCI_TD_STRUCT
                     *ux_hcd_ehci_td_list;
-    struct UX_EHCI_FSISO_TD_STRUCT        
+    struct UX_EHCI_FSISO_TD_STRUCT
                     *ux_hcd_ehci_fsiso_td_list;
-    struct UX_EHCI_HSISO_TD_STRUCT        
+    struct UX_EHCI_HSISO_TD_STRUCT
                     *ux_hcd_ehci_hsiso_td_list;
-    struct UX_EHCI_ED_STRUCT              
+    struct UX_EHCI_ED_STRUCT
                     *ux_hcd_ehci_asynch_head_list;
-    struct UX_EHCI_ED_STRUCT              
+    struct UX_EHCI_ED_STRUCT
                     *ux_hcd_ehci_asynch_first_list;
-    struct UX_EHCI_ED_STRUCT              
+    struct UX_EHCI_ED_STRUCT
                     *ux_hcd_ehci_asynch_last_list;
     struct UX_EHCI_HSISO_TD_STRUCT
                     *ux_hcd_ehci_hsiso_scan_list;
@@ -387,26 +368,26 @@ typedef struct UX_HCD_EHCI_STRUCT
 } UX_HCD_EHCI;
 
 
-/* Define EHCI ED structure.  */ 
+/* Define EHCI ED structure.  */
 
 typedef struct UX_EHCI_ED_STRUCT
-{                                      
+{
 
-    struct UX_EHCI_ED_STRUCT              
+    struct UX_EHCI_ED_STRUCT
                     *ux_ehci_ed_queue_head;
     ULONG           ux_ehci_ed_cap0;
     ULONG           ux_ehci_ed_cap1;
-    struct UX_EHCI_TD_STRUCT              
+    struct UX_EHCI_TD_STRUCT
                     *ux_ehci_ed_current_td;
-    struct UX_EHCI_TD_STRUCT              
+    struct UX_EHCI_TD_STRUCT
                     *ux_ehci_ed_queue_element;
-    struct UX_EHCI_TD_STRUCT              
+    struct UX_EHCI_TD_STRUCT
                     *ux_ehci_ed_alternate_td;
     ULONG           ux_ehci_ed_state;
-    VOID            *ux_ehci_ed_bp0; 
-    VOID            *ux_ehci_ed_bp1; 
-    VOID            *ux_ehci_ed_bp2; 
-    VOID            *ux_ehci_ed_bp3; 
+    VOID            *ux_ehci_ed_bp0;
+    VOID            *ux_ehci_ed_bp1;
+    VOID            *ux_ehci_ed_bp2;
+    VOID            *ux_ehci_ed_bp3;
     VOID            *ux_ehci_ed_bp4;
     /* 12 DWords, 48 bytes QH for controller end.  */
 
@@ -498,24 +479,24 @@ typedef struct UX_EHCI_ED_STRUCT
 /* Define EHCI TD structure.  */
 
 typedef struct UX_EHCI_TD_STRUCT
-{                                      
+{
 
-    struct UX_EHCI_TD_STRUCT              
+    struct UX_EHCI_TD_STRUCT
                     *ux_ehci_td_link_pointer;
-    struct UX_EHCI_TD_STRUCT              
+    struct UX_EHCI_TD_STRUCT
                     *ux_ehci_td_alternate_link_pointer;
     ULONG           ux_ehci_td_control;
-    VOID            *ux_ehci_td_bp0; 
-    VOID            *ux_ehci_td_bp1; 
-    VOID            *ux_ehci_td_bp2; 
-    VOID            *ux_ehci_td_bp3; 
-    VOID            *ux_ehci_td_bp4; 
+    VOID            *ux_ehci_td_bp0;
+    VOID            *ux_ehci_td_bp1;
+    VOID            *ux_ehci_td_bp2;
+    VOID            *ux_ehci_td_bp3;
+    VOID            *ux_ehci_td_bp4;
     /* 8-DWords, 32-bytes qTD for controller.  */
-    struct UX_TRANSFER_STRUCT             
+    struct UX_TRANSFER_STRUCT
                     *ux_ehci_td_transfer_request;
-    struct UX_EHCI_TD_STRUCT              
+    struct UX_EHCI_TD_STRUCT
                     *ux_ehci_td_next_td_transfer_request;
-    struct UX_EHCI_ED_STRUCT              
+    struct UX_EHCI_ED_STRUCT
                     *ux_ehci_td_ed;
     ULONG           ux_ehci_td_length;
     ULONG           ux_ehci_td_status;
@@ -547,9 +528,9 @@ typedef struct UX_EHCI_TD_STRUCT
 #define UX_EHCI_PID_SETUP                                   0x00000200u
 #define UX_EHCI_PID_MASK                                    0x00000300u
 
-#define  UX_EHCI_TD_SETUP_PHASE                             0x00010000u 
-#define  UX_EHCI_TD_DATA_PHASE                              0x00020000u 
-#define  UX_EHCI_TD_STATUS_PHASE                            0x00040000u 
+#define  UX_EHCI_TD_SETUP_PHASE                             0x00010000u
+#define  UX_EHCI_TD_DATA_PHASE                              0x00020000u
+#define  UX_EHCI_TD_STATUS_PHASE                            0x00040000u
 
 /* Define EHCI ISOCHRONOUS TD extension structure.  */
 
@@ -585,7 +566,7 @@ typedef struct UX_EHCI_HSISO_TD_STRUCT
     union UX_EHCI_PERIODIC_LINK_POINTER_UNION
                     ux_ehci_hsiso_td_next_lp;
     ULONG           ux_ehci_hsiso_td_control[8];
-    VOID            *ux_ehci_hsiso_td_bp[7]; 
+    VOID            *ux_ehci_hsiso_td_bp[7];
     /* 16 DWords, 64-bytes iTD for controller end.  */
     UCHAR           ux_ehci_hsiso_td_status;
     UCHAR           ux_ehci_hsiso_td_frload;            /* REQ load map.  */
@@ -593,9 +574,9 @@ typedef struct UX_EHCI_HSISO_TD_STRUCT
     union UX_EHCI_PERIODIC_LINK_POINTER_UNION
                     ux_ehci_hsiso_td_previous_lp;
     struct UX_EHCI_HSISO_TD_STRUCT
-                    *ux_ehci_hsiso_td_next_scan_td; 
+                    *ux_ehci_hsiso_td_next_scan_td;
     struct UX_EHCI_HSISO_TD_STRUCT
-                    *ux_ehci_hsiso_td_previous_scan_td; 
+                    *ux_ehci_hsiso_td_previous_scan_td;
     struct UX_TRANSFER_STRUCT
                     *ux_ehci_hsiso_td_fr_transfer[3];
     struct UX_EHCI_HSISO_ED_STRUCT
@@ -682,9 +663,9 @@ typedef struct UX_EHCI_FSISO_TD_STRUCT
     UCHAR           reserved[1];
     struct UX_ENDPOINT_STRUCT
                     *ux_ehci_fsiso_td_endpoint;
-    struct UX_TRANSFER_STRUCT             
+    struct UX_TRANSFER_STRUCT
                     *ux_ehci_fsiso_td_transfer_head;
-    struct UX_TRANSFER_STRUCT             
+    struct UX_TRANSFER_STRUCT
                     *ux_ehci_fsiso_td_transfer_tail;
     union UX_EHCI_PERIODIC_LINK_POINTER_UNION
                     ux_ehci_fsiso_td_previous_lp;
@@ -850,11 +831,11 @@ VOID    _ux_hcd_ehci_transfer_request_process(UX_TRANSFER *transfer_request);
 #define ux_hcd_ehci_initialize                      _ux_hcd_ehci_initialize
 #define ux_hcd_ehci_interrupt_handler               _ux_hcd_ehci_interrupt_handler
 
-/* Determine if a C++ compiler is being used.  If so, complete the standard 
-   C conditional started above.  */   
+/* Determine if a C++ compiler is being used.  If so, complete the standard
+   C conditional started above.  */
 #ifdef __cplusplus
-} 
-#endif 
+}
+#endif
 
 #endif
 

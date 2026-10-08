@@ -1,3 +1,14 @@
+/***************************************************************************/
+/* Copyright (c) 2024 Microsoft Corporation                                */
+/* Copyright (c) 2026 Eclipse ThreadX contributors                         */
+/*                                                                         */
+/* This program and the accompanying materials are made available under    */
+/* the terms of the MIT License which is available at                      */
+/* https://opensource.org/licenses/MIT.                                    */
+/*                                                                         */
+/* SPDX-License-Identifier: MIT                                            */
+/***************************************************************************/
+
 
 #include "ux_test.h"
 #include "ux_api.h"
@@ -206,7 +217,7 @@ UX_ENDPOINT                 *endpoint;
     }
 
     /* If the class instance was busy, let it finish properly and not return.  */
-    _ux_host_thread_sleep(UX_ENUMERATION_THREAD_WAIT); 
+    _ux_host_thread_sleep(UX_ENUMERATION_THREAD_WAIT);
 
     /* Destroy the instance.  */
     _ux_host_stack_class_instance_destroy(dummy -> ux_host_class_dummy_class, (VOID *) dummy);
@@ -336,7 +347,7 @@ UX_ENDPOINT                 *endpoint;
     }
 
     /* If the class instance was busy, let it finish properly and not return.  */
-    _ux_host_thread_sleep(UX_ENUMERATION_THREAD_WAIT); 
+    _ux_host_thread_sleep(UX_ENUMERATION_THREAD_WAIT);
 
     /* Destroy the instance.  */
     _ux_host_stack_class_instance_destroy(dummy -> ux_host_class_dummy_class, (VOID *) dummy);

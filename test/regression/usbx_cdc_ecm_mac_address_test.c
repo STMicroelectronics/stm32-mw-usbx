@@ -1,3 +1,14 @@
+/***************************************************************************/
+/* Copyright (c) 2024 Microsoft Corporation                                */
+/* Copyright (c) 2026 Eclipse ThreadX contributors                         */
+/*                                                                         */
+/* This program and the accompanying materials are made available under    */
+/* the terms of the MIT License which is available at                      */
+/* https://opensource.org/licenses/MIT.                                    */
+/*                                                                         */
+/* SPDX-License-Identifier: MIT                                            */
+/***************************************************************************/
+
 /* This tests general cases in the mac address string like hexadecimal values. */
 
 #include "usbx_ux_test_cdc_ecm.h"
@@ -21,11 +32,11 @@ static unsigned char mac_address_test_string_framework[] = {
     /* MAC Address string descriptor : Index 4 - "001E5841B878" */
         0x09, 0x04, 0x04, 0x0C,
         'A', 'A', /* Test capital upper and lower element. */
-        '0', '1', 
-        '2', '3', 
-        '4', 'b', 
-        'c', 'D', 
-        'e', 'f', 
+        '0', '1',
+        '2', '3',
+        '4', 'b',
+        'c', 'D',
+        'e', 'f',
 
 };
 

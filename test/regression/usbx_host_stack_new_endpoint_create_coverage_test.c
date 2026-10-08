@@ -1,3 +1,14 @@
+/***************************************************************************/
+/* Copyright (c) 2024 Microsoft Corporation                                */
+/* Copyright (c) 2026 Eclipse ThreadX contributors                         */
+/*                                                                         */
+/* This program and the accompanying materials are made available under    */
+/* the terms of the MIT License which is available at                      */
+/* https://opensource.org/licenses/MIT.                                    */
+/*                                                                         */
+/* SPDX-License-Identifier: MIT                                            */
+/***************************************************************************/
+
 #include <stdio.h>
 #include "tx_api.h"
 #include "ux_api.h"
@@ -15,9 +26,9 @@ static UX_INTERFACE test_interface;
 static struct UX_CONFIGURATION_STRUCT  test_configuration;
 static UCHAR test_interface_data[] = {
     /* ---------------------------------  Endpoint Descriptor */
-    /* 0 bLength,  bDescriptorType                            */ 0x04,     0x01, 
-    /* 2 bEndpintAddress, bmAttributes                        */ 0x00,     0x03, 
-    /* 4 wMaxPacketSize,                                      */ 0x00,     0x04, 
+    /* 0 bLength,  bDescriptorType                            */ 0x04,     0x01,
+    /* 2 bEndpintAddress, bmAttributes                        */ 0x00,     0x03,
+    /* 4 wMaxPacketSize,                                      */ 0x00,     0x04,
     /* 6 bInterval                                            */ 0x00};
 #ifdef CTEST
 void test_application_define(void *first_unused_memory)
@@ -35,10 +46,10 @@ UX_INTERFACE            *usbx_interface = &test_interface;
     printf("Running USB host Stack New Endpoint Create Coverage Test ........... ");
 
     memory_pointer = first_unused_memory;
-    
+
     /* Initialize USBX Memory.  */
     status =  ux_system_initialize(memory_pointer, UX_TEST_MEMORY_SIZE, UX_NULL, 0);
-    
+
     test_interface.ux_interface_configuration = &test_configuration;
 
     status = _ux_host_stack_new_endpoint_create(usbx_interface, interface_endpoint);

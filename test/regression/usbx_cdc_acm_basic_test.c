@@ -1,3 +1,14 @@
+/***************************************************************************/
+/* Copyright (c) 2024 Microsoft Corporation                                */
+/* Copyright (c) 2026 Eclipse ThreadX contributors                         */
+/*                                                                         */
+/* This program and the accompanying materials are made available under    */
+/* the terms of the MIT License which is available at                      */
+/* https://opensource.org/licenses/MIT.                                    */
+/*                                                                         */
+/* SPDX-License-Identifier: MIT                                            */
+/***************************************************************************/
+
 /* This test is designed to test the simple dpump host/device class operation.  */
 
 #include <stdio.h>
@@ -1177,6 +1188,7 @@ ULONG                                               test_n;
 UX_HOST_CLASS_COMMAND                               command;
 UX_HOST_CLASS_COMMAND                               command1;
 ULONG                                               mem_free;
+USHORT                                              break_ms;
 
     stepinfo("\n");
 
@@ -2100,10 +2112,36 @@ ULONG                                               mem_free;
     }
 
     /* Try IOCTRL UX_HOST_CLASS_CDC_ACM_IOCTL_SEND_BREAK */
+
     stepinfo(">>>>>>>>>>>> IOCTRL UX_HOST_CLASS_CDC_ACM_IOCTL_SEND_BREAK\n");
-    status = ux_host_class_cdc_acm_ioctl(cdc_acm_host_control, UX_HOST_CLASS_CDC_ACM_IOCTL_SEND_BREAK, &test_n);
-    /* Not supported by simulator */
-    if (status == UX_SUCCESS)
+
+    break_ms = 0xFFFF;
+
+    status = ux_host_class_cdc_acm_ioctl(cdc_acm_host_control, UX_HOST_CLASS_CDC_ACM_IOCTL_SEND_BREAK, &break_ms);
+
+    if ((status != UX_SUCCESS) || (cdc_acm_slave -> ux_slave_class_cdc_acm_break_duration != break_ms))
+    {
+
+        printf("ERROR #78: IOCTRL UX_HOST_CLASS_CDC_ACM_IOCTL_SEND_BREAK should fail\n");
+        test_control_return(1);
+    }
+
+    break_ms = 1000;
+
+    status = ux_host_class_cdc_acm_ioctl(cdc_acm_host_control, UX_HOST_CLASS_CDC_ACM_IOCTL_SEND_BREAK, &break_ms);
+
+    if ((status != UX_SUCCESS) || (cdc_acm_slave -> ux_slave_class_cdc_acm_break_duration != break_ms))
+    {
+
+        printf("ERROR #78: IOCTRL UX_HOST_CLASS_CDC_ACM_IOCTL_SEND_BREAK should fail\n");
+        test_control_return(1);
+    }
+
+    break_ms = 0x0000;
+
+    status = ux_host_class_cdc_acm_ioctl(cdc_acm_host_control, UX_HOST_CLASS_CDC_ACM_IOCTL_SEND_BREAK, &break_ms);
+
+    if ((status != UX_SUCCESS) || (cdc_acm_slave -> ux_slave_class_cdc_acm_break_duration != break_ms))
     {
 
         printf("ERROR #78: IOCTRL UX_HOST_CLASS_CDC_ACM_IOCTL_SEND_BREAK should fail\n");

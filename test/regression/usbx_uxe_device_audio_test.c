@@ -1,3 +1,14 @@
+/***************************************************************************/
+/* Copyright (c) 2024 Microsoft Corporation                                */
+/* Copyright (c) 2026 Eclipse ThreadX contributors                         */
+/*                                                                         */
+/* This program and the accompanying materials are made available under    */
+/* the terms of the MIT License which is available at                      */
+/* https://opensource.org/licenses/MIT.                                    */
+/*                                                                         */
+/* SPDX-License-Identifier: MIT                                            */
+/***************************************************************************/
+
 /* This test is designed to test the ux_utility_descriptor_pack.  */
 
 #include <stdio.h>
@@ -497,7 +508,7 @@ UX_DEVICE_CLASS_AUDIO_STREAM            dummy_stream_inst;
 UX_DEVICE_CLASS_AUDIO_STREAM            *dummy_stream = &dummy_stream_inst;
 UCHAR                                   *dummy_buffer;
 ULONG                                   dummy_dw;
-UX_SLAVE_TRANSFER                       dummy_transfer; 
+UX_SLAVE_TRANSFER                       dummy_transfer;
 UX_DEVICE_CLASS_AUDIO10_CONTROL_GROUP   dummy_group10;
 UX_DEVICE_CLASS_AUDIO20_CONTROL_GROUP   dummy_group20;
 

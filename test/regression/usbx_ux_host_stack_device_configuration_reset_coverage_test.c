@@ -1,3 +1,14 @@
+/***************************************************************************/
+/* Copyright (c) 2024 Microsoft Corporation                                */
+/* Copyright (c) 2026 Eclipse ThreadX contributors                         */
+/*                                                                         */
+/* This program and the accompanying materials are made available under    */
+/* the terms of the MIT License which is available at                      */
+/* https://opensource.org/licenses/MIT.                                    */
+/*                                                                         */
+/* SPDX-License-Identifier: MIT                                            */
+/***************************************************************************/
+
 #include <stdio.h>
 #include "tx_api.h"
 #include "ux_api.h"
@@ -29,15 +40,15 @@ void    usbx_ux_host_class_stack_device_configuration_reset_coverage_test_applic
 {
 
 UINT                    status = 0;
-UX_TRANSFER             *transfer_request; 
+UX_TRANSFER             *transfer_request;
 
     /* Inform user.  */
     printf("Running USB host stack device configuration Reset Coverage Test .... ");
 
     ux_system_initialize(memory_buffer, 4096, UX_NULL, 0);
-    
+
     device.ux_device_state = UX_DEVICE_SELF_POWERED_STATE;
-    
+
     device.ux_device_packed_configuration = (UCHAR*)_ux_utility_memory_allocate(UX_NO_ALIGN, UX_REGULAR_MEMORY, 16);
 
     transfer_request = &device.ux_device_control_endpoint.ux_endpoint_transfer_request;

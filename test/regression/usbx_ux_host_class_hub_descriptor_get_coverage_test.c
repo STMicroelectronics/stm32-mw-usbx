@@ -1,3 +1,14 @@
+/***************************************************************************/
+/* Copyright (c) 2024 Microsoft Corporation                                */
+/* Copyright (c) 2026 Eclipse ThreadX contributors                         */
+/*                                                                         */
+/* This program and the accompanying materials are made available under    */
+/* the terms of the MIT License which is available at                      */
+/* https://opensource.org/licenses/MIT.                                    */
+/*                                                                         */
+/* SPDX-License-Identifier: MIT                                            */
+/***************************************************************************/
+
 #include <stdio.h>
 #include "tx_api.h"
 #include "ux_api.h"
@@ -23,7 +34,7 @@ static UINT entry_function(struct UX_HCD_STRUCT *parm1, UINT parm2, VOID *parm3)
     UX_TRANSFER *t_request;
     UCHAR *data;
 
-    
+
     t_request = (UX_TRANSFER*)parm3;
     data = t_request -> ux_transfer_request_data_pointer;
     if(count == 0)
@@ -82,7 +93,7 @@ UX_ENDPOINT             *control_endpoint;
 
     /* Test again to cover line 181 */
     _ux_host_class_hub_descriptor_get(&hub);
-    
+
 
     printf("   Passed\n");
     test_control_return(0);

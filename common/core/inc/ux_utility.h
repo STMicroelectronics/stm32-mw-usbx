@@ -1,5 +1,6 @@
 /***************************************************************************
  * Copyright (c) 2024 Microsoft Corporation
+ * Copyright (c) 2026-present Eclipse ThreadX contributors
  * Copyright (c) 2025-2026 STMicroelectronics.
  *
  * This program and the accompanying materials are made available under the
@@ -35,36 +36,6 @@
 /*                                                                        */
 /*    This file contains all the header and extern functions used by the  */
 /*    USBX components that utilize utility functions.                     */
-/*                                                                        */
-/*  RELEASE HISTORY                                                       */
-/*                                                                        */
-/*    DATE              NAME                      DESCRIPTION             */
-/*                                                                        */
-/*  05-19-2020     Chaoqiong Xiao           Initial Version 6.0           */
-/*  09-30-2020     Chaoqiong Xiao           Modified comment(s),          */
-/*                                            added timer delete, used UX */
-/*                                            prefix to refer to TX       */
-/*                                            symbols instead of using    */
-/*                                            them directly,              */
-/*                                            resulting in version 6.1    */
-/*  01-31-2022     Chaoqiong Xiao           Modified comment(s),          */
-/*                                            added standalone support,   */
-/*                                            resulting in version 6.1.10 */
-/*  04-25-2022     Chaoqiong Xiao           Modified comment(s),          */
-/*                                            fixed standalone compile,   */
-/*                                            resulting in version 6.1.11 */
-/*  07-29-2022     Chaoqiong Xiao           Modified comment(s),          */
-/*                                            added macros for RTOS calls,*/
-/*                                            fixed OHCI PRSC issue,      */
-/*                                            resulting in version 6.1.12 */
-/*  10-31-2023     Chaoqiong Xiao           Modified comment(s),          */
-/*                                            refined memory management,  */
-/*                                            added new function to check */
-/*                                            parsed size of descriptor,  */
-/*                                            resulting in version 6.3.0  */
-/*  21-05-2024     STMicroelectronics       Modified the code             */
-/*                                            to be RTOS agnostic support */
-/*                                            resulting in version 6.4.1  */
 /*                                                                        */
 /**************************************************************************/
 
@@ -116,30 +87,38 @@ VOID             _ux_utility_debug_callback_register(VOID (*debug_callback)(UCHA
 VOID             _ux_utility_delay_ms(ULONG ms_wait);
 
 #if !defined(UX_STANDALONE)
-#define _ux_utility_event_flags_create                              _ux_os_utility_event_flags_create
-#define _ux_utility_event_flags_delete                              _ux_os_utility_event_flags_delete
-#define _ux_utility_event_flags_get                                 _ux_os_utility_event_flags_get
-#define _ux_utility_event_flags_set                                 _ux_os_utility_event_flags_set
-#define _ux_utility_mutex_create                                    _ux_os_utility_mutex_create
-#define _ux_utility_mutex_delete                                    _ux_os_utility_mutex_delete
-#define _ux_utility_mutex_off                                       _ux_os_utility_mutex_off
-#define _ux_utility_mutex_on                                        _ux_os_utility_mutex_on
-#define _ux_utility_semaphore_create                                _ux_os_utility_semaphore_create
-#define _ux_utility_semaphore_delete                                _ux_os_utility_semaphore_delete
-#define _ux_utility_semaphore_get                                   _ux_os_utility_semaphore_get
-#define _ux_utility_semaphore_put                                   _ux_os_utility_semaphore_put
-#define _ux_utility_thread_create                                   _ux_os_utility_thread_create
-#define _ux_utility_thread_delete                                   _ux_os_utility_thread_delete
-#define _ux_utility_thread_identify                                 _ux_os_utility_thread_identify
-#define _ux_utility_thread_relinquish                               _ux_os_utility_thread_relinquish
-#define _ux_utility_thread_resume                                   _ux_os_utility_thread_resume
-#define _ux_utility_thread_schedule_other                           _ux_os_utility_thread_schedule_other
-#define _ux_utility_thread_sleep                                    _ux_os_utility_thread_sleep
-#define _ux_utility_thread_suspend                                  _ux_os_utility_thread_suspend
-#define _ux_utility_timer_create                                    _ux_os_utility_timer_create
-#define _ux_utility_timer_delete                                    _ux_os_utility_timer_delete
-#define _ux_utility_timer_start                                     _ux_os_utility_timer_start
-#define _ux_utility_sleep_ms                                        _ux_os_utility_sleep_ms
+#define _ux_utility_event_flags_create                          _ux_os_utility_event_flags_create
+#define _ux_utility_event_flags_delete                          _ux_os_utility_event_flags_delete
+#define _ux_utility_event_flags_get                             _ux_os_utility_event_flags_get
+#define _ux_utility_event_flags_set                             _ux_os_utility_event_flags_set
+#define _ux_utility_mutex_create                                _ux_os_utility_mutex_create
+#define _ux_utility_mutex_created                               _ux_os_utility_mutex_created
+#define _ux_utility_mutex_suspended_count                       _ux_os_utility_mutex_suspended_count
+#define _ux_utility_mutex_delete                                _ux_os_utility_mutex_delete
+#define _ux_utility_mutex_off                                   _ux_os_utility_mutex_off
+#define _ux_utility_mutex_on                                    _ux_os_utility_mutex_on
+#define _ux_utility_semaphore_create                            _ux_os_utility_semaphore_create
+#define _ux_utility_semaphore_created                           _ux_os_utility_semaphore_created
+#define _ux_utility_semaphore_delete                            _ux_os_utility_semaphore_delete
+#define _ux_utility_semaphore_get                               _ux_os_utility_semaphore_get
+#define _ux_utility_semaphore_put                               _ux_os_utility_semaphore_put
+#define _ux_utility_semaphore_waiting                           _ux_os_utility_semaphore_waiting
+#define _ux_utility_thread_create                               _ux_os_utility_thread_create
+#define _ux_utility_thread_created                              _ux_os_utility_thread_created
+#define _ux_utility_thread_delete                               _ux_os_utility_thread_delete
+#define _ux_utility_thread_identify                             _ux_os_utility_thread_identify
+#define _ux_utility_thread_relinquish                           _ux_os_utility_thread_relinquish
+#define _ux_utility_thread_resume                               _ux_os_utility_thread_resume
+#define _ux_utility_thread_schedule_other                       _ux_os_utility_thread_schedule_other
+#define _ux_utility_thread_sleep                                _ux_os_utility_thread_sleep
+#define _ux_utility_thread_suspend                              _ux_os_utility_thread_suspend
+#define _ux_utility_thread_entry                                _ux_os_utility_thread_entry
+#define _ux_utility_thread_highest_priority                     _ux_os_utility_thread_highest_priority
+#define _ux_utility_timer_create                                _ux_os_utility_timer_create
+#define _ux_utility_timer_delete                                _ux_os_utility_timer_delete
+#define _ux_utility_timer_start                                 _ux_os_utility_timer_start
+#define _ux_utility_sleep_ms                                    _ux_os_utility_sleep_ms
+#define _ux_utility_event_flags_created                         _ux_os_utility_event_flags_created
 #endif
 
 #if !defined(UX_STANDALONE)
@@ -156,6 +135,8 @@ VOID             _ux_utility_delay_ms(ULONG ms_wait);
 #define _ux_system_thread_created                               _ux_utility_thread_created
 #define _ux_system_thread_delete                                _ux_utility_thread_delete
 #define _ux_system_mutex_create                                 _ux_utility_mutex_create
+#define _ux_system_mutex_created                                _ux_utility_mutex_created
+#define _ux_system_mutex_suspended_count                        _ux_utility_mutex_suspended_count
 #define _ux_system_mutex_delete                                 _ux_utility_mutex_delete
 #define _ux_system_mutex_off                                    _ux_utility_mutex_off
 #define _ux_system_mutex_on                                     _ux_utility_mutex_on
@@ -192,6 +173,7 @@ VOID             _ux_utility_delay_ms(ULONG ms_wait);
 
 #if !defined(UX_DEVICE_STANDALONE)
 #define _ux_device_thread_create                                _ux_utility_thread_create
+#define _ux_device_thread_created                               _ux_utility_thread_created
 #define _ux_device_thread_delete                                _ux_utility_thread_delete
 #define _ux_device_thread_entry                                 _ux_utility_thread_entry
 #define _ux_device_thread_suspend                               _ux_utility_thread_suspend
@@ -204,15 +186,18 @@ VOID             _ux_utility_delay_ms(ULONG ms_wait);
 #define _ux_device_semaphore_get                                _ux_utility_semaphore_get
 #define _ux_device_semaphore_put                                _ux_utility_semaphore_put
 #define _ux_device_mutex_create                                 _ux_utility_mutex_create
+#define _ux_device_mutex_created                                _ux_utility_mutex_created
 #define _ux_device_mutex_delete                                 _ux_utility_mutex_delete
 #define _ux_device_mutex_off                                    _ux_utility_mutex_off
 #define _ux_device_mutex_on                                     _ux_utility_mutex_on
 #define _ux_device_event_flags_create                           _ux_utility_event_flags_create
+#define _ux_device_event_flags_created                          _ux_utility_event_flags_created
 #define _ux_device_event_flags_delete                           _ux_utility_event_flags_delete
 #define _ux_device_event_flags_get                              _ux_utility_event_flags_get
 #define _ux_device_event_flags_set                              _ux_utility_event_flags_set
 #else
 #define _ux_device_thread_create(t,name,entry,entry_param,stack,stack_size,priority,preempt_threshold,time_slice,auto_start) (UX_SUCCESS)
+#define _ux_device_thread_created(t)                            (UX_FALSE)
 #define _ux_device_thread_delete(t)                             do{}while(0)
 #define _ux_device_thread_entry(t)                              ((UX_THREAD_ENTRY)t)
 #define _ux_device_thread_suspend(t)                            do{}while(0)
@@ -225,15 +210,16 @@ VOID             _ux_utility_delay_ms(ULONG ms_wait);
 #define _ux_device_semaphore_get(sem,t)                         (UX_SUCCESS)
 #define _ux_device_semaphore_put(sem)                           do{}while(0)
 #define _ux_device_mutex_create(mutex,name)                     do{}while(0)
+#define _ux_device_mutex_created(mutex)                         (UX_FALSE)
 #define _ux_device_mutex_delete(mutex)                          do{}while(0)
 #define _ux_device_mutex_off(mutex)                             do{}while(0)
 #define _ux_device_mutex_on(mutex)                              do{}while(0)
 #define _ux_device_event_flags_create(g,name)                   do{}while(0)
+#define _ux_device_event_flags_created(g)                       (UX_FALSE)
 #define _ux_device_event_flags_delete(g)                        do{}while(0)
 #define _ux_device_event_flags_get(g,req,gopt,actual,wopt)      do{}while(0)
 #define _ux_device_event_flags_set(g,flags,option)              do{}while(0)
 #endif
-
 
 #if !defined(UX_HOST_STANDALONE)
 #define _ux_host_thread_create                                  _ux_utility_thread_create
@@ -252,6 +238,7 @@ VOID             _ux_utility_delay_ms(ULONG ms_wait);
 #define _ux_host_semaphore_put                                  _ux_utility_semaphore_put
 #define _ux_host_semaphore_put_rc                               _ux_utility_semaphore_put
 #define _ux_host_mutex_create                                   _ux_utility_mutex_create
+#define _ux_host_mutex_created                                  _ux_utility_mutex_created
 #define _ux_host_mutex_delete                                   _ux_utility_mutex_delete
 #define _ux_host_mutex_off                                      _ux_utility_mutex_off
 #define _ux_host_mutex_on                                       _ux_utility_mutex_on
@@ -279,6 +266,7 @@ VOID             _ux_utility_delay_ms(ULONG ms_wait);
 #define _ux_host_semaphore_put(sem)                             do{}while(0)
 #define _ux_host_semaphore_put_rc(sem)                          (UX_SUCCESS)
 #define _ux_host_mutex_create(mutex,name)                       (UX_SUCCESS)
+#define _ux_host_mutex_created(mutex)                           (UX_FALSE)
 #define _ux_host_mutex_delete(mutex)                            do{}while(0)
 #define _ux_host_mutex_off(mutex)                               do{}while(0)
 #define _ux_host_mutex_on(mutex)                                do{}while(0)
@@ -289,7 +277,6 @@ VOID             _ux_utility_delay_ms(ULONG ms_wait);
 #define _ux_host_timer_create(t,name,func,arg,tick0,tick1,flag) (UX_SUCCESS)
 #define _ux_host_timer_delete(t)                                do{}while(0)
 #endif
-
 
 #ifdef UX_DISABLE_ERROR_HANDLER
 #define          _ux_system_error_handler(system_level, system_context, error_code) do {} while(0)

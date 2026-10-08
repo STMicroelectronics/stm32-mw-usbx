@@ -1,3 +1,14 @@
+/***************************************************************************/
+/* Copyright (c) 2024 Microsoft Corporation                                */
+/* Copyright (c) 2026 Eclipse ThreadX contributors                         */
+/*                                                                         */
+/* This program and the accompanying materials are made available under    */
+/* the terms of the MIT License which is available at                      */
+/* https://opensource.org/licenses/MIT.                                    */
+/*                                                                         */
+/* SPDX-License-Identifier: MIT                                            */
+/***************************************************************************/
+
 /* This test simulator is designed to redirect simulate ux_hcd_sim_slave_ APIs for test. */
 
 #include "tx_api.h"
@@ -194,7 +205,7 @@ UINT   _ux_test_dcd_sim_slave_function(UX_SLAVE_DCD *dcd, UINT function, VOID *p
 UINT                                                status;
 UX_TEST_OVERRIDE_UX_DCD_SIM_SLAVE_FUNCTION_PARAMS   params = { dcd, function, parameter };
 UX_TEST_ACTION                                      action;
-                                                        
+
 
     /* Perform hooked callbacks.  */
     ux_test_do_hooks_before(UX_TEST_OVERRIDE_UX_DCD_SIM_SLAVE_FUNCTION, &params);

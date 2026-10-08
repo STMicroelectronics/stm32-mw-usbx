@@ -1,3 +1,14 @@
+/***************************************************************************/
+/* Copyright (c) 2024 Microsoft Corporation                                */
+/* Copyright (c) 2026 Eclipse ThreadX contributors                         */
+/*                                                                         */
+/* This program and the accompanying materials are made available under    */
+/* the terms of the MIT License which is available at                      */
+/* https://opensource.org/licenses/MIT.                                    */
+/*                                                                         */
+/* SPDX-License-Identifier: MIT                                            */
+/***************************************************************************/
+
 /**************************************************/
 /** Test case: The default case of switch (item -> ux_host_class_hid_item_report_tag). **/
 /**************************************************/
@@ -435,13 +446,13 @@ DEMO_HID_REPORT                 *device_report = (DEMO_HID_REPORT*)hid_event.ux_
         {
             /* Wait for 2s. */
             tx_thread_sleep(2 * TX_TIMER_TICKS_PER_SECOND);
-    
+
             /* Report ID set to 0.  */
             hid_event.ux_device_class_hid_event_report_id = 0;
-    
+
             /* Report type set to OUTPUT.  */
             hid_event.ux_device_class_hid_event_report_type = UX_DEVICE_CLASS_HID_REPORT_TYPE_INPUT;
-            
+
             /* Length is fixed to 1.  */
             hid_event.ux_device_class_hid_event_length = sizeof(DEMO_HID_REPORT);
 

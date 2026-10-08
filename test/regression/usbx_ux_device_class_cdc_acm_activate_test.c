@@ -1,3 +1,14 @@
+/***************************************************************************/
+/* Copyright (c) 2024 Microsoft Corporation                                */
+/* Copyright (c) 2026 Eclipse ThreadX contributors                         */
+/*                                                                         */
+/* This program and the accompanying materials are made available under    */
+/* the terms of the MIT License which is available at                      */
+/* https://opensource.org/licenses/MIT.                                    */
+/*                                                                         */
+/* SPDX-License-Identifier: MIT                                            */
+/***************************************************************************/
+
 /* This test is designed to test the simple dpump host/device class operation.  */
 
 #include <stdio.h>
@@ -230,11 +241,11 @@ UX_HOST_CLASS_CDC_ACM               *cdc_acm;
         case UX_HOST_CLASS_CDC_CONTROL_CLASS:
             cdc_acm_host_control = cdc_acm;
             break;
-        
+
         case UX_HOST_CLASS_CDC_DATA_CLASS:
             cdc_acm_host_data = cdc_acm;
             break;
-        
+
         default:
             break;
         }

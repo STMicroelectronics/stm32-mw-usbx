@@ -1,3 +1,14 @@
+/***************************************************************************/
+/* Copyright (c) 2024 Microsoft Corporation                                */
+/* Copyright (c) 2026 Eclipse ThreadX contributors                         */
+/*                                                                         */
+/* This program and the accompanying materials are made available under    */
+/* the terms of the MIT License which is available at                      */
+/* https://opensource.org/licenses/MIT.                                    */
+/*                                                                         */
+/* SPDX-License-Identifier: MIT                                            */
+/***************************************************************************/
+
 /* Include necessary system files.  */
 
 #include "usbx_ux_test_cdc_ecm.h"
@@ -399,7 +410,7 @@ UINT    i;
     ux_test_hcd_sim_host_set_actions(replace_configuration_descriptor);
     ux_test_connect_slave_and_host_wait_for_enum_completion();
     UX_TEST_ASSERT(ux_test_check_actions_empty());
- 
+
     for (i = 0; i < 5; i ++)
     {
 

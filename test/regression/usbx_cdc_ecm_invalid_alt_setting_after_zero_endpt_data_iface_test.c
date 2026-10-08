@@ -1,3 +1,14 @@
+/***************************************************************************/
+/* Copyright (c) 2024 Microsoft Corporation                                */
+/* Copyright (c) 2026 Eclipse ThreadX contributors                         */
+/*                                                                         */
+/* This program and the accompanying materials are made available under    */
+/* the terms of the MIT License which is available at                      */
+/* https://opensource.org/licenses/MIT.                                    */
+/*                                                                         */
+/* SPDX-License-Identifier: MIT                                            */
+/***************************************************************************/
+
 /* This tests the case where the default data interface has zero endpoints, and
    the interface right after is also a data interface but contains an invalid
    alternate setting value. Host should report error. */
@@ -126,8 +137,8 @@ static unsigned char non_data_interface_after_zero_endpoint_data_interface_frame
 };
 
 static DEVICE_INIT_DATA device_init_data = {
-    .framework = non_data_interface_after_zero_endpoint_data_interface_framework, 
-    .framework_length = sizeof(non_data_interface_after_zero_endpoint_data_interface_framework), 
+    .framework = non_data_interface_after_zero_endpoint_data_interface_framework,
+    .framework_length = sizeof(non_data_interface_after_zero_endpoint_data_interface_framework),
     .dont_register_hcd = 1,
 };
 

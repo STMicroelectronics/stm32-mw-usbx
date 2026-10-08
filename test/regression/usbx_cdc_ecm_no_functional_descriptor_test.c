@@ -1,3 +1,14 @@
+/***************************************************************************/
+/* Copyright (c) 2024 Microsoft Corporation                                */
+/* Copyright (c) 2026 Eclipse ThreadX contributors                         */
+/*                                                                         */
+/* This program and the accompanying materials are made available under    */
+/* the terms of the MIT License which is available at                      */
+/* https://opensource.org/licenses/MIT.                                    */
+/*                                                                         */
+/* SPDX-License-Identifier: MIT                                            */
+/***************************************************************************/
+
 /* This tests the case where there no functional descriptor. There should be a
    functional descriptor, so this is an error. */
 
@@ -114,8 +125,8 @@ static unsigned char no_function_descriptor_framework[] = {
 };
 
 static DEVICE_INIT_DATA device_init_data = {
-    .framework = no_function_descriptor_framework, 
-    .framework_length = sizeof(no_function_descriptor_framework), 
+    .framework = no_function_descriptor_framework,
+    .framework_length = sizeof(no_function_descriptor_framework),
     .dont_register_hcd = 1,
 };
 

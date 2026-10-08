@@ -1,3 +1,14 @@
+/***************************************************************************/
+/* Copyright (c) 2024 Microsoft Corporation                                */
+/* Copyright (c) 2026 Eclipse ThreadX contributors                         */
+/*                                                                         */
+/* This program and the accompanying materials are made available under    */
+/* the terms of the MIT License which is available at                      */
+/* https://opensource.org/licenses/MIT.                                    */
+/*                                                                         */
+/* SPDX-License-Identifier: MIT                                            */
+/***************************************************************************/
+
 /* This test ensures that the parser fails when the USAGE MINIMUM is greater than USAGE MAXIMUM. */
 
 #include "usbx_test_common_hid.h"
@@ -120,7 +131,7 @@ static VOID error_callback(UINT system_level, UINT system_context, UINT error_co
 {
 
     if (error_code != UX_HOST_CLASS_HID_MIN_MAX_ERROR &&
-        error_code != UX_DESCRIPTOR_CORRUPTED && 
+        error_code != UX_DESCRIPTOR_CORRUPTED &&
         error_code != UX_DEVICE_ENUMERATION_FAILURE)
     {
 

@@ -1,3 +1,14 @@
+/***************************************************************************/
+/* Copyright (c) 2024 Microsoft Corporation                                */
+/* Copyright (c) 2026 Eclipse ThreadX contributors                         */
+/*                                                                         */
+/* This program and the accompanying materials are made available under    */
+/* the terms of the MIT License which is available at                      */
+/* https://opensource.org/licenses/MIT.                                    */
+/*                                                                         */
+/* SPDX-License-Identifier: MIT                                            */
+/***************************************************************************/
+
 /* This test is designed to test the simple dpump host/device class operation.  */
 
 #include <stdio.h>
@@ -442,13 +453,13 @@ UINT            command_length;
 
     /* Initialize the CBW for this command.  */
     _ux_host_class_storage_cbw_initialize(storage, UX_HOST_CLASS_STORAGE_DATA_IN, UX_HOST_CLASS_STORAGE_INQUIRY_RESPONSE_LENGTH, command_length);
-    
+
     /* Prepare the INQUIRY command block.  */
     *(cbw + UX_HOST_CLASS_STORAGE_CBW_CB + UX_HOST_CLASS_STORAGE_INQUIRY_OPERATION) = UX_HOST_CLASS_STORAGE_SCSI_INQUIRY;
 
     /* Store the page code.  */
     *(cbw + UX_HOST_CLASS_STORAGE_CBW_CB + UX_HOST_CLASS_STORAGE_INQUIRY_PAGE_CODE) = page_code;
-    
+
     /* Store the length of the Inquiry Response.  */
     *(cbw + UX_HOST_CLASS_STORAGE_CBW_CB + UX_HOST_CLASS_STORAGE_INQUIRY_ALLOCATION_LENGTH) =  (UCHAR)response_length;
 
@@ -456,7 +467,7 @@ UINT            command_length;
     status =  _ux_host_class_storage_transport(storage, response);
 
     /* Return completion status.  */
-    return(status);                                            
+    return(status);
 }
 
 static void  _test_init_cbw_MODE_SENSE(UCHAR op6, UCHAR page_code, ULONG buffer_length)

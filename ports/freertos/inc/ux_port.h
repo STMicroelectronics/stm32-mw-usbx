@@ -231,10 +231,15 @@ typedef LONG                                    SLONG;
 
 #define UX_THREAD_POINTER_INDEX                             0U
 
+#if (configNUM_THREAD_LOCAL_STORAGE_POINTERS <= UX_THREAD_POINTER_INDEX)
+  #error "configNUM_THREAD_LOCAL_STORAGE_POINTERS must be greater than UX_THREAD_POINTER_INDEX"
+#endif
+
 /* Define USBX RTOS structures */
 typedef struct
 {
   SemaphoreHandle_t semaphore_handle;
+  UINT              ux_semaphore_initial_count;
   UINT              ux_semaphore_suspended_count;
 } ux_semaphore_t;
 
@@ -245,13 +250,15 @@ typedef struct
 
 typedef struct
 {
-  TaskHandle_t task_handle;
+  TaskHandle_t  task_handle;
+  VOID         (*pvTaskCode)(ULONG); /* Entry function required by _ux_os_utility_thread_entry() */
 } ux_thread_t;
 
 typedef struct
 {
   TimerHandle_t timer_handle;
   ULONG timer_callback_input;
+  ULONG timer_reschedule_ticks;
   VOID (*timer_callback_function) (ULONG);
 } ux_timer_t;
 
@@ -416,8 +423,8 @@ VOID    outpl(ULONG,ULONG);
 
 /* Define the version ID of USBX.  This may be utilized by the application. */
 #ifdef  UX_SYSTEM_INIT
-CHAR                            _ux_version_id[] = 
-                                    "Copyright (c) 2024 Microsoft Corporation. * USBX ARM9/GNU Version 6.4.1 *";
+CHAR                            _ux_version_id[] =
+                                    "(c) 2024 Microsoft Corp. (c) 2026-present Eclipse ThreadX contributors. * USBX Generic Version 6.5.1.202602 *";
 #else
 extern  CHAR                    _ux_version_id[];
 #endif

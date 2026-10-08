@@ -13,6 +13,15 @@
   *****************************************************************************/
   */
 
+### V6.5.1 (09-10-2026) ###
+=================================
+- Upgrade to Eclipse ThreadX USBX v6.5.1.
+- Fix defects:
+  - Device MSC: add START STOP (load/eject) request support.
+  - Host Classes:
+    * Fix thread deletion before semaphore on HID keyboard deactivation .
+    * Avoid deleting semaphore while its thead still active
+
 ### V6.4.3 (03-04-2026) ###
 ============================
 - Upgrade to Eclipse USBX v6.4.3.

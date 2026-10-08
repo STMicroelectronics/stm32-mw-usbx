@@ -1,3 +1,14 @@
+/***************************************************************************/
+/* Copyright (c) 2024 Microsoft Corporation                                */
+/* Copyright (c) 2026 Eclipse ThreadX contributors                         */
+/*                                                                         */
+/* This program and the accompanying materials are made available under    */
+/* the terms of the MIT License which is available at                      */
+/* https://opensource.org/licenses/MIT.                                    */
+/*                                                                         */
+/* SPDX-License-Identifier: MIT                                            */
+/***************************************************************************/
+
 /* This tests the case where the mac address string is too long. This is an
    error. */
 
@@ -20,7 +31,7 @@ static unsigned char invalid_mac_address_string_length[] = {
         0x30, 0x30, 0x30, 0x31,
 
     /* MAC Address string descriptor : Index 4 - "001E5841B878" */
-        0x09, 0x04, 0x04, 
+        0x09, 0x04, 0x04,
         0x1b, /* This byte is the length of the string. It just needs to be greater than 26 (look in mac_address_get.c). */
         0x30, 0x30, 0x31, 0x45, 0x35, 0x38,
         0x34, 0x31, 0x42, 0x38, 0x37, 0x38,

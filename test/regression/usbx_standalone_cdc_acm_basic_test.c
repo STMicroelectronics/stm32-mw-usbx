@@ -1,3 +1,14 @@
+/***************************************************************************/
+/* Copyright (c) 2024 Microsoft Corporation                                */
+/* Copyright (c) 2026 Eclipse ThreadX contributors                         */
+/*                                                                         */
+/* This program and the accompanying materials are made available under    */
+/* the terms of the MIT License which is available at                      */
+/* https://opensource.org/licenses/MIT.                                    */
+/*                                                                         */
+/* SPDX-License-Identifier: MIT                                            */
+/***************************************************************************/
+
 /* This test is designed to test the simple dpump host/device class operation.  */
 
 #include <stdio.h>
@@ -920,7 +931,7 @@ static VOID test_cdc_acm_host_write_callback(UX_HOST_CLASS_CDC_ACM *cdc_acm,
 /* Uses _write_with_callback.  */
 
 static UINT test_cdc_acm_host_write(UX_HOST_CLASS_CDC_ACM *cdc_acm,
-                                    UCHAR *data_pointer, 
+                                    UCHAR *data_pointer,
                                     ULONG requested_length,
                                     ULONG *actual_length)
 {

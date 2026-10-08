@@ -1,3 +1,14 @@
+/***************************************************************************/
+/* Copyright (c) 2024 Microsoft Corporation                                */
+/* Copyright (c) 2026 Eclipse ThreadX contributors                         */
+/*                                                                         */
+/* This program and the accompanying materials are made available under    */
+/* the terms of the MIT License which is available at                      */
+/* https://opensource.org/licenses/MIT.                                    */
+/*                                                                         */
+/* SPDX-License-Identifier: MIT                                            */
+/***************************************************************************/
+
 /* This test is designed to test the ux_utility_thread_identify.  */
 
 #include <stdio.h>
@@ -149,10 +160,10 @@ UINT      tracex_id = 0;
     switch(tracex_id){
         case UX_TRACE_DEVICE_STACK_CONFIGURATION_GET:
         case UX_TRACE_DEVICE_STACK_CONFIGURATION_SET:
-        case UX_TRACE_DEVICE_CLASS_DPUMP_WRITE:                               
+        case UX_TRACE_DEVICE_CLASS_DPUMP_WRITE:
         case UX_TRACE_DEVICE_CLASS_DPUMP_CHANGE:
         default:
-            break;      
+            break;
     }
 #endif
     /* Successful test.  */

@@ -69,14 +69,6 @@ static inline UINT _ux_utility_semaphore_get_count(UX_SEMAPHORE *semaphore)
   return (count);
 }
 
-#define _ux_utility_mutex_created(mtx)                              (mtx.mutex_handle != NULL)
-#define _ux_utility_semaphore_waiting(sem)                          (_ux_utility_semaphore_get_count(sem) != 0)
-#define _ux_utility_semaphore_created(sem)                          (sem.semaphore_handle != NULL)
-#define _ux_utility_thread_created(thr)                             (thr.task_handle != NULL)
-#define _ux_utility_event_flags_created(event)                      (event.event_group_handle != NULL)
-#define _ux_utility_thread_entry(thr)                               (thr->pvTaskCode)
-#define _ux_utility_thread_highest_priority()                       (configMAX_PRIORITIES - 1)
-
 /* Define Utility component function prototypes.  */
 
 UINT             _ux_os_utility_mutex_create(UX_MUTEX *mutex, CHAR *mutex_name);
@@ -129,5 +121,14 @@ extern  ULONG       _ux_utility_time_get(VOID);
 #else
 extern  ALIGN_TYPE  _ux_utility_time_elapsed(ALIGN_TYPE, ALIGN_TYPE);
 #endif
+
+#define _ux_os_utility_semaphore_waiting(sem)              (_ux_utility_semaphore_get_count(sem) != 0)
+#define _ux_os_utility_semaphore_created(sem)              ((sem)->semaphore_handle != NULL)
+#define _ux_os_utility_thread_created(thr)                 ((thr)->task_handle != NULL)
+#define _ux_os_utility_event_flags_created(event)          ((event)->event_group_handle != NULL)
+#define _ux_os_utility_mutex_created(m)                    ((m)->mutex_handle != NULL)
+#define _ux_os_utility_mutex_suspended_count(m)            (0) /* FreeRTOS: not applicable */
+#define _ux_os_utility_thread_entry(thr)                   ((thr)->pvTaskCode)
+#define _ux_os_utility_thread_highest_priority()           (configMAX_PRIORITIES - 1)
 
 #endif /* UX_OS_UTILITY_H */

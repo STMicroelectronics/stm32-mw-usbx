@@ -1,3 +1,14 @@
+/***************************************************************************/
+/* Copyright (c) 2024 Microsoft Corporation                                */
+/* Copyright (c) 2026 Eclipse ThreadX contributors                         */
+/*                                                                         */
+/* This program and the accompanying materials are made available under    */
+/* the terms of the MIT License which is available at                      */
+/* https://opensource.org/licenses/MIT.                                    */
+/*                                                                         */
+/* SPDX-License-Identifier: MIT                                            */
+/***************************************************************************/
+
 /* This tests the case where there is no interrupt endpoint in the CDC-ECM control
    interface. Host should not report an error since this endpoint is optional. */
 
@@ -134,8 +145,8 @@ static unsigned char no_interrupt_endpoint_configuration_descriptor[] = {
 };
 
 static DEVICE_INIT_DATA device_init_data = {
-    .framework = no_interrupt_endpoint_configuration_descriptor, 
-    .framework_length = sizeof(no_interrupt_endpoint_configuration_descriptor), 
+    .framework = no_interrupt_endpoint_configuration_descriptor,
+    .framework_length = sizeof(no_interrupt_endpoint_configuration_descriptor),
     .dont_register_hcd = 1,
 };
 

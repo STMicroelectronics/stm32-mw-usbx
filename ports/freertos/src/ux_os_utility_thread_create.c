@@ -77,7 +77,7 @@ UINT _ux_os_utility_thread_create(UX_THREAD *thread_ptr, CHAR *name,
   UX_ASSERT(thread_ptr != UX_NULL);
 
 #if defined (UX_UTILITY_ENABLE_PARAM_CHECKING)
-  if ((thread_ptr == NULL) || (*entry_function == NULL) || (thread_ptr->task_handle != NULL))
+  if ((thread_ptr == NULL) || (entry_function == NULL) || (thread_ptr->task_handle != NULL))
   {
     /* Error trap. */
     _ux_system_error_handler(UX_SYSTEM_LEVEL_THREAD, UX_SYSTEM_CONTEXT_UTILITY, UX_THREAD_ERROR);
@@ -92,16 +92,20 @@ UINT _ux_os_utility_thread_create(UX_THREAD *thread_ptr, CHAR *name,
     return UX_THREAD_ERROR;
   }
 
-  /* Call FreeRTOS to create the thread. */
-  if (xTaskCreate((TaskFunction_t)entry_function, name, (configSTACK_DEPTH_TYPE)stack_size,
+  /* USBX contract: stack_size is in bytes. FreeRTOS xTaskCreate expects words
+   * (StackType_t units), rounded up for non-aligned sizes. */
+  if (xTaskCreate((TaskFunction_t)entry_function, name,
+                  (configSTACK_DEPTH_TYPE)(((stack_size + ((ULONG)sizeof(StackType_t) - 1U)) /
+                                            (ULONG)sizeof(StackType_t))),
                   (void *)entry_input, (UBaseType_t)priority, (TaskHandle_t *)&thread_ptr->task_handle) != pdPASS)
   {
     /* Reset the thread handle */
-    thread_ptr->task_handle = 0U;
+    thread_ptr->task_handle = NULL;
     return UX_THREAD_ERROR;
   }
 
-  /* Store the address of thread_ptr in the thread local storage */
+  /* Store the entry function and the address of thread_ptr in thread-local storage. */
+  thread_ptr->pvTaskCode = entry_function;
   vTaskSetThreadLocalStoragePointer(thread_ptr->task_handle, UX_THREAD_POINTER_INDEX, thread_ptr);
 
   if (auto_start == UX_DONT_START)

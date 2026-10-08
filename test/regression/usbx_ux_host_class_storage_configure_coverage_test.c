@@ -1,3 +1,14 @@
+/***************************************************************************/
+/* Copyright (c) 2024 Microsoft Corporation                                */
+/* Copyright (c) 2026 Eclipse ThreadX contributors                         */
+/*                                                                         */
+/* This program and the accompanying materials are made available under    */
+/* the terms of the MIT License which is available at                      */
+/* https://opensource.org/licenses/MIT.                                    */
+/*                                                                         */
+/* SPDX-License-Identifier: MIT                                            */
+/***************************************************************************/
+
 #include <stdio.h>
 #include "tx_api.h"
 #include "ux_api.h"
@@ -30,7 +41,7 @@ void    usbx_ux_host_class_storage_configure_overage_test_application_define(voi
     device.ux_device_first_configuration = &storage_configuration;
     device.ux_device_power_source = UX_DEVICE_SELF_POWERED;
     storage_configuration.ux_configuration_handle = 0;
-    
+
     _ux_host_class_storage_configure(&storage);
 
     printf("   Passed\n");

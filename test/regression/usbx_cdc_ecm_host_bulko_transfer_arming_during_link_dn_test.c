@@ -1,6 +1,17 @@
+/***************************************************************************/
+/* Copyright (c) 2024 Microsoft Corporation                                */
+/* Copyright (c) 2026 Eclipse ThreadX contributors                         */
+/*                                                                         */
+/* This program and the accompanying materials are made available under    */
+/* the terms of the MIT License which is available at                      */
+/* https://opensource.org/licenses/MIT.                                    */
+/*                                                                         */
+/* SPDX-License-Identifier: MIT                                            */
+/***************************************************************************/
+
 /* This tests the case where there is an ongoing transfer on the bulk out endpoint
-   during link down. The interrupt notification function should wait for it to finish. 
-   
+   during link down. The interrupt notification function should wait for it to finish.
+
    We do this by having the CDC-ECM thread suspend during the transfer arm,
    and then begin link down event. We resume the HCD thread later! */
 

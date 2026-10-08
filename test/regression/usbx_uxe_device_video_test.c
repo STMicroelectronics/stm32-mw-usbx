@@ -1,3 +1,14 @@
+/***************************************************************************/
+/* Copyright (c) 2024 Microsoft Corporation                                */
+/* Copyright (c) 2026 Eclipse ThreadX contributors                         */
+/*                                                                         */
+/* This program and the accompanying materials are made available under    */
+/* the terms of the MIT License which is available at                      */
+/* https://opensource.org/licenses/MIT.                                    */
+/*                                                                         */
+/* SPDX-License-Identifier: MIT                                            */
+/***************************************************************************/
+
 /* This test is designed to test the ux_utility_descriptor_pack.  */
 
 #include <stdio.h>
@@ -226,7 +237,7 @@ static ULONG callback_invoke_count = 0;
     9, 0x24, 0x03,                                                                                  \
     0x04, /* bTerminalID  */                                                                        \
     W(0x0301), /* wTerminalType, OTT_DISPLAY  */                                                    \
-    0x00, 0x03/* bSourceID  */, 0x00,                                                               
+    0x00, 0x03/* bSourceID  */, 0x00,
 
 #if 0
     /*--------------------------------- Processing Unit (VC_PROCESSING_UNIT)  */                    \

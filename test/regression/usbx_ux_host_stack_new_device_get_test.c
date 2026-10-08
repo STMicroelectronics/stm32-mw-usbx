@@ -1,3 +1,14 @@
+/***************************************************************************/
+/* Copyright (c) 2024 Microsoft Corporation                                */
+/* Copyright (c) 2026 Eclipse ThreadX contributors                         */
+/*                                                                         */
+/* This program and the accompanying materials are made available under    */
+/* the terms of the MIT License which is available at                      */
+/* https://opensource.org/licenses/MIT.                                    */
+/*                                                                         */
+/* SPDX-License-Identifier: MIT                                            */
+/***************************************************************************/
+
 /* This test is designed to test the ux_host_stack_new_device_get.  */
 
 #include <stdio.h>
@@ -33,7 +44,7 @@ static unsigned char                   slave_buffer[UX_HOST_CLASS_DPUMP_PACKET_S
 
 /* Define prototypes for external Host Controller's (HCDs), classes and clients.  */
 
-static VOID                ux_test_instance_activate(VOID  *dpump_instance);             
+static VOID                ux_test_instance_activate(VOID  *dpump_instance);
 static VOID                ux_test_instance_deactivate(VOID *dpump_instance);
 
 
@@ -83,7 +94,7 @@ CHAR                            *memory_pointer;
     /* Initialize the free memory pointer.  */
     stack_pointer = (CHAR *) first_unused_memory;
     memory_pointer = stack_pointer + (UX_TEST_STACK_SIZE * 2);
-    
+
     /* Initialize USBX Memory.  */
     status =  ux_system_initialize(memory_pointer, UX_TEST_MEMORY_SIZE, UX_NULL, 0);
 
@@ -107,8 +118,8 @@ CHAR                            *memory_pointer;
     }
 
     /* Create the main host simulation thread.  */
-    status =  tx_thread_create(&ux_test_thread_host_simulation, "test host simulation", ux_test_thread_host_simulation_entry, 0,  
-            stack_pointer, UX_TEST_STACK_SIZE, 
+    status =  tx_thread_create(&ux_test_thread_host_simulation, "test host simulation", ux_test_thread_host_simulation_entry, 0,
+            stack_pointer, UX_TEST_STACK_SIZE,
             20, 20, 1, TX_AUTO_START);
 
     /* Check for error.  */
@@ -136,7 +147,7 @@ UINT                            i;
         new_device =  _ux_host_stack_new_device_get();
         if (new_device == UX_NULL)
         {
-        
+
             printf("ERROR #4\n");
             test_control_return(1);
         }

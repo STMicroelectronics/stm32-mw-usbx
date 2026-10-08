@@ -1,3 +1,14 @@
+/***************************************************************************/
+/* Copyright (c) 2024 Microsoft Corporation                                */
+/* Copyright (c) 2026 Eclipse ThreadX contributors                         */
+/*                                                                         */
+/* This program and the accompanying materials are made available under    */
+/* the terms of the MIT License which is available at                      */
+/* https://opensource.org/licenses/MIT.                                    */
+/*                                                                         */
+/* SPDX-License-Identifier: MIT                                            */
+/***************************************************************************/
+
 /* This test ensures that the parser fails when too many collections are used. */
 
 #include "usbx_test_common_hid.h"
@@ -138,7 +149,7 @@ static VOID error_callback(UINT system_level, UINT system_context, UINT error_co
 {
 
     if (error_code != UX_HOST_CLASS_HID_COLLECTION_OVERFLOW &&
-        error_code != UX_DESCRIPTOR_CORRUPTED && 
+        error_code != UX_DESCRIPTOR_CORRUPTED &&
         error_code != UX_DEVICE_ENUMERATION_FAILURE)
     {
 

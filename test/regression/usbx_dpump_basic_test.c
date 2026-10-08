@@ -1,3 +1,14 @@
+/***************************************************************************/
+/* Copyright (c) 2024 Microsoft Corporation                                */
+/* Copyright (c) 2026 Eclipse ThreadX contributors                         */
+/*                                                                         */
+/* This program and the accompanying materials are made available under    */
+/* the terms of the MIT License which is available at                      */
+/* https://opensource.org/licenses/MIT.                                    */
+/*                                                                         */
+/* SPDX-License-Identifier: MIT                                            */
+/***************************************************************************/
+
 /* This test is designed to test the simple dpump host/device class operation.  */
 
 #include <stdio.h>
@@ -570,7 +581,7 @@ UINT    dpump_device_state = UX_STATE_RESET;
             if (status == UX_STATE_NEXT)
                 dpump_device_state = DPUMP_DEVICE_STATE_READ;
             break;
-        
+
         default:
             dpump_device_state = UX_STATE_RESET;
         }

@@ -1,3 +1,14 @@
+/***************************************************************************/
+/* Copyright (c) 2024 Microsoft Corporation                                */
+/* Copyright (c) 2026 Eclipse ThreadX contributors                         */
+/*                                                                         */
+/* This program and the accompanying materials are made available under    */
+/* the terms of the MIT License which is available at                      */
+/* https://opensource.org/licenses/MIT.                                    */
+/*                                                                         */
+/* SPDX-License-Identifier: MIT                                            */
+/***************************************************************************/
+
 /* This test simulator is designed to simulate ux_hcd_ APIs for test. */
 
 #include "tx_api.h"
@@ -258,7 +269,7 @@ ULONG                                           action_taken;
 
     /* Perform hooked callbacks.  */
     ux_test_do_hooks_after(UX_TEST_OVERRIDE_UX_HCD_SIM_HOST_ENTRY, &params);
-    
+
     /* Return completion status.  */
     return(status);
 }

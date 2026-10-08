@@ -1,3 +1,14 @@
+/***************************************************************************/
+/* Copyright (c) 2024 Microsoft Corporation                                */
+/* Copyright (c) 2026 Eclipse ThreadX contributors                         */
+/*                                                                         */
+/* This program and the accompanying materials are made available under    */
+/* the terms of the MIT License which is available at                      */
+/* https://opensource.org/licenses/MIT.                                    */
+/*                                                                         */
+/* SPDX-License-Identifier: MIT                                            */
+/***************************************************************************/
+
 /* This test is designed to test the simple dpump host/device class operation.  */
 
 #include <stdio.h>
@@ -28,7 +39,7 @@
 /* Define local/extern function prototypes.  */
 
 VOID _fx_ram_driver(FX_MEDIA *media_ptr);
-void _fx_ram_drive_format(ULONG disk_size, UINT sector_size, UINT sectors_per_cluster, 
+void _fx_ram_drive_format(ULONG disk_size, UINT sector_size, UINT sectors_per_cluster,
                                                 UINT fat_entries, UINT root_directory_entries);
 
 static void        demo_thread_entry(ULONG);

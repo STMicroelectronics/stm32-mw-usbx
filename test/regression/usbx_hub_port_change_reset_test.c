@@ -1,4 +1,15 @@
-/* This tests the case where the hub reports a port RESET change. The specific 
+/***************************************************************************/
+/* Copyright (c) 2024 Microsoft Corporation                                */
+/* Copyright (c) 2026 Eclipse ThreadX contributors                         */
+/*                                                                         */
+/* This program and the accompanying materials are made available under    */
+/* the terms of the MIT License which is available at                      */
+/* https://opensource.org/licenses/MIT.                                    */
+/*                                                                         */
+/* SPDX-License-Identifier: MIT                                            */
+/***************************************************************************/
+
+/* This tests the case where the hub reports a port RESET change. The specific
    test case is in ux_host_class_hub_port_change_process.c. */
 
 #include "usbx_ux_test_hub.h"
@@ -24,7 +35,7 @@ static void post_init_host()
 {
 #if UX_MAX_DEVICES > 1
     /* Send port change enable to host. */
-    set_and_send_port_event(0, 
+    set_and_send_port_event(0,
                             UX_HOST_CLASS_HUB_PORT_CHANGE_RESET);
 
     /* Wait for enum thread to complete. */

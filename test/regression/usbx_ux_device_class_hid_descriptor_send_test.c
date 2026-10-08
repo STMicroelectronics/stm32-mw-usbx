@@ -1,3 +1,14 @@
+/***************************************************************************/
+/* Copyright (c) 2024 Microsoft Corporation                                */
+/* Copyright (c) 2026 Eclipse ThreadX contributors                         */
+/*                                                                         */
+/* This program and the accompanying materials are made available under    */
+/* the terms of the MIT License which is available at                      */
+/* https://opensource.org/licenses/MIT.                                    */
+/*                                                                         */
+/* SPDX-License-Identifier: MIT                                            */
+/***************************************************************************/
+
 #include "usbx_test_common_hid.h"
 #include "ux_host_class_hid_keyboard.h"
 
@@ -272,7 +283,7 @@ UX_SLAVE_CLASS_HID *hid_class;
     hid_class = (UX_SLAVE_CLASS_HID*)class->ux_slave_class_instance;
 
     hid_class->ux_device_class_hid_report_address = descriptor;
-    hid_class->ux_device_class_hid_report_length  = length; 
+    hid_class->ux_device_class_hid_report_length  = length;
 }
 
 /* Define what the initial system looks like.  */

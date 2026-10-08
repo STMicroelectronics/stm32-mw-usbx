@@ -1,3 +1,14 @@
+/***************************************************************************/
+/* Copyright (c) 2024 Microsoft Corporation                                */
+/* Copyright (c) 2026 Eclipse ThreadX contributors                         */
+/*                                                                         */
+/* This program and the accompanying materials are made available under    */
+/* the terms of the MIT License which is available at                      */
+/* https://opensource.org/licenses/MIT.                                    */
+/*                                                                         */
+/* SPDX-License-Identifier: MIT                                            */
+/***************************************************************************/
+
 #include "usbx_test_common_hid.h"
 #include "ux_host_class_hid_keyboard.h"
 
@@ -325,7 +336,7 @@ UX_HOST_CLASS_COMMAND               command;
     host_class.ux_host_class_client = UX_NULL;
     _ux_host_class_hid_entry(&command);
 
-    
+
 
     test_control_return(0);
 }
