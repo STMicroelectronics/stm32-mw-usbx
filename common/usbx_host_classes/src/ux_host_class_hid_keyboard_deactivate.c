@@ -89,11 +89,12 @@ UINT                            status = UX_SUCCESS;
 
 #if !defined(UX_HOST_STANDALONE)
 
+    /* Terminate the thread.  */
+    _ux_utility_thread_delete(&keyboard_instance -> ux_host_class_hid_keyboard_thread);
+
     /* Stop the semaphore.  */
     status =  _ux_host_semaphore_delete(&keyboard_instance -> ux_host_class_hid_keyboard_semaphore);
 
-    /* Terminate the thread.  */
-    _ux_utility_thread_delete(&keyboard_instance -> ux_host_class_hid_keyboard_thread);
 #endif
 
     /* If trace is enabled, insert this event into the trace buffer.  */
@@ -122,6 +123,9 @@ UINT                            status = UX_SUCCESS;
 
     /* Now free the instance memory.  */
     _ux_utility_memory_free(hid_client -> ux_host_class_hid_client_local_instance);
+
+    /* Signal to _ux_host_class_hid_deactivate that the client memory has been freed.  */
+    hid -> ux_host_class_hid_client = UX_NULL;
 
     /* Return completion status.  */
     return(status);

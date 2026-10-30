@@ -144,7 +144,8 @@ function helper_usbx_has_device_class_selected(deviceClassConfig) {
       deviceClassConfig?.ccid_class === true ||
       deviceClassConfig?.printer_class === true ||
       deviceClassConfig?.video_class === true ||
-      deviceClassConfig?.audio_class === true,
+      deviceClassConfig?.audio_class === true ||
+      deviceClassConfig?.dpump_class === true,
   );
 }
 
@@ -166,7 +167,8 @@ function helper_usbx_has_host_class_selected(hostClassConfig) {
       hostClassConfig?.gser_class === true ||
       hostClassConfig?.pima_mtp_class === true ||
       hostClassConfig?.prolific_class === true ||
-      hostClassConfig?.swar_class === true,
+      hostClassConfig?.swar_class === true ||
+      hostClassConfig?.dpump_class === true,
   );
 }
 

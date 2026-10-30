@@ -65,7 +65,7 @@ UX_THREAD *_ux_os_utility_thread_identify(VOID)
   TaskHandle_t current_task_handle;
   UX_THREAD *thread_ptr;
 
-  if (xTaskGetSchedulerState() != pdTRUE)
+  if (xTaskGetSchedulerState() == taskSCHEDULER_RUNNING)
   {
     /* Return a pointer to the handle of the current task. */
     current_task_handle = xTaskGetCurrentTaskHandle();
@@ -75,7 +75,7 @@ UX_THREAD *_ux_os_utility_thread_identify(VOID)
   }
   else
   {
-    /* Error trap. */
+    /* Scheduler not yet started or suspended: cannot identify current thread. */
     _ux_system_error_handler(UX_SYSTEM_LEVEL_THREAD, UX_SYSTEM_CONTEXT_UTILITY, UX_THREAD_ERROR);
     return UX_NULL;
   }

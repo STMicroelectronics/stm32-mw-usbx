@@ -75,6 +75,8 @@ UINT _ux_os_utility_mutex_delete(UX_MUTEX *mutex)
 
   if (xPortIsInsideInterrupt())
   {
+    /* Error trap. */
+    _ux_system_error_handler(UX_SYSTEM_LEVEL_THREAD, UX_SYSTEM_CONTEXT_UTILITY, UX_MUTEX_ERROR);
     return UX_MUTEX_ERROR;
   }
 

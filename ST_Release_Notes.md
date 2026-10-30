@@ -14,6 +14,54 @@ software comes with enhanced online documentation, with flowcharts and user sequ
 More documentation is available at [**USBX SW Pack online documentation**](https://dev.st.com/stm32cube-docs/mw-usbx/latest/en/index.html)
 
 # Update history
+<label for="collapse-section-2.2.0" aria-hidden="true">__2.2.0 / 21-September-2026__</label>
+<div>
+
+## Main changes
+- Official release of **USBX SW Pack**.\
+- Miscellaneous update of .config files.
+- This pack is based on [**USBX V6.5.1 version**](https://github.com/eclipse-threadx/usbx/releases/tag/v6.5.1.202602_rel)\
+
+## Contents
+- USBX full stack support (device and host classes), for both bare‑metal and RTOS, with STM32 PCD/HCD integration and USB device descriptor management.
+
+## Known limitations
+
+- **Host MSC:**
+With FreeRTOS SW Pack V2.2.0, unplugging an MSC device while it is being accessed can trigger
+a race during device removal and cause a FreeRTOS assertion.
+The fix is planned for a future release.
+
+Recommendation for the current release:
+Avoid unplugging the MSC device during active USB transfers.
+
+## Development toolchains and compilers
+
+- IAR Embedded Workbench for ARM (EWARM) toolchain V9.60.3 + ST-LINK
+- MDK-ARM Keil uVision V5.42
+- STM32CubeIDE for Visual Studio Code (GCC13 compiler)
+
+## Supported devices and boards
+
+- STM32C5 series.
+- STM32G5 series.
+- STM32V8 series.
+- STM32H7P series.
+
+## Backward compatibility
+
+- None
+
+## Dependencies
+
+- STM32C5xx HAL Drivers V2.0.0
+- STM32G5xx HAL Drivers V2.0.0
+- STM32V8xx HAL Drivers V2.0.0
+- STM32H7Pxx HAL Drivers V2.0.0
+- FreeRTOS SW Pack V2.0.0 (required when selecting RTOS mode)
+- FileX SW Pack V2.0.0 (required when selecting MSC Host class)
+
+</div>
 
 <label for="collapse-section-2.1.0" aria-hidden="true">__2.1.0 / 12-June-2026__</label>
 <div>

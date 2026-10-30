@@ -49,7 +49,7 @@ Use HID Mouse Device Class, Use HID Keyboard Device Class, Use HID Custom Device
 Use PIMA_MTP Device Class, Use Audio Device Class, Use Video Device Class, Use Printer Device Class, Use CCID Device Class, Use DFU Device Class, 
 Use Host Core, Use Host Controllers, Use HID Host Class, Use HID Mouse Host Class, Use HID Keyboard Host Class, Use HID RCU Host Class, Use CDC_ACM Host Class, 
 Use MSC Host Class, Use PIMA_MTP Host Class, Use Audio Host Class, Use Video Host Class, Use Printer Host Class, Use GSER Host Class,Use PROLIFIC Host Class, 
-Use SWAR Host Class, Use HUB Host Class")}}
+Use SWAR Host Class, Use HUB Host Class, Use dpump Device Class, Use dpump Host Class")}}
 {{{@root.conditions}}}
     <condition id="Operating System Used">
      {{#if (eq No_OS_Mode true)}}
@@ -137,6 +137,11 @@ Use SWAR Host Class, Use HUB Host Class")}}
       {{#if (@root.EnvVarAPI.getVariableValue 'DFU_Device_Class')}}
       <require Cclass="USB" Cgroup="USBX Device Class" Csub="DFU"/>
       <require Cclass="USB" Cgroup="STM32CubeMX2 Codegen" Csub="DFU_Device_Class"/>
+      {{/if}}
+    </condition>
+    <condition id="Use dpump Device Class">
+      {{#if (@root.EnvVarAPI.getVariableValue 'dpump_Device_Class')}}
+      <require Cclass="USB" Cgroup="USBX Device Class" Csub="dpump"/>
       {{/if}}
     </condition>
     <condition id="Use Host Core">
@@ -230,6 +235,11 @@ Use SWAR Host Class, Use HUB Host Class")}}
     <condition id="Use HUB Host Class">
       {{#if (@root.EnvVarAPI.getVariableValue 'HUB_host_class')}}
       <require Cclass="USB" Cgroup="USBX Host Class" Csub="HUB"/>
+      {{/if}}
+    </condition>
+    <condition id="Use dpump Host Class">
+      {{#if (@root.EnvVarAPI.getVariableValue 'dpump_Host_Class')}}
+      <require Cclass="USB" Cgroup="USBX Host Class" Csub="dpump"/>
       {{/if}}
     </condition>
   </conditions>

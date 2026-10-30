@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "componentid": "::USB:STM32CubeMX2 Config:USBX",
   "type": "object",
-  "grammarVersion": "3.9",
+  "grammarVersion": "3.8.0",
   "functions": [
     {
       "path": ".config/template/helpers/usbx_helpers.js",
@@ -22,11 +22,11 @@
               "title": "Middleware version",
               "comment": "label associated to the instance, can be overridden at sample level. In this case it becomes read-only.",
               "type": "string",
-              "default": "6.5.0",
+              "default": "6.5.1",
               "oneOf": [
                 {
-                  "title": "6.5.0",
-                  "const": "6.5.0"
+                  "title": "6.5.1",
+                  "const": "6.5.1"
                 }
               ]
             }
@@ -38,34 +38,25 @@
           "properties": {
             "profile_type": {
               "title": "Profile selection",
-              "description": "Choose the configuration profile. The Default profile is a balanced choice between memory usage and performance.",
               "type": "string",
+              "actions": [
+                {
+                  "type": "include",
+                  "condition": "false",
+                  "message": "The profiles are currently not supported."
+                }
+              ],
               "oneOf": [
                 {
                   "title": "Default",
                   "const": "Default"
-                },
+                }
+              ],
+              "actions": [
                 {
-                  "title": "Low footprint",
-                  "const": "Low_Footprint",
-                  "actions": [
-                    {
-                      "type": "disable",
-                      "condition": "true",
-                      "message": "The Low footprint profile is currently not supported."
-                    }
-                  ]
-                },
-                {
-                  "title": "High performance",
-                  "const": "High_performance",
-                  "actions": [
-                    {
-                      "type": "disable",
-                      "condition": "true",
-                      "message": "The High performance profile is currently not supported."
-                    }
-                  ]
+                  "type": "disable",
+                  "condition": "true",
+                  "message": "The profile is fixed to Default and cannot be modified."
                 }
               ],
               "default": "Default"
@@ -83,6 +74,13 @@
                 "usb_core_system": {
                   "type": "object",
                   "title": "USB core system",
+                  "actions": [
+                    {
+                      "type": "warning",
+                      "condition": "!$core.basic.host_class.hid_class && !$core.basic.host_class.cdc_acm_class && !$core.basic.host_class.msc_class && !$core.basic.host_class.hub_class && !$core.basic.host_class.audio_class && !$core.basic.host_class.video_class && !$core.basic.host_class.printer_class && !$core.basic.host_class.gser_class && !$core.basic.host_class.pima_mtp_class && !$core.basic.host_class.prolific_class && !$core.basic.host_class.swar_class && !$core.basic.host_class.dpump_class && !$core.basic.device_class.device_mouse && !$core.basic.device_class.device_keyboard && !$core.basic.device_class.device_custom && !$core.basic.device_class.cdc_acm_class && !$core.basic.device_class.msc_class && !$core.basic.device_class.pima_mtp_class && !$core.basic.device_class.dfu_class && !$core.basic.device_class.ccid_class && !$core.basic.device_class.printer_class && !$core.basic.device_class.video_class && !$core.basic.device_class.audio_class && !$core.basic.device_class.dpump_class",
+                      "message": "Please select at least one USBX Host or Device class."
+                    }
+                  ],
                   "properties": {
                     "ux_standalone": {
                       "type": "string",
@@ -1001,7 +999,7 @@
                           "type": "integer",
                           "default": 1,
                           "minimum": 1,
-                          "maximum": 5,
+                          "maximum": 15,
                           "display_format": [
                             "dec",
                             "hex"
@@ -1055,7 +1053,7 @@
                           "type": "integer",
                           "default": 3,
                           "minimum": 1,
-                          "maximum": 5,
+                          "maximum": 15,
                           "display_format": [
                             "dec",
                             "hex"
@@ -1315,7 +1313,7 @@
                           "type": "integer",
                           "default": 2,
                           "minimum": 1,
-                          "maximum": 5,
+                          "maximum": 15,
                           "display_format": [
                             "dec",
                             "hex"
@@ -3330,6 +3328,20 @@
                         }
                       }
                     },
+                    "dpump_class": {
+                      "title": "Dpump class",
+                      "type": "boolean",
+                      "description": "Activate the dpump device class. This is a skeleton class used as a starting point to implement a user defined USB device class with the USBX device stack.",
+                      "variables": [
+                        {
+                          "on": "update-value",
+                          "condition": "$value == true",
+                          "name": "dpump_Device_Class",
+                          "value": true
+                        }
+                      ],
+                      "default": false
+                    },
                     "device_core": {
                       "type": "object",
                       "title": "Device core",
@@ -3491,7 +3503,7 @@
                                   "const": false
                                 }
                               ],
-                              "default": false
+                              "default": true
                             },
                             "ux_device_enable_get_string_with_zero_language_id": {
                               "title": "Get string with zero language id",
@@ -4424,6 +4436,20 @@
                       ],
                       "default": false
                     },
+                    "dpump_class": {
+                      "title": "Dpump class",
+                      "type": "boolean",
+                      "description": "Activate the dpump host class. This is a skeleton class used as a starting point to implement a user defined USB host class with the USBX host stack.",
+                      "variables": [
+                        {
+                          "on": "update-value",
+                          "condition": "$value == true",
+                          "name": "dpump_Host_Class",
+                          "value": true
+                        }
+                      ],
+                      "default": false
+                    },
                     "host_core": {
                       "type": "object",
                       "title": "Host core",
@@ -4783,7 +4809,7 @@
                     },
                     {
                       "type": "warning",
-                      "condition": "$interfaces.logical_interface.device_controllers_enable && $get('swproject.hasComponent', 'STM32CubeMX2 Config:PCD') && !$core.basic.device_class.device_mouse && !$core.basic.device_class.device_keyboard && !$core.basic.device_class.device_custom && !$core.basic.device_class.cdc_acm_class && !$core.basic.device_class.msc_class && !$core.basic.device_class.pima_mtp_class && !$core.basic.device_class.dfu_class && !$core.basic.device_class.ccid_class && !$core.basic.device_class.printer_class && !$core.basic.device_class.video_class && !$core.basic.device_class.audio_class",
+                      "condition": "$interfaces.logical_interface.device_controllers_enable && $get('swproject.hasComponent', 'STM32CubeMX2 Config:PCD') && !$core.basic.device_class.device_mouse && !$core.basic.device_class.device_keyboard && !$core.basic.device_class.device_custom && !$core.basic.device_class.cdc_acm_class && !$core.basic.device_class.msc_class && !$core.basic.device_class.pima_mtp_class && !$core.basic.device_class.dfu_class && !$core.basic.device_class.ccid_class && !$core.basic.device_class.printer_class && !$core.basic.device_class.video_class && !$core.basic.device_class.audio_class && !$core.basic.device_class.dpump_class",
                       "message": "Please make sure to select at least one class in the USB Device Class configuration."
                     }
                   ],
@@ -4851,7 +4877,7 @@
                     },
                     {
                       "type": "warning",
-                      "condition": "$interfaces.logical_interface.host_controllers_enable && $get('swproject.hasComponent', 'STM32CubeMX2 Config:HCD') && !$core.basic.host_class.hid_class && !$core.basic.host_class.cdc_acm_class && !$core.basic.host_class.msc_class && !$core.basic.host_class.hub_class && !$core.basic.host_class.audio_class && !$core.basic.host_class.video_class && !$core.basic.host_class.printer_class && !$core.basic.host_class.gser_class && !$core.basic.host_class.pima_mtp_class && !$core.basic.host_class.prolific_class && !$core.basic.host_class.swar_class",
+                      "condition": "$interfaces.logical_interface.host_controllers_enable && $get('swproject.hasComponent', 'STM32CubeMX2 Config:HCD') && !$core.basic.host_class.hid_class && !$core.basic.host_class.cdc_acm_class && !$core.basic.host_class.msc_class && !$core.basic.host_class.hub_class && !$core.basic.host_class.audio_class && !$core.basic.host_class.video_class && !$core.basic.host_class.printer_class && !$core.basic.host_class.gser_class && !$core.basic.host_class.pima_mtp_class && !$core.basic.host_class.prolific_class && !$core.basic.host_class.swar_class && !$core.basic.host_class.dpump_class",
                       "message": "Please make sure to select at least one class in the USB Host Class configuration."
                     }
                   ],

@@ -103,7 +103,14 @@ extern USHORT usbd_mtp_ObjectPropSupported[];
 {{#if usbx_device_generate_init_code}}
 TaskHandle_t ux_device_app_thread;
 {{/if}}
+{{/with}}
+{{/if}}
 /* Private function prototypes -----------------------------------------------*/
+{{#if core.basic.device_class.device_core.more.usbx_device_register_connection_callback}}
+static UINT usbd_event_callback(ULONG Device_State);
+{{/if}}
+{{#if (helper_usbx_is_freertos @root.usbx_cxt.core.basic.usb_core_system.ux_standalone)}}
+{{#with core.applicative~}}
 {{#if usbx_device_generate_init_code}}
 VOID {{usbx_device_application_thread_name}}(void *argument);
 {{/if}}
@@ -117,41 +124,43 @@ UINT app_usbx_device_init(VOID)
 {
   UINT status = UX_SUCCESS;
   USB_DESCRIPTOR                    usbd_desc;
+{{#if (or device_mouse device_keyboard device_custom)}}
   ULONG                             report_desc_len;
+{{/if}}
 {{#if device_mouse}}
-  UX_SLAVE_CLASS_HID_PARAMETER      hid_mouse_parameter;
+  UX_SLAVE_CLASS_HID_PARAMETER      hid_mouse_parameter = {0};
 {{/if}}
 {{#if device_keyboard}}
-  UX_SLAVE_CLASS_HID_PARAMETER      hid_keyboard_parameter;
+  UX_SLAVE_CLASS_HID_PARAMETER      hid_keyboard_parameter = {0};
 {{/if}}
 {{#if device_custom}}
-  UX_SLAVE_CLASS_HID_PARAMETER      custom_hid_parameter;
+  UX_SLAVE_CLASS_HID_PARAMETER      custom_hid_parameter = {0};
 {{/if}}
 {{#if cdc_acm_class}}
-  UX_SLAVE_CLASS_CDC_ACM_PARAMETER  cdc_acm_parameter;
+  UX_SLAVE_CLASS_CDC_ACM_PARAMETER  cdc_acm_parameter = {0};
 {{/if}}
 {{#if msc_class}}
-  UX_SLAVE_CLASS_STORAGE_PARAMETER  storage_parameter;
+  UX_SLAVE_CLASS_STORAGE_PARAMETER  storage_parameter = {0};
 {{/if}}
 {{#if dfu_class}}
-  UX_SLAVE_CLASS_DFU_PARAMETER      dfu_parameter;
+  UX_SLAVE_CLASS_DFU_PARAMETER      dfu_parameter = {0};
 {{/if}}
 {{#if audio_class}}
-  UX_DEVICE_CLASS_AUDIO_PARAMETER   audio_parameter;
+  UX_DEVICE_CLASS_AUDIO_PARAMETER   audio_parameter = {0};
   static UX_DEVICE_CLASS_AUDIO_STREAM_PARAMETER audio_stream_parameter[USBD_AUDIO_STREAM_NUMBER] = {0};
 {{/if}}
 {{#if video_class}}
-  UX_DEVICE_CLASS_VIDEO_PARAMETER   video_parameter;
+  UX_DEVICE_CLASS_VIDEO_PARAMETER   video_parameter = {0};
   static UX_DEVICE_CLASS_VIDEO_STREAM_PARAMETER video_stream_parameter[USBD_VIDEO_STREAM_NUMBER] = {0};
 {{/if}}
 {{#if printer_class}}
-  UX_DEVICE_CLASS_PRINTER_PARAMETER printer_parameter;
+  UX_DEVICE_CLASS_PRINTER_PARAMETER printer_parameter = {0};
 {{/if}}
 {{#if ccid_class}}
-  UX_DEVICE_CLASS_CCID_PARAMETER    ccid_parameter;
+  UX_DEVICE_CLASS_CCID_PARAMETER    ccid_parameter = {0};
 {{/if}}
 {{#if pima_mtp_class}}
-  UX_SLAVE_CLASS_PIMA_PARAMETER     pima_mtp_parameter;
+  UX_SLAVE_CLASS_PIMA_PARAMETER     pima_mtp_parameter = {0};
 {{/if}}
 {{#if device_mouse}}
   report_desc_len = usbd_hid_mouse_report_length();
@@ -166,36 +175,28 @@ UINT app_usbx_device_init(VOID)
   usb_device_descriptor_register_class(USBD_CLASS_TYPE_HID, hid_custom_interface, &report_desc_len);
 {{/if}}
 {{#if cdc_acm_class}}
-  report_desc_len = sizeof(cdc_acm_parameter);
-  usb_device_descriptor_register_class(USBD_CLASS_TYPE_CDC_ACM, cdc_acm_interface, &report_desc_len);
+  usb_device_descriptor_register_class(USBD_CLASS_TYPE_CDC_ACM, cdc_acm_interface, UX_NULL);
 {{/if}}
 {{#if msc_class}}
-  report_desc_len = sizeof(storage_parameter);
-  usb_device_descriptor_register_class(USBD_CLASS_TYPE_MSC, msc_interface, &report_desc_len);
+  usb_device_descriptor_register_class(USBD_CLASS_TYPE_MSC, msc_interface, UX_NULL);
 {{/if}}
 {{#if dfu_class}}
-  report_desc_len = sizeof(dfu_parameter);
-  usb_device_descriptor_register_class(USBD_CLASS_TYPE_DFU, dfu_interface, &report_desc_len);
+  usb_device_descriptor_register_class(USBD_CLASS_TYPE_DFU, dfu_interface, UX_NULL);
 {{/if}}
 {{#if audio_class}}
-  report_desc_len = sizeof(audio_parameter);
-  usb_device_descriptor_register_class(USBD_CLASS_TYPE_AUDIO_20, audio_interface, &report_desc_len);
+  usb_device_descriptor_register_class(USBD_CLASS_TYPE_AUDIO_20, audio_interface, UX_NULL);
 {{/if}}
 {{#if video_class}}
-  report_desc_len = sizeof(video_parameter);
-  usb_device_descriptor_register_class(USBD_CLASS_TYPE_VIDEO, video_interface, &report_desc_len);
+  usb_device_descriptor_register_class(USBD_CLASS_TYPE_VIDEO, video_interface, UX_NULL);
 {{/if}}
 {{#if printer_class}}
-  report_desc_len = sizeof(printer_parameter);
-  usb_device_descriptor_register_class(USBD_CLASS_TYPE_PRINTER, printer_interface, &report_desc_len);
+  usb_device_descriptor_register_class(USBD_CLASS_TYPE_PRINTER, printer_interface, UX_NULL);
 {{/if}}
 {{#if ccid_class}}
-  report_desc_len = sizeof(ccid_parameter);
-  usb_device_descriptor_register_class(USBD_CLASS_TYPE_CCID, ccid_interface, &report_desc_len);
+  usb_device_descriptor_register_class(USBD_CLASS_TYPE_CCID, ccid_interface, UX_NULL);
 {{/if}}
 {{#if pima_mtp_class}}
-  report_desc_len = sizeof(pima_mtp_parameter);
-  usb_device_descriptor_register_class(USBD_CLASS_TYPE_PIMA_MTP, mtp_interface, &report_desc_len);
+  usb_device_descriptor_register_class(USBD_CLASS_TYPE_PIMA_MTP, mtp_interface, UX_NULL);
 {{/if}}
 
   usb_device_descriptor_get_framework(&usbd_desc);
@@ -209,7 +210,11 @@ UINT app_usbx_device_init(VOID)
                                       usbd_desc.string.framework_length,
                                       usbd_desc.languageid.framework,
                                       usbd_desc.languageid.framework_length,
+{{#if @root.usbx_cxt.core.basic.device_class.device_core.more.usbx_device_register_connection_callback}}
+                                      usbd_event_callback);
+{{else}}
                                       UX_NULL);
+{{/if}}
 
   if (status != UX_SUCCESS)
   {
@@ -391,17 +396,18 @@ UINT app_usbx_device_init(VOID)
   video_stream_parameter[0].ux_device_class_video_stream_parameter_callbacks.ux_device_class_video_stream_request      = usbd_video_stream_request;
   video_stream_parameter[0].ux_device_class_video_stream_parameter_max_payload_buffer_nb                               = USBD_VIDEO_PAYLOAD_BUFFER_NUMBER;
   video_stream_parameter[0].ux_device_class_video_stream_parameter_max_payload_buffer_size                             = usbd_video_stream_get_max_payload_buffer_size();
+{{#if (helper_usbx_is_freertos @root.usbx_cxt.core.basic.usb_core_system.ux_standalone)}}
+  video_stream_parameter[0].ux_device_class_video_stream_parameter_thread_entry                                        = ux_device_class_video_write_thread_entry;
+  video_stream_parameter[0].ux_device_class_video_stream_parameter_thread_stack_size                                   = UX_DEVICE_CLASS_VIDEO_THREAD_STACK_SIZE;
+{{else}}
+  video_stream_parameter[0].ux_device_class_video_stream_parameter_task_function                                       = ux_device_class_video_write_task_function;
+{{/if}}
 
   /* Set the parameters for Video device */
   video_parameter.ux_device_class_video_parameter_streams_nb                                                           = USBD_VIDEO_STREAM_NUMBER;
   video_parameter.ux_device_class_video_parameter_streams                                                              = video_stream_parameter;
   video_parameter.ux_device_class_video_parameter_callbacks.ux_slave_class_video_instance_activate                     = usbd_video_activate;
   video_parameter.ux_device_class_video_parameter_callbacks.ux_slave_class_video_instance_deactivate                   = usbd_video_deactivate;
-
-{{#if (helper_usbx_is_freertos @root.usbx_cxt.core.basic.usb_core_system.ux_standalone)}}
-  video_stream_parameter[0].ux_device_class_video_stream_parameter_thread_entry      = ux_device_class_video_write_thread_entry;
-  video_stream_parameter[0].ux_device_class_video_stream_parameter_thread_stack_size = UX_DEVICE_CLASS_VIDEO_THREAD_STACK_SIZE;
-{{/if}}
 
   /* Initialize the device video class */
   status = ux_device_stack_class_register(_ux_system_device_class_video_name,
@@ -534,6 +540,50 @@ UINT app_usbx_device_init(VOID)
 {{/if}}
   return UX_SUCCESS;
 }
+
+{{#if @root.usbx_cxt.core.basic.device_class.device_core.more.usbx_device_register_connection_callback}}
+/**
+  * @brief  usbd_event_callback
+  *         This function is called when the device state changes.
+  * @param  Device_State: USB Device State
+  * @retval status
+  */
+static UINT usbd_event_callback(ULONG Device_State)
+{
+  UINT status = UX_SUCCESS;
+
+  switch (Device_State)
+  {
+  case UX_DEVICE_ATTACHED:
+    break;
+
+  case UX_DEVICE_REMOVED:
+    break;
+
+{{#if (helper_usbx_controllers_is_enabled @root.USBX_Controllers_Driver 'Device')}}
+  case UX_DCD_STM32_DEVICE_CONNECTED:
+    break;
+
+  case UX_DCD_STM32_DEVICE_DISCONNECTED:
+    break;
+
+  case UX_DCD_STM32_DEVICE_SUSPENDED:
+    break;
+
+  case UX_DCD_STM32_DEVICE_RESUMED:
+    break;
+
+  case UX_DCD_STM32_SOF_RECEIVED:
+    break;
+
+{{/if}}
+  default:
+    break;
+
+  }
+  return status;
+}
+{{/if}}
 
 /**
   * @brief  Application USBX Device De-Initialization.
@@ -722,6 +772,8 @@ VOID {{usbx_device_application_thread_name}}(void *argument)
 {{else}}
   UX_PARAMETER_NOT_USED(argument);
 {{/if}}
+  /* Suspend the USB device thread */
+  vTaskSuspend(ux_device_app_thread);
 }
 {{/if}}
 {{/with}}

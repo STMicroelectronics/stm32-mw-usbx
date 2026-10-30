@@ -194,6 +194,7 @@ UINT _ux_hcd_stm32_entry(UX_HCD *hcd, UINT function, VOID *parameter)
       _ux_utility_memory_free(hcd_stm32 -> ux_hcd_stm32_channels_ed);
       _ux_utility_memory_free(hcd_stm32 -> ux_hcd_stm32_ed_list);
       _ux_utility_memory_free(hcd_stm32);
+      hcd -> ux_hcd_status = UX_UNUSED;
     }
 
     status = UX_SUCCESS;

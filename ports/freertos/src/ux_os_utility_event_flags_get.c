@@ -92,24 +92,46 @@ UINT _ux_os_utility_event_flags_get(UX_EVENT_FLAGS_GROUP *group_ptr, ULONG reque
     return(UX_EVENT_ERROR);
   }
 
-  if ((get_option == UX_AND) || (get_option == UX_OR))
+  if (get_option == UX_OR)
   {
-    clear_on_exit = pdFAIL;
+    /* Wait for any flag, do not clear on exit. */
+    clear_on_exit = pdFALSE;
+  }
+  else if (get_option == UX_AND)
+  {
+    /* Wait for ALL specified flags, do not clear on exit. */
+    clear_on_exit = pdFALSE;
+    wait_for_all  = pdTRUE;
   }
   else if (get_option == UX_AND_CLEAR)
   {
+    /* Wait for ALL specified flags, clear on exit. */
     wait_for_all = pdTRUE;
   }
+  else if (get_option != UX_OR_CLEAR)
+  {
+    *actual_flags_ptr = 0U;
+    _ux_system_error_handler(UX_SYSTEM_LEVEL_THREAD, UX_SYSTEM_CONTEXT_UTILITY, UX_EVENT_ERROR);
+    return(UX_EVENT_ERROR);
+  }
+  /* UX_OR_CLEAR: defaults (clear_on_exit=pdTRUE, wait_for_all=pdFALSE) are correct. */
 
   *actual_flags_ptr = xEventGroupWaitBits(hEventGroup, (EventBits_t)requested_flags, clear_on_exit, wait_for_all, (TickType_t)wait_option);
 
-  if (get_option == UX_AND_CLEAR)
+  if ((get_option == UX_OR) || (get_option == UX_OR_CLEAR))
   {
-    if (((requested_flags & *actual_flags_ptr) != requested_flags) || ((requested_flags & *actual_flags_ptr) == 0U))
+    if ((*actual_flags_ptr & requested_flags) == 0U)
     {
-      *actual_flags_ptr = 0xFFFFFFFF;
-      _ux_system_error_handler(UX_SYSTEM_LEVEL_THREAD, UX_SYSTEM_CONTEXT_UTILITY, UX_EVENT_ERROR);
-      return(UX_EVENT_ERROR);
+      *actual_flags_ptr = 0U;
+      return(UX_NO_EVENTS);
+    }
+  }
+  else if ((get_option == UX_AND_CLEAR) || (get_option == UX_AND))
+  {
+    if ((requested_flags & *actual_flags_ptr) != requested_flags)
+    {
+      *actual_flags_ptr = 0U;
+      return(UX_NO_EVENTS);
     }
   }
   /* Return completion status. */

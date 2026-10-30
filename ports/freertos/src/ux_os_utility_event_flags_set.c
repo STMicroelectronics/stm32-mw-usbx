@@ -78,13 +78,18 @@ UINT _ux_os_utility_event_flags_set(UX_EVENT_FLAGS_GROUP *group_ptr, ULONG flags
   }
 #endif
 
-  if (set_option != UX_OR)
+  if ((flags_to_set & 0xFF000000) != 0U)
+  {
+    _ux_system_error_handler(UX_SYSTEM_LEVEL_THREAD, UX_SYSTEM_CONTEXT_UTILITY, UX_EVENT_ERROR);
+    return UX_EVENT_ERROR;
+  }
+
+  if (set_option == UX_AND)
   {
     if (xPortIsInsideInterrupt())
     {
-      xEventGroupGetBitsFromISR(group_ptr->event_group_handle);
-
-      if (xEventGroupClearBitsFromISR(group_ptr->event_group_handle, (EventBits_t) ~flags_to_set) == pdFAIL)
+      if (xEventGroupClearBitsFromISR(group_ptr->event_group_handle,
+                                      (EventBits_t)((~flags_to_set) & 0x00FFFFFFU)) == pdFAIL)
       {
         _ux_system_error_handler(UX_SYSTEM_LEVEL_THREAD, UX_SYSTEM_CONTEXT_UTILITY, UX_EVENT_ERROR);
         return UX_EVENT_ERROR;
@@ -92,8 +97,16 @@ UINT _ux_os_utility_event_flags_set(UX_EVENT_FLAGS_GROUP *group_ptr, ULONG flags
     }
     else
     {
-      xEventGroupClearBits(group_ptr->event_group_handle, (EventBits_t) ~flags_to_set);
+      xEventGroupClearBits(group_ptr->event_group_handle,
+                           (EventBits_t)((~flags_to_set) & 0x00FFFFFFU));
     }
+
+    return(UX_SUCCESS);
+  }
+  else if (set_option != UX_OR)
+  {
+    _ux_system_error_handler(UX_SYSTEM_LEVEL_THREAD, UX_SYSTEM_CONTEXT_UTILITY, UX_EVENT_ERROR);
+    return UX_EVENT_ERROR;
   }
 
   if (xPortIsInsideInterrupt())

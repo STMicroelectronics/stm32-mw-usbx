@@ -92,7 +92,7 @@ UINT _ux_dcd_stm32_endpoint_create(UX_DCD_STM32 *dcd_stm32, UX_SLAVE_ENDPOINT *e
   {
 
     /* We can use this endpoint.  */
-    ed -> ux_dcd_stm32_ed_status |=  UX_DCD_STM32_ED_STATUS_USED;
+    ed -> ux_dcd_stm32_ed_status =  UX_DCD_STM32_ED_STATUS_USED;
 
     /* Keep the physical endpoint address in the endpoint container.  */
     endpoint -> ux_slave_endpoint_ed =  (VOID *) ed;

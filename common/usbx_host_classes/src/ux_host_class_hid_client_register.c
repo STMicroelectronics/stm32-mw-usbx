@@ -130,10 +130,12 @@ UINT                        client_name_length =  0;
         /* Check if this HID client is already used. */
         if (hid_client -> ux_host_class_hid_client_status == UX_UNUSED)
         {
-
+#if defined(UX_NAME_REFERENCED_BY_POINTER)
+            hid_client -> ux_host_class_hid_client_name = (UCHAR *) hid_client_name;
+#else
             /* We have found a free container for the HID client. Copy the name (with null-terminator). */
             _ux_utility_memory_copy(hid_client -> ux_host_class_hid_client_name, hid_client_name, client_name_length + 1); /* Use case of memcpy is verified. */
-
+#endif
             /* Memorize the handler address of this client. */
             hid_client -> ux_host_class_hid_client_handler =  hid_client_handler;
 

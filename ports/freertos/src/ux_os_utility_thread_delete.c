@@ -84,8 +84,9 @@ UINT _ux_os_utility_thread_delete(UX_THREAD *thread_ptr)
   /* Terminate and delete the USBX thread. */
   vTaskDelete(thread_ptr->task_handle);
 
-  /* Reset the thread handle */
+  /* Reset the thread handle and entry function pointer. */
   thread_ptr->task_handle = 0U;
+  thread_ptr->pvTaskCode  = NULL;
 
   /* Return completion status.  */
   return(UX_SUCCESS);

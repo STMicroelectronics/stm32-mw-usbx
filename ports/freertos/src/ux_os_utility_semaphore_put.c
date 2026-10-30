@@ -61,7 +61,7 @@
 /**************************************************************************/
 UINT _ux_os_utility_semaphore_put(UX_SEMAPHORE *semaphore)
 {
-  UINT status = UX_SUCCESS;
+  BaseType_t semaphore_status;
   BaseType_t yield;
 
   UX_ASSERT(semaphore != NULL);
@@ -81,26 +81,28 @@ UINT _ux_os_utility_semaphore_put(UX_SEMAPHORE *semaphore)
   {
     yield = pdFALSE;
 
-    /* Attempt to give the semaphore from ISR. */
-    if (xSemaphoreGiveFromISR(semaphore->semaphore_handle, &yield) != pdTRUE)
+    /* A failed put on a binary semaphore means it is already signaled. */
+    semaphore_status = xSemaphoreGiveFromISR(semaphore->semaphore_handle, &yield);
+    if ((semaphore_status != pdTRUE) && (semaphore->ux_semaphore_initial_count > 1U))
     {
-      status = UX_SEMAPHORE_ERROR;
+      _ux_system_error_handler(UX_SYSTEM_LEVEL_THREAD, UX_SYSTEM_CONTEXT_UTILITY, UX_SEMAPHORE_ERROR);
+      return UX_SEMAPHORE_ERROR;
     }
-    else
-    {
-      portYIELD_FROM_ISR(yield);
-    }
+
+    portYIELD_FROM_ISR(yield);
   }
   else
   {
-    /* Attempt to give the semaphore. */
-    if (xSemaphoreGive(semaphore->semaphore_handle) != pdPASS)
+    /* A failed put on a binary semaphore means it is already signaled. */
+    semaphore_status = xSemaphoreGive(semaphore->semaphore_handle);
+    if ((semaphore_status != pdPASS) && (semaphore->ux_semaphore_initial_count > 1U))
     {
-      status = UX_SEMAPHORE_ERROR;
+      _ux_system_error_handler(UX_SYSTEM_LEVEL_THREAD, UX_SYSTEM_CONTEXT_UTILITY, UX_SEMAPHORE_ERROR);
+      return UX_SEMAPHORE_ERROR;
     }
   }
 
   /* Return completion status. */
-  return status;
+  return(UX_SUCCESS);
 }
 

@@ -89,7 +89,8 @@ UINT _ux_os_utility_semaphore_delete(UX_SEMAPHORE *semaphore)
 
   /* Reset the semaphore handle and suspended count */
   taskENTER_CRITICAL();
-  semaphore->semaphore_handle = 0U;
+  semaphore->semaphore_handle = NULL;
+  semaphore->ux_semaphore_initial_count = 0U;
   semaphore->ux_semaphore_suspended_count = 0U;
   taskEXIT_CRITICAL();
 

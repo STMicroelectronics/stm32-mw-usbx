@@ -86,7 +86,13 @@ hal_hcd_handle_t *p_usb_host = UX_NULL;
 {{#with core.applicative~}}
 {{#if usbx_host_generate_init_code}}
 TaskHandle_t ux_host_app_thread;
+{{/if}}
+{{/with}}
+{{/if}}
 /* Private function prototypes -----------------------------------------------*/
+{{#if (helper_usbx_is_freertos @root.usbx_cxt.core.basic.usb_core_system.ux_standalone)}}
+{{#with core.applicative~}}
+{{#if usbx_host_generate_init_code}}
 VOID {{usbx_host_application_thread_name}}(void *argument);
 {{/if}}
 {{/with}}
@@ -509,6 +515,8 @@ VOID {{usbx_host_application_thread_name}}(void *argument)
 {{/with}}
 {{/if}}
 {{/if}}
+  /* Suspend the USB host thread */
+  vTaskSuspend(ux_host_app_thread);
 }
 {{/if}}
 {{/with}}

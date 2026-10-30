@@ -114,6 +114,7 @@ extern "C" {
 #define USBD_PRODUCT_STRING                     "{{more.usbd_product_string}}"
 #define USBD_SERIAL_NUMBER_STRING               "{{more.usbd_serial_number}}"
 #define USBD_MAX_POWER                          {{more.usbd_max_power}}
+#define USBD_FRAMEWORK_MAX_LENGTH               {{more.usbd_framework_max_desc_sz}}U
 {{!-- END of device_descriptor_config --}}
 {{/with}}
 {{#if device_mouse}}
@@ -297,12 +298,22 @@ extern "C" {
 {{#if (eq video_streaming_format_subtype 2)}}
 #define USBD_UVC_USE_FRAME_BASE_H264            1U
 #define USBD_UVC_USE_H264                       0U
+#define USBD_UVC_USE_UNCOMPRESSED               0U
+{{else}}
+{{#if (eq video_streaming_format_subtype 3)}}
+#define USBD_UVC_USE_FRAME_BASE_H264            0U
+#define USBD_UVC_USE_H264                       1U
+#define USBD_UVC_USE_UNCOMPRESSED               0U
+{{else}}
+{{#if (eq video_streaming_format_subtype 1)}}
+#define USBD_UVC_USE_FRAME_BASE_H264            0U
+#define USBD_UVC_USE_H264                       0U
+#define USBD_UVC_USE_UNCOMPRESSED               1U
 {{else}}
 #define USBD_UVC_USE_FRAME_BASE_H264            0U
-{{#if (eq video_streaming_format_subtype 3)}}
-#define USBD_UVC_USE_H264                       1U
-{{else}}
 #define USBD_UVC_USE_H264                       0U
+#define USBD_UVC_USE_UNCOMPRESSED               0U
+{{/if}}
 {{/if}}
 {{/if}}
 {{#if video_using_camera}}
@@ -314,6 +325,11 @@ extern "C" {
 #define UVC_FRAME_HEIGHT                        {{more.uvc_frame_height}}
 #define UVC_CAM_FPS_FS                          {{more.uvc_cam_fps_fs}}
 #define UVC_CAM_FPS_HS                          {{more.uvc_cam_fps_hs}}
+#define USBD_UVC_UNCOMPRESSED_GUID              {{more.uvc_uncompressed_guid}}U
+#define USBD_UVC_BITS_PER_PIXEL                 {{more.uvc_bits_per_pixel}}U
+#define USBD_UVC_COLOR_PRIMARIES                {{more.uvc_color_primarie}}U
+#define USBD_UVC_TFR_CHARACTERISTICS            {{more.uvc_tfr_characteristics}}U
+#define USBD_UVC_MATRIX_COEFFICIENTS            {{more.uvc_matrix_coefficients}}U
 {{!-- END of video_core --}}
 {{!-- START of video_interface --}}
 {{#with ../video_interface~}}
@@ -388,6 +404,8 @@ extern "C" {
 {{/with}}
 {{!-- START of ccid_core --}}
 {{#with ccid_core~}}
+#define USBD_CCID_NUMBER_CLOCK_SUPPORTED        {{usbd_ccid_number_clock_supported}}
+#define USBD_CCID_NUMBER_DATA_RATES_SUPPORTED   {{usbd_ccid_number_data_rates_supported}}
 #define USBD_CCID_DEFAULT_DATA_RATE             {{usbd_ccid_default_data_rate}}
 #define USBD_CCID_MAX_DATA_RATE                 {{usbd_ccid_max_data_rate}}
 #define USBD_CCID_DEFAULT_CLOCK_FREQ            {{usbd_ccid_default_clock_freq}}

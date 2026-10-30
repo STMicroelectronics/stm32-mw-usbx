@@ -79,6 +79,30 @@ UINT _ux_os_utility_semaphore_get(UX_SEMAPHORE *semaphore, ULONG semaphore_signa
   }
 #endif
 
+  /* Call FreeRTOS to get the semaphore.*/
+  if (xPortIsInsideInterrupt())
+  {
+    yield = pdFALSE;
+
+    if (semaphore_signal != UX_NO_WAIT)
+    {
+      /* Blocking get from ISR is unsupported. */
+      _ux_system_error_handler(UX_SYSTEM_LEVEL_THREAD, UX_SYSTEM_CONTEXT_UTILITY, UX_SEMAPHORE_ERROR);
+      return UX_SEMAPHORE_ERROR;
+    }
+
+    if (xSemaphoreTakeFromISR(semaphore->semaphore_handle, &yield) != pdPASS)
+    {
+      /* No token available with UX_NO_WAIT is not a programming error;
+       * USBX callers test for status != UX_SUCCESS, but do not log this. */
+      return UX_SEMAPHORE_ERROR;
+    }
+
+    portYIELD_FROM_ISR(yield);
+    /* Current task is the interrupted task  */
+    return(UX_SUCCESS);
+  }
+
   thread_id.task_handle = xTaskGetCurrentTaskHandle();
 
   UX_ASSERT(thread_id.task_handle != NULL);
@@ -92,66 +116,30 @@ UINT _ux_os_utility_semaphore_get(UX_SEMAPHORE *semaphore, ULONG semaphore_signa
   }
 #endif
 
-  /* Call FreeRTOS to get the semaphore.*/
-  if (xPortIsInsideInterrupt())
-  {
-    priority = uxTaskPriorityGetFromISR(thread_id.task_handle);
-    yield = pdFALSE;
+  priority = uxTaskPriorityGet(thread_id.task_handle);
 
-    /* Increment the suspended count before waiting */
+  /* Increment the suspended count before waiting */
+  taskENTER_CRITICAL();
+  semaphore->ux_semaphore_suspended_count++;
+  taskEXIT_CRITICAL();
+
+  if (xSemaphoreTake(semaphore->semaphore_handle, (TickType_t)semaphore_signal) != pdPASS)
+  {
+    /* Decrement the suspended count */
     taskENTER_CRITICAL();
-    semaphore->ux_semaphore_suspended_count++;
+    semaphore->ux_semaphore_suspended_count--;
     taskEXIT_CRITICAL();
 
-    if (xSemaphoreTakeFromISR(semaphore->semaphore_handle, &yield) != pdPASS)
-    {
-      /* Decrement the suspended count */
-      taskENTER_CRITICAL();
-      semaphore->ux_semaphore_suspended_count--;
-      taskEXIT_CRITICAL();
-
-      /* Error trap. */
-      _ux_system_error_handler(UX_SYSTEM_LEVEL_THREAD, UX_SYSTEM_CONTEXT_UTILITY, UX_SEMAPHORE_ERROR);
-      return UX_SEMAPHORE_ERROR;
-    }
-    else
-    {
-      /* Decrement the suspended count */
-      taskENTER_CRITICAL();
-      semaphore->ux_semaphore_suspended_count--;
-      taskEXIT_CRITICAL();
-
-      portYIELD_FROM_ISR(yield);
-    }
+    /* Timeout / no-instance: USBX callers handle this via status != UX_SUCCESS.
+     * Do not invoke the system error trap to avoid polluting the error history
+     * on legitimate UX_NO_WAIT polling and timed waits. */
+    return UX_SEMAPHORE_ERROR;
   }
-  else
-  {
-    priority = uxTaskPriorityGet(thread_id.task_handle);
 
-    /* Increment the suspended count before waiting */
-    taskENTER_CRITICAL();
-    semaphore->ux_semaphore_suspended_count++;
-    taskEXIT_CRITICAL();
-
-    if (xSemaphoreTake(semaphore->semaphore_handle, (TickType_t)semaphore_signal) != pdPASS)
-    {
-      /* Decrement the suspended count */
-      taskENTER_CRITICAL();
-      semaphore->ux_semaphore_suspended_count--;
-      taskEXIT_CRITICAL();
-
-      /* Error trap. */
-      _ux_system_error_handler(UX_SYSTEM_LEVEL_THREAD, UX_SYSTEM_CONTEXT_UTILITY, UX_SEMAPHORE_ERROR);
-      return UX_SEMAPHORE_ERROR;
-    }
-    else
-    {
-      /* Decrement the suspended count */
-      taskENTER_CRITICAL();
-      semaphore->ux_semaphore_suspended_count--;
-      taskEXIT_CRITICAL();
-    }
-  }
+  /* Decrement the suspended count */
+  taskENTER_CRITICAL();
+  semaphore->ux_semaphore_suspended_count--;
+  taskEXIT_CRITICAL();
 
   /* Is this the lowest priority thread in the system  */
   if (priority < _ux_system -> ux_system_thread_lowest_priority)

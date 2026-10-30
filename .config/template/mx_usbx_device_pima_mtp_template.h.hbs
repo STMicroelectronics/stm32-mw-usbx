@@ -44,72 +44,72 @@ VOID usbd_pima_mtp_deactivate(VOID *pima_instance);
 UINT usbd_mtp_cancel(struct UX_SLAVE_CLASS_PIMA_STRUCT *pima_instance);
 UINT usbd_mtp_device_reset(struct UX_SLAVE_CLASS_PIMA_STRUCT *pima_instance);
 UINT usbd_mtp_get_device_prop_desc(struct UX_SLAVE_CLASS_PIMA_STRUCT *pima_instance,
-                                ULONG device_property,
-                                UCHAR **device_prop_dataset,
-                                ULONG *device_prop_dataset_length);
+                                   ULONG device_property,
+                                   UCHAR **device_prop_dataset,
+                                   ULONG *device_prop_dataset_length);
 UINT usbd_mtp_get_device_prop_value(struct UX_SLAVE_CLASS_PIMA_STRUCT *pima_instance,
-                                 ULONG device_property,
-                                 UCHAR **device_prop_value,
-                                 ULONG *device_prop_value_length);
+                                    ULONG device_property,
+                                    UCHAR **device_prop_value,
+                                    ULONG *device_prop_value_length);
 UINT usbd_mtp_set_device_prop_value(struct UX_SLAVE_CLASS_PIMA_STRUCT *pima_instance,
-                                 ULONG device_property,
-                                 UCHAR *device_prop_value,
-                                 ULONG device_prop_value_length);
+                                    ULONG device_property,
+                                    UCHAR *device_prop_value,
+                                    ULONG device_prop_value_length);
 UINT usbd_mtp_format_storage(struct UX_SLAVE_CLASS_PIMA_STRUCT *pima_instance,
-                            ULONG storage_id);
-UINT usbd_mtp_get_storage_info(struct UX_SLAVE_CLASS_PIMA_STRUCT *pima_instance,
                              ULONG storage_id);
+UINT usbd_mtp_get_storage_info(struct UX_SLAVE_CLASS_PIMA_STRUCT *pima_instance,
+                               ULONG storage_id);
 UINT usbd_mtp_get_object_number(struct UX_SLAVE_CLASS_PIMA_STRUCT *pima_instance,
-                              ULONG object_format_code,
-                              ULONG object_association,
-                              ULONG *object_number);
-UINT usbd_mtp_get_object_handles(struct UX_SLAVE_CLASS_PIMA_STRUCT *pima_instance,
-                               ULONG object_handles_format_code,
-                               ULONG object_handles_association,
-                               ULONG *object_handles_array,
-                               ULONG object_handles_max_number);
-UINT usbd_mtp_get_object_info(struct UX_SLAVE_CLASS_PIMA_STRUCT *pima_instance,
-                            ULONG object_handle,
-                            UX_SLAVE_CLASS_PIMA_OBJECT **object);
-UINT usbd_mtp_get_object_data(struct UX_SLAVE_CLASS_PIMA_STRUCT *pima_instance,
-                            ULONG object_handle,
-                            UCHAR *object_buffer,
-                            ULONG object_offset,
-                            ULONG object_length_requested,
-                            ULONG *object_actual_length);
-UINT usbd_mtp_send_object_info(struct UX_SLAVE_CLASS_PIMA_STRUCT *pima_instance,
-                             UX_SLAVE_CLASS_PIMA_OBJECT *object,
-                             ULONG storage_id, ULONG parent_object_handle,
-                             ULONG *object_handle);
-UINT usbd_mtp_send_object_data(struct UX_SLAVE_CLASS_PIMA_STRUCT *pima_instance,
-                             ULONG object_handle, ULONG phase,
-                             UCHAR *object_buffer, ULONG object_offset,
-                             ULONG object_length);
-UINT usbd_mtp_delete_object(struct UX_SLAVE_CLASS_PIMA_STRUCT *pima_instance,
-                           ULONG object_handle);
-UINT usbd_mtp_get_object_prop_desc(struct UX_SLAVE_CLASS_PIMA_STRUCT *pima_instance,
-                                ULONG object_property,
                                 ULONG object_format_code,
-                                UCHAR **object_prop_dataset,
-                                ULONG *object_prop_dataset_length);
+                                ULONG object_association,
+                                ULONG *object_number);
+UINT usbd_mtp_get_object_handles(struct UX_SLAVE_CLASS_PIMA_STRUCT *pima_instance,
+                                 ULONG object_handles_format_code,
+                                 ULONG object_handles_association,
+                                 ULONG *object_handles_array,
+                                 ULONG object_handles_max_number);
+UINT usbd_mtp_get_object_info(struct UX_SLAVE_CLASS_PIMA_STRUCT *pima_instance,
+                              ULONG object_handle,
+                              UX_SLAVE_CLASS_PIMA_OBJECT **object);
+UINT usbd_mtp_get_object_data(struct UX_SLAVE_CLASS_PIMA_STRUCT *pima_instance,
+                              ULONG object_handle,
+                              UCHAR *object_buffer,
+                              ULONG object_offset,
+                              ULONG object_length_requested,
+                              ULONG *object_actual_length);
+UINT usbd_mtp_send_object_info(struct UX_SLAVE_CLASS_PIMA_STRUCT *pima_instance,
+                               UX_SLAVE_CLASS_PIMA_OBJECT *object,
+                               ULONG storage_id, ULONG parent_object_handle,
+                               ULONG *object_handle);
+UINT usbd_mtp_send_object_data(struct UX_SLAVE_CLASS_PIMA_STRUCT *pima_instance,
+                               ULONG object_handle, ULONG phase,
+                               UCHAR *object_buffer, ULONG object_offset,
+                               ULONG object_length);
+UINT usbd_mtp_delete_object(struct UX_SLAVE_CLASS_PIMA_STRUCT *pima_instance,
+                            ULONG object_handle);
+UINT usbd_mtp_get_object_prop_desc(struct UX_SLAVE_CLASS_PIMA_STRUCT *pima_instance,
+                                   ULONG object_property,
+                                   ULONG object_format_code,
+                                   UCHAR **object_prop_dataset,
+                                   ULONG *object_prop_dataset_length);
 UINT usbd_mtp_get_object_prop_value(struct UX_SLAVE_CLASS_PIMA_STRUCT *pima_instance,
-                                 ULONG object_handle,
-                                 ULONG object_prop_code,
-                                 UCHAR **object_prop_value,
-                                 ULONG *object_prop_value_length);
+                                    ULONG object_handle,
+                                    ULONG object_prop_code,
+                                    UCHAR **object_prop_value,
+                                    ULONG *object_prop_value_length);
 UINT usbd_mtp_set_object_prop_value(struct UX_SLAVE_CLASS_PIMA_STRUCT *pima_instance,
-                                 ULONG object_handle,
-                                 ULONG object_prop_code,
-                                 UCHAR *object_prop_value,
-                                 ULONG object_prop_value_length);
+                                    ULONG object_handle,
+                                    ULONG object_prop_code,
+                                    UCHAR *object_prop_value,
+                                    ULONG object_prop_value_length);
 UINT usbd_mtp_get_object_references(struct UX_SLAVE_CLASS_PIMA_STRUCT *pima_instance,
-                                  ULONG object_handle,
-                                  UCHAR **object_handle_array,
-                                  ULONG *object_handle_array_length);
+                                    ULONG object_handle,
+                                    UCHAR **object_handle_array,
+                                    ULONG *object_handle_array_length);
 UINT usbd_mtp_set_object_references(struct UX_SLAVE_CLASS_PIMA_STRUCT *pima_instance,
-                                  ULONG object_handle,
-                                  UCHAR *object_handle_array,
-                                  ULONG object_handle_array_length);
+                                    ULONG object_handle,
+                                    UCHAR *object_handle_array,
+                                    ULONG object_handle_array_length);
 ULONG usbd_mtp_StorageGetMaxCapabilityLow(VOID);
 ULONG usbd_mtp_StorageGetMaxCapabilityHigh(VOID);
 ULONG usbd_mtp_StorageGetFreeSpaceLow(VOID);
