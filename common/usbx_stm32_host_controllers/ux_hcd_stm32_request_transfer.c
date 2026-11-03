@@ -88,7 +88,7 @@ UX_ENDPOINT     *endpoint;
 UINT            status;
 
     /* Device Connection Status.  */
-    if (hcd_stm32 -> ux_hcd_stm32_controller_flag & UX_HCD_STM32_CONTROLLER_FLAG_DEVICE_ATTACHED)
+    if (hcd_stm32 -> ux_hcd_stm32_rh_last_device_attached_status == UX_HCD_STM32_CONTROLLER_FLAG_DEVICE_ATTACHED)
     {
 
         /* Get the pointer to the Endpoint.  */

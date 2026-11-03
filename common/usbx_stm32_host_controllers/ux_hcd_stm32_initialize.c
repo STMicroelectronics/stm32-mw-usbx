@@ -144,8 +144,37 @@ UX_HCD_STM32          *hcd_stm32;
     /* The periodic scheduler is not active.  */
     hcd_stm32 -> ux_hcd_stm32_periodic_scheduler_active =  0;
 
+    /* Initialize the root hub connect/disconnect debounce state.  */
+    hcd_stm32 -> ux_hcd_stm32_rh_debounce_tick =  0;
+    hcd_stm32 -> ux_hcd_stm32_rh_last_device_attached_status = UX_HCD_STM32_CONTROLLER_FLAG_DEVICE_DETACHED;
+
     /* Set the host controller into the operational state.  */
     hcd -> ux_hcd_status =  UX_HCD_STATUS_OPERATIONAL;
+
+#if !defined(UX_HOST_STANDALONE)
+
+    /* Create the timer that evaluates the connect/disconnect debounce outside of
+       USB interrupt context. It is created deactivated and is only started while a
+       debounce window is pending. In standalone builds this evaluation is driven
+       from the UX_HCD_TASKS_RUN entry instead, and the timer create macro resolves
+       to a no-op.  */
+    if (_ux_host_timer_create(&hcd_stm32 -> ux_hcd_stm32_rh_timer, "USBX RH Debounce Timer",
+                              _ux_hcd_stm32_rh_timer_function, (ULONG)(ALIGN_TYPE) hcd_stm32,
+                              1, 1, UX_NO_ACTIVATE) != UX_SUCCESS)
+    {
+
+        /* Timer creation failed; roll back to a halted state and free resources.  */
+        hcd -> ux_hcd_status =  UX_HCD_STATUS_HALTED;
+        hcd -> ux_hcd_controller_hardware =  UX_NULL;
+        _ux_utility_memory_free(hcd_stm32 -> ux_hcd_stm32_ed_list);
+        _ux_utility_memory_free(hcd_stm32);
+        return(UX_ERROR);
+    }
+
+    /* Store the STM32 HCD pointer.  */
+    UX_TIMER_EXTENSION_PTR_SET(&(hcd_stm32 -> ux_hcd_stm32_rh_timer), hcd_stm32)
+
+#endif /* !defined(UX_HOST_STANDALONE) */
 
     /* Return successful completion.  */
     return(UX_SUCCESS);

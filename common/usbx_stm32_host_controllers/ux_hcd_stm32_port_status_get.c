@@ -119,7 +119,7 @@ ULONG       port_status;
     port_status =  0;
 
     /* Device Connection Status.  */
-    if (hcd_stm32 -> ux_hcd_stm32_controller_flag & UX_HCD_STM32_CONTROLLER_FLAG_DEVICE_ATTACHED)
+    if (hcd_stm32 -> ux_hcd_stm32_rh_last_device_attached_status == UX_HCD_STM32_CONTROLLER_FLAG_DEVICE_ATTACHED)
         port_status |=  UX_PS_CCS;
 
     switch (HAL_HCD_GetCurrentSpeed(hcd_stm32 -> hcd_handle))

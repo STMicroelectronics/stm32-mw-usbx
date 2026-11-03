@@ -100,7 +100,7 @@ UINT  _ux_hcd_stm32_port_reset(UX_HCD_STM32 *hcd_stm32, ULONG port_index)
 
     /* Ensure that the downstream port has a device attached. It is unnatural
        to perform a port reset if there is no device.  */
-    if ((hcd_stm32 -> ux_hcd_stm32_controller_flag & UX_HCD_STM32_CONTROLLER_FLAG_DEVICE_ATTACHED) == 0)
+    if (hcd_stm32 -> ux_hcd_stm32_rh_last_device_attached_status == UX_HCD_STM32_CONTROLLER_FLAG_DEVICE_DETACHED)
     {
 
         /* Error trap. */

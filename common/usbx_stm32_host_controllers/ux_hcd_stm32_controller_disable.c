@@ -83,6 +83,10 @@ UX_HCD      *hcd;
     /* Reflect the state of the controller in the main structure.  */
     hcd -> ux_hcd_status =  UX_HCD_STATUS_HALTED;
 
+    /* Stop the root hub debounce timer. It is deleted, not just stopped, when the
+       controller resources are released on UX_HCD_UNINITIALIZE.  */
+    UX_HCD_STM32_TIMER_DEACTIVATE(&hcd_stm32 -> ux_hcd_stm32_rh_timer);
+
     /* Return successful completion.  */
     return(UX_SUCCESS);
 }

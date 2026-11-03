@@ -8,6 +8,13 @@
   ******************************************************************************
   */
 
+### V3.2.0 / 11-September-2026 ###
+===============================
+Main changes
+-------------
+- Remove extra free from periodic schedule
+- Add connect/disconnect event debounce window
+
 ### V3.1.1 / 16-January-2026 ###
 ===============================
 Main changes

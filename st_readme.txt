@@ -7,6 +7,10 @@
   ******************************************************************************
   */
 
+### V6.4.0 (11-09-2026) ###
+============================
+- Bug fixes and new feature added to the STM32 host controller driver interface
+
 ### V6.4.0 (08-05-2026) ###
 ============================
 - Improve audio feedback requests

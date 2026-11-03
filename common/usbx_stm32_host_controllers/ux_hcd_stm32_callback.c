@@ -76,21 +76,35 @@ void HAL_HCD_Connect_Callback(HCD_HandleTypeDef *hhcd)
 
 UX_HCD              *hcd;
 UX_HCD_STM32        *hcd_stm32;
+UX_INTERRUPT_SAVE_AREA
 
 
     /* Get the pointer to the HCD & HCD_STM32.  */
     hcd = (UX_HCD*)hhcd -> pData;
     hcd_stm32 = (UX_HCD_STM32*)hcd -> ux_hcd_controller_hardware;
 
-    /* Something happened on the root hub port. Signal it to the root hub     thread.  */
-    hcd -> ux_hcd_root_hub_signal[0]++;
-
-    /* The controller has issued a ATTACH Root HUB signal.  */
+    /* This callback runs in ISR context. Keep it minimal: record the raw ATTACH
+       state and (re)start the debounce quiet period. The connect edge is only
+       reported to the root hub thread later, from _ux_hcd_stm32_rh_debounce_run(),
+       once the port has gone quiet (no further edge) for a full debounce window.  */
+    UX_DISABLE
     hcd_stm32 -> ux_hcd_stm32_controller_flag |= UX_HCD_STM32_CONTROLLER_FLAG_DEVICE_ATTACHED;
     hcd_stm32 -> ux_hcd_stm32_controller_flag &= ~UX_HCD_STM32_CONTROLLER_FLAG_DEVICE_DETACHED;
 
-    /* Wake up the root hub thread.  */
-    _ux_host_semaphore_put(&_ux_system_host -> ux_system_host_enum_semaphore);
+    hcd_stm32 -> ux_hcd_stm32_rh_debounce_tick = _ux_utility_time_get();
+
+    if ((hcd_stm32 -> ux_hcd_stm32_controller_flag & UX_HCD_STM32_CONTROLLER_FLAG_PORT_DEBOUNCE) == 0U)
+    {
+        hcd_stm32 -> ux_hcd_stm32_controller_flag |= UX_HCD_STM32_CONTROLLER_FLAG_PORT_DEBOUNCE;
+        UX_RESTORE
+
+        /* Start the debounce timer, it only runs while a window is pending.  */
+        UX_HCD_STM32_TIMER_ACTIVATE(&hcd_stm32 -> ux_hcd_stm32_rh_timer);
+    }
+    else
+    {
+        UX_RESTORE
+    }
 }
 
 
@@ -139,22 +153,217 @@ void HAL_HCD_Disconnect_Callback(HCD_HandleTypeDef *hhcd)
 
 UX_HCD              *hcd;
 UX_HCD_STM32        *hcd_stm32;
+UX_INTERRUPT_SAVE_AREA
 
 
     /* Get the pointer to the HCD & HCD_STM32.  */
     hcd = (UX_HCD*)hhcd -> pData;
     hcd_stm32 = (UX_HCD_STM32*)hcd -> ux_hcd_controller_hardware;
 
-    /* Something happened on the root hub port. Signal it to the root hub     thread.  */
-    hcd -> ux_hcd_root_hub_signal[0]++;
-
-    /* The controller has issued a DETACH Root HUB signal.  */
+    /* This callback runs in ISR context. Keep it minimal: record the raw DETACH
+       state and (re)start the debounce quiet period. The disconnect edge is only
+       reported to the root hub thread later, from _ux_hcd_stm32_rh_debounce_run(),
+       once the port has gone quiet (no further edge) for a full debounce window.  */
+    UX_DISABLE
     hcd_stm32 -> ux_hcd_stm32_controller_flag |= UX_HCD_STM32_CONTROLLER_FLAG_DEVICE_DETACHED;
     hcd_stm32 -> ux_hcd_stm32_controller_flag &= ~UX_HCD_STM32_CONTROLLER_FLAG_DEVICE_ATTACHED;
 
-    /* Wake up the root hub thread.  */
-    _ux_host_semaphore_put(&_ux_system_host -> ux_system_host_enum_semaphore);
+    hcd_stm32 -> ux_hcd_stm32_rh_debounce_tick = _ux_utility_time_get();
+
+    if ((hcd_stm32 -> ux_hcd_stm32_controller_flag & UX_HCD_STM32_CONTROLLER_FLAG_PORT_DEBOUNCE) == 0U)
+    {
+        hcd_stm32 -> ux_hcd_stm32_controller_flag |= UX_HCD_STM32_CONTROLLER_FLAG_PORT_DEBOUNCE;
+        UX_RESTORE
+
+        /* Start the debounce timer, it only runs while a window is pending.  */
+        UX_HCD_STM32_TIMER_ACTIVATE(&hcd_stm32 -> ux_hcd_stm32_rh_timer);
+    }
+    else
+    {
+        UX_RESTORE
+    }
 }
+
+
+/**************************************************************************/
+/*                                                                        */
+/*  FUNCTION                                               RELEASE        */
+/*                                                                        */
+/*    _ux_hcd_stm32_rh_debounce_run                       PORTABLE C      */
+/*                                                           6.4.0        */
+/*  AUTHOR                                                                */
+/*                                                                        */
+/*    STMicroelectronics                                                  */
+/*                                                                        */
+/*  DESCRIPTION                                                           */
+/*                                                                        */
+/*    This function evaluates the root hub connect/disconnect debounce    */
+/*    outside of USB interrupt context. Once the port has been stable for */
+/*    UX_HCD_STM32_PORT_DEBOUNCE_MS, the settled attach state is compared */
+/*    against the last reported state and, only if it changed, a single   */
+/*    signal is posted to the root hub thread. This keeps                 */
+/*    ux_hcd_root_hub_signal[] consistent with the host stack while       */
+/*    filtering mechanical contact bounce.                                */
+/*                                                                        */
+/*  INPUT                                                                 */
+/*                                                                        */
+/*    hcd_stm32                             Pointer to STM32 HCD          */
+/*                                                                        */
+/*  OUTPUT                                                                */
+/*                                                                        */
+/*    None                                                                */
+/*                                                                        */
+/*  CALLS                                                                 */
+/*                                                                        */
+/*    _ux_utility_time_get                  Get current system tick       */
+/*    _ux_utility_time_elapsed              Compute elapsed ticks         */
+/*    _ux_host_semaphore_put                Put semaphore                 */
+/*                                                                        */
+/*  CALLED BY                                                             */
+/*                                                                        */
+/*    _ux_hcd_stm32_rh_timer_function       RTOS debounce timer           */
+/*    _ux_hcd_stm32_entry                   Standalone task run           */
+/*                                                                        */
+/*  RELEASE HISTORY                                                       */
+/*                                                                        */
+/*    DATE              NAME                      DESCRIPTION             */
+/*                                                                        */
+/*  07-01-2026     STMicroelectronics       Initial Version 6.4.0         */
+/*                                                                        */
+/**************************************************************************/
+VOID  _ux_hcd_stm32_rh_debounce_run(UX_HCD_STM32 *hcd_stm32)
+{
+
+UX_HCD              *hcd;
+ULONG               edge_tick;
+ULONG               device_attached_status;
+UX_INTERRUPT_SAVE_AREA
+
+
+    /* Nothing to do unless a connect/disconnect edge is pending debounce.  */
+    UX_DISABLE
+    if ((hcd_stm32 -> ux_hcd_stm32_controller_flag & UX_HCD_STM32_CONTROLLER_FLAG_PORT_DEBOUNCE) == 0U)
+    {
+        UX_RESTORE
+        return;
+    }
+
+    /* Snapshot the timestamp of the first edge of this debounce window.  */
+    edge_tick = hcd_stm32 -> ux_hcd_stm32_rh_debounce_tick;
+    UX_RESTORE
+
+    if (_ux_utility_time_elapsed(edge_tick, _ux_utility_time_get()) < UX_HCD_STM32_PORT_DEBOUNCE_TICKS)
+        return;
+
+    /* The window elapsed. Consume the pending debounce and latch the settled attach
+       state (the most recent value written by the connect/disconnect callbacks).  */
+    UX_DISABLE
+    hcd_stm32 -> ux_hcd_stm32_controller_flag &= ~UX_HCD_STM32_CONTROLLER_FLAG_PORT_DEBOUNCE;
+
+    if ((hcd_stm32 -> ux_hcd_stm32_controller_flag & UX_HCD_STM32_CONTROLLER_FLAG_DEVICE_ATTACHED) != 0U)
+    {
+      device_attached_status = UX_HCD_STM32_CONTROLLER_FLAG_DEVICE_ATTACHED;
+    }
+    else
+    {
+      device_attached_status = UX_HCD_STM32_CONTROLLER_FLAG_DEVICE_DETACHED;
+    }
+    UX_RESTORE
+
+    /* The window is closed, the timer has nothing left to evaluate until a new
+       connect/disconnect edge arms another window.  */
+    UX_HCD_STM32_TIMER_DEACTIVATE(&hcd_stm32 -> ux_hcd_stm32_rh_timer);
+
+    /* A new edge may have re-armed a window while the timer was being stopped.
+       Restart it in that case, otherwise the new window would never be evaluated.  */
+    UX_DISABLE
+    if ((hcd_stm32 -> ux_hcd_stm32_controller_flag & UX_HCD_STM32_CONTROLLER_FLAG_PORT_DEBOUNCE) != 0U)
+    {
+        UX_RESTORE
+        UX_HCD_STM32_TIMER_ACTIVATE(&hcd_stm32 -> ux_hcd_stm32_rh_timer);
+    }
+    else
+    {
+        UX_RESTORE
+    }
+
+    /* Only signal the root hub thread when the settled state actually differs from
+       what was last reported. This yields exactly one root-hub signal per real,
+       debounced connect or disconnect.  */
+    if (device_attached_status != hcd_stm32 -> ux_hcd_stm32_rh_last_device_attached_status)
+    {
+
+        /* Store the newly reported state.  */
+        hcd_stm32 -> ux_hcd_stm32_rh_last_device_attached_status = device_attached_status;
+
+        /* Point to the generic HCD.  */
+        hcd = hcd_stm32 -> ux_hcd_stm32_hcd_owner;
+
+        /* Something settled on the root hub port. Signal it to the root hub thread. */
+        UX_DISABLE
+        hcd -> ux_hcd_root_hub_signal[0]++;
+        UX_RESTORE
+
+        /* Wake up the root hub thread.  */
+        _ux_host_semaphore_put(&_ux_system_host -> ux_system_host_enum_semaphore);
+    }
+}
+
+
+#if !defined(UX_HOST_STANDALONE)
+/**************************************************************************/
+/*                                                                        */
+/*  FUNCTION                                               RELEASE        */
+/*                                                                        */
+/*    _ux_hcd_stm32_rh_timer_function                     PORTABLE C      */
+/*                                                           6.4.0        */
+/*  AUTHOR                                                                */
+/*                                                                        */
+/*    STMicroelectronics                                                  */
+/*                                                                        */
+/*  DESCRIPTION                                                           */
+/*                                                                        */
+/*    This function is the expiration handler of the periodic root hub    */
+/*    debounce timer (RTOS builds). It runs in RTOS timer context, not in */
+/*    USB interrupt context, and evaluates the connect/disconnect         */
+/*    debounce for the controller.                                        */
+/*                                                                        */
+/*  INPUT                                                                 */
+/*                                                                        */
+/*    hcd_stm32_addr                       Pointer to STM32 HCD           */
+/*                                                                        */
+/*  OUTPUT                                                                */
+/*                                                                        */
+/*    None                                                                */
+/*                                                                        */
+/*  CALLS                                                                 */
+/*                                                                        */
+/*    _ux_hcd_stm32_rh_debounce_run         Evaluate debounce             */
+/*                                                                        */
+/*  CALLED BY                                                             */
+/*                                                                        */
+/*    RTOS timer                                                          */
+/*                                                                        */
+/*  RELEASE HISTORY                                                       */
+/*                                                                        */
+/*    DATE              NAME                      DESCRIPTION             */
+/*                                                                        */
+/*  07-01-2026     STMicroelectronics       Initial Version 6.4.0         */
+/*                                                                        */
+/**************************************************************************/
+VOID  _ux_hcd_stm32_rh_timer_function(ULONG hcd_stm32_addr)
+{
+
+UX_HCD_STM32        *hcd_stm32;
+
+
+    /* Recover the STM32 HCD pointer from the timer.  */
+    UX_TIMER_EXTENSION_PTR_GET(hcd_stm32, UX_HCD_STM32, hcd_stm32_addr)
+
+    /* Evaluate the connect/disconnect debounce outside of USB ISR context.  */
+    _ux_hcd_stm32_rh_debounce_run(hcd_stm32);
+}
+#endif /* !defined(UX_HOST_STANDALONE) */
 
 
 /**************************************************************************/
@@ -400,7 +609,7 @@ UX_TRANSFER         *transfer_next;
                 if ((ed -> ux_stm32_ed_type == EP_TYPE_INTR) ||
                     (ed -> ux_stm32_ed_type == EP_TYPE_ISOC))
                     ed -> ux_stm32_ed_sch_mode = 1;
-                }
+            }
 
 #if defined(UX_HOST_STANDALONE)
             transfer_request -> ux_transfer_request_status = UX_TRANSFER_STATUS_COMPLETED;

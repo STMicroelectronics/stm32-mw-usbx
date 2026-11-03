@@ -207,13 +207,26 @@ UX_INTERRUPT_SAVE_AREA
 
     case UX_HCD_PROCESS_DONE_QUEUE:
 
-        /* Process periodic queue.  */
-        _ux_hcd_stm32_periodic_schedule(hcd_stm32);
+#if defined(UX_HOST_STANDALONE)
+        /* Evaluate the root hub connect/disconnect debounce. Standalone builds have
+           no debounce timer.  */
+        _ux_hcd_stm32_rh_debounce_run(hcd_stm32);
+#endif /* defined(UX_HOST_STANDALONE) */
 
-        /* Reset the SOF flag.  */
+        /* Process the periodic queue at most once per hardware SOF/uSOF tick.  */
         UX_DISABLE
-        hcd_stm32 -> ux_hcd_stm32_controller_flag &= ~UX_HCD_STM32_CONTROLLER_FLAG_SOF;
-        UX_RESTORE
+        if ((hcd_stm32 -> ux_hcd_stm32_controller_flag & UX_HCD_STM32_CONTROLLER_FLAG_SOF) != 0U)
+        {
+            hcd_stm32 -> ux_hcd_stm32_controller_flag &= ~UX_HCD_STM32_CONTROLLER_FLAG_SOF;
+            UX_RESTORE
+
+            /* Process periodic queue.  */
+            _ux_hcd_stm32_periodic_schedule(hcd_stm32);
+        }
+        else
+        {
+            UX_RESTORE
+        }
 
         status =  UX_SUCCESS;
         break;
@@ -223,6 +236,9 @@ UX_INTERRUPT_SAVE_AREA
         /* free HCD resources */
         if (hcd_stm32 != UX_NULL)
         {
+#if !defined(UX_HOST_STANDALONE)
+          _ux_host_timer_delete(&hcd_stm32 -> ux_hcd_stm32_rh_timer);
+#endif /* !defined(UX_HOST_STANDALONE) */
           _ux_utility_memory_free(hcd_stm32 -> ux_hcd_stm32_ed_list);
           _ux_utility_memory_free(hcd_stm32);
         }

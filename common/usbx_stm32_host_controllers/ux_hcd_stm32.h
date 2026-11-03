@@ -75,7 +75,45 @@
 #define UX_HCD_STM32_CONTROLLER_LOW_SPEED_DEVICE                0x20U
 #define UX_HCD_STM32_CONTROLLER_FULL_SPEED_DEVICE               0x40U
 #define UX_HCD_STM32_CONTROLLER_HIGH_SPEED_DEVICE               0x80U
+#define UX_HCD_STM32_CONTROLLER_FLAG_PORT_DEBOUNCE              0x100U
 #define UX_HCD_STM32_MAX_PACKET_COUNT                           256U
+
+/* Define the root hub connect/disconnect debounce period in milliseconds.
+   A connect/disconnect edge is only reported to the host stack once the port has
+   been stable for this long, filtering mechanical contact bounce.
+
+   The period is measured with the USBX system tick (_ux_utility_time_get(), whose
+   rate is UX_PERIODIC_RATE), so the effective resolution is one UX tick. With the
+   default UX_PERIODIC_RATE of 100 (10 ms/tick) the minimum is a single tick
+   (~10 ms); raise UX_PERIODIC_RATE (e.g. 1000 for 1 ms/tick) for a finer debounce. */
+#ifndef UX_HCD_STM32_PORT_DEBOUNCE_MS
+#define UX_HCD_STM32_PORT_DEBOUNCE_MS                           10U
+#endif /* UX_HCD_STM32_PORT_DEBOUNCE_MS */
+
+/* Debounce period expressed in USB system ticks. */
+#define UX_HCD_STM32_PORT_DEBOUNCE_TICKS                        UX_MS_TO_TICK_NON_ZERO(UX_HCD_STM32_PORT_DEBOUNCE_MS)
+
+/* Define the root hub debounce timer control macros. The timer is only needed
+   while a connect or disconnect edge is being debounced, so it is created
+   deactivated and started/stopped around the debounce window. In standalone
+   builds there is no timer at all: the debounce is evaluated from the
+   UX_HCD_TASKS_RUN entry.  */
+#if !defined(UX_HOST_STANDALONE)
+
+#ifndef UX_HCD_STM32_TIMER_ACTIVATE
+#define UX_HCD_STM32_TIMER_ACTIVATE(t)                          tx_timer_activate(t)
+#endif /* UX_HCD_STM32_TIMER_ACTIVATE */
+
+#ifndef UX_HCD_STM32_TIMER_DEACTIVATE
+#define UX_HCD_STM32_TIMER_DEACTIVATE(t)                        tx_timer_deactivate(t)
+#endif /* UX_HCD_STM32_TIMER_DEACTIVATE */
+
+#else
+
+#define UX_HCD_STM32_TIMER_ACTIVATE(t)                          do{}while(0)
+#define UX_HCD_STM32_TIMER_DEACTIVATE(t)                        do{}while(0)
+
+#endif /* !defined(UX_HOST_STANDALONE) */
 
 #define UX_HCD_STM32_ED_STATUS_FREE                             0x00U
 #define UX_HCD_STM32_ED_STATUS_ALLOCATED                        0x01U
@@ -112,8 +150,13 @@ typedef struct UX_HCD_STM32_STRUCT
     UINT                                ux_hcd_stm32_queue_empty;
     UINT                                ux_hcd_stm32_periodic_scheduler_active;
     ULONG                               ux_hcd_stm32_controller_flag;
+    ULONG                               ux_hcd_stm32_rh_debounce_tick;
+    ULONG                               ux_hcd_stm32_rh_last_device_attached_status;
     HCD_HandleTypeDef                   *hcd_handle;
     struct UX_HCD_STM32_ED_STRUCT       *ux_hcd_stm32_periodic_ed_head;
+#if !defined(UX_HOST_STANDALONE)
+    UX_TIMER                            ux_hcd_stm32_rh_timer;
+#endif /* !defined(UX_HOST_STANDALONE) */
 } UX_HCD_STM32;
 
 
@@ -176,6 +219,10 @@ UINT                _ux_hcd_stm32_request_transfer(UX_HCD_STM32 *hcd_stm32, UX_T
 UINT                _ux_hcd_stm32_request_trans_prepare(UX_HCD_STM32 *hcd_stm32, UX_HCD_STM32_ED *ed, UX_TRANSFER *transfer);
 VOID                _ux_hcd_stm32_request_trans_finish(UX_HCD_STM32 *hcd_stm32, UX_HCD_STM32_ED *ed);
 UINT                _ux_hcd_stm32_transfer_abort(UX_HCD_STM32 *hcd_stm32, UX_TRANSFER *transfer_request);
+VOID                _ux_hcd_stm32_rh_debounce_run(UX_HCD_STM32 *hcd_stm32);
+#if !defined(UX_HOST_STANDALONE)
+VOID                _ux_hcd_stm32_rh_timer_function(ULONG hcd_stm32_addr);
+#endif /* !defined(UX_HOST_STANDALONE) */
 
 #define ux_hcd_stm32_initialize                      _ux_hcd_stm32_initialize
 #define ux_hcd_stm32_interrupt_handler               _ux_hcd_stm32_interrupt_handler
